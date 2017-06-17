@@ -1,19 +1,19 @@
 # Site settings
-baseurl = "http://nodejh.com/"
+baseurl = "/"
 # HTML Language Code Reference, such as en, zh-cn
 languageCode = "en"
-title = "Blog Title"
+title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 # Enter your tracking code to enable Google Analytics
-googleAnalytics = "your_google_analytics_code"
+googleAnalytics = ""
 hasCJKLanguage = true
 
 [params]
-	name = "Hugo"
-	description = "Blog Description"
-	bio = "Blog biology"
+	name = "Gokhan Ciflikli"
+	description = "Computational Social Science"
+	bio = "R | Shiny Apps | Data Visualization | Python | ML"
 	# Enter optionally your twitter account
-	twitter = "your_twotter"
+	twitter = "your_twitter"
 	enableRSS = false
 
 	# Disqus comment
@@ -69,6 +69,4 @@ hasCJKLanguage = true
 
 # Add additional social link entries underneath
 [social]
-	facebook-square = "your_facebook_link"
-  twitter-square = "your_twitter_link"
-  github-square = "your_github_link"
+  github-square = "https://github.com/ciflikli"
