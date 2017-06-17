@@ -4,12 +4,10 @@ title = "About"
 hidden = true
 +++
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ullam earum dolorum! Sed, perspiciatis.
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+Smoke on the water.
 
 ***
 
-### Lorem ipsum dolor.
+### Wait for it.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea dicta corporis ad inventore itaque impedit dolor atque amet exercitationem! Veniam qui voluptas maiores vel laudantium necessitatibus, velit ducimus! Iste hic facere, accusamus fugiat enim facilis.
+Fire in the sky.
