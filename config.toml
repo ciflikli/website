@@ -6,11 +6,11 @@ title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 # Enter your tracking code to enable Google Analytics
 googleAnalytics = "UA-90951528-1"
-hasCJKLanguage = true
+hasCJKLanguage = false
 
 [params]
 	name = "Gokhan Ciflikli"
-	description = "Computational Social Science"
+	description = "Computational Social Science, Data Science, Visualization, R, Python"
 	bio = "R | Shiny Apps | Data Visualization | Python | ML"
 	# Enter optionally your twitter account
 	twitter = "your_twitter"
@@ -65,7 +65,6 @@ hasCJKLanguage = true
 	iconFont = "font-awesome"
   # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
   socialIconStyle = ""
-
 
 # Add additional social link entries underneath
 [social]
