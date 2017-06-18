@@ -5,7 +5,7 @@ languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 # Enter your tracking code to enable Google Analytics
-googleAnalytics = ""
+googleAnalytics = "UA-90951528-1"
 hasCJKLanguage = true
 
 [params]
