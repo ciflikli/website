@@ -11,7 +11,7 @@ hasCJKLanguage = false
 [params]
 	name = "Gokhan Ciflikli"
 	description = "Computational Social Science, Data Science, Visualization, R, Python"
-	bio = "R | Shiny Apps | Data Visualization | Python | ML"
+	bio = "R | Shiny Apps | Data Visualization | ML | Python"
 	# Enter optionally your twitter account
 	twitter = "your_twitter"
 	enableRSS = false
