@@ -41,7 +41,7 @@ library(RColorBrewer)
 library(sunburstR)
 library(htmlwidgets)
 
-patch &lt;- read_csv(&quot;patch.csv&quot;) #Sequence data for included publications
+patch &lt;- read_csv(&quot;patch.csv&quot;) #Sequence data for included publications written by female authors
 
 #Assigning palettes to vectors so that we can ignore extremely light/dark colors via subsetting later
 
@@ -52,7 +52,7 @@ htmlwidgets::onRender(
       sunburst(patch, count = TRUE,
                legend = list(w = 150, h = 25, s = 5, t = 25),
                breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
-               colors = c(&quot;&quot;, blues[1:8], reds[7:2]), #For some reason, had to assign a blank colour first for
+               colors = c(&quot;&quot;, blues[1:8], reds[7:2]), #For some reason, I had to assign a blank colur first for
                #the palette sequences to work as intended
                legendOrder = c(&quot;1960&quot;, &quot;1970&quot;, &quot;1980&quot;, &quot;1990&quot;, &quot;2000&quot;, &quot;2010&quot;,
                                &quot;Book&quot;, &quot;Article&quot;,
