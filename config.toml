@@ -17,9 +17,9 @@ hasCJKLanguage = false
 	enableRSS = false
 
 	# Disqus comment
-	disqusShortname = "your_disqus_short_name"
+	disqusShortname = "gokhancif"
 	# Disable disqus comments by set `enableDisqus = "false"`
-	enableDisqus = false
+	enableDisqus = true
 
 	# Duoshuo comment
 	duoshuoShortname = "your_duoshuo_short_name"
