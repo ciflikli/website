@@ -1,0 +1,87 @@
+---
+title: Howdy!
+author: Gokhan Ciflikli
+date: '2017-06-18'
+slug: howdy
+categories:
+  - R
+tags:
+  - R
+  - Shiny
+  - Plot
+description: 'A short introductory post accompanying the R code for generating the website logo.'
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<link href="/rmarkdown-libs/sequences/sequences.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/sunburst-binding/sunburst.js"></script>
+
+
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>Hello, and welcome to my new website. I will briefly lay out my MO in this post.</p>
+<p>The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly <a href="https://shiny.rstudio.com/">Shiny apps and dashboards</a>, for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.</p>
+<hr />
+</div>
+<div id="about-the-website" class="section level3">
+<h3>About the Website</h3>
+<p>This webpage is built by using the <code>blogdown</code> package in R. The code itself is powered by <a href="https://themes.gohugo.io/">Hugo</a>, and I use a variation of the theme <a href="https://themes.gohugo.io/hugo-theme-cactus-plus/">cactus plus</a>. As per the recommendation of Yihui Xie<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, I host my site on <a href="https://netlify.com">netlify.com</a>, which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.</p>
+<hr />
+</div>
+<div id="rmarkdown" class="section level3">
+<h3>RMarkdown</h3>
+<p>Speaking of RMarkdown, the logo of the website is created via the <code>sunburstR</code> package. The data shown are not artifically constructed; the graph indeed shows the breakdown of female author inclusion patterns in IR syllabi at the LSE for the 2015-2016 academic year. Hovering on the dial will display a breadcrumb trail on the top. Below you can find the R code used to generate the graph:</p>
+<pre class="r"><code>library(readr)
+library(RColorBrewer)
+library(sunburstR)
+library(htmlwidgets)
+
+patch &lt;- read_csv(&quot;patch.csv&quot;) #Sequence data for included publications
+
+#Assigning palettes to vectors so that we can ignore extremely light/dark colors via subsetting later
+
+blues &lt;- c(brewer.pal(9, &quot;Blues&quot;))
+reds &lt;- c(brewer.pal(9, &quot;Reds&quot;))
+
+htmlwidgets::onRender(
+      sunburst(patch, count = TRUE,
+               legend = list(w = 150, h = 25, s = 5, t = 25),
+               breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
+               colors = c(&quot;&quot;, blues[1:8], reds[7:2]), #For some reason, had to assign a blank colour first for
+               #the palette sequences to work as intended
+               legendOrder = c(&quot;1960&quot;, &quot;1970&quot;, &quot;1980&quot;, &quot;1990&quot;, &quot;2000&quot;, &quot;2010&quot;,
+                               &quot;Book&quot;, &quot;Article&quot;,
+                               &quot;OtherPublisher&quot;, &quot;TopPublisher&quot;,
+                               &quot;CoAuthored&quot;, &quot;SingleAuthored&quot;,
+                               &quot;MaleCoAuthor&quot;, &quot;FemaleCoAuthor&quot;)),
+      &quot;
+      function(el, x){
+      d3.select(el).select(&#39;.sunburst-togglelegend&#39;).property(&#39;checked&#39;,true);
+      d3.select(el).select(&#39;.sunburst-togglelegend&#39;).on(&#39;click&#39;)();
+      }
+      &quot;
+    )</code></pre>
+<div class="sunburst html-widget" id="htmlwidget-1" style="width:672px;height:480px; position:relative;">
+<div>
+<div class="sunburst-main">
+<div class="sunburst-sequence"></div>
+<div class="sunburst-chart">
+<div class="sunburst-explanation" style="visibility:hidden;"></div>
+</div>
+</div>
+<div class="sunburst-sidebar">
+<input type="checkbox" class="sunburst-togglelegend">Legend</input>
+<div class="sunburst-legend" style="visibility:hidden;"></div>
+</div>
+</div>
+</div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"data":{"children":[{"name":"1960","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"SingleAuthored","children":[],"size":1,"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":5,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":2,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"},{"name":"1970","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"SingleAuthored","children":[],"size":5,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":1,"colname":"X5"}],"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":3,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":5,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":1,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":11,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"},{"name":"1980","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":1,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":15,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":6,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":3,"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":11,"colname":"X5"},{"name":"FemaleCoAuthor","size":2,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":20,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":6,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":8,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"},{"name":"1990","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":22,"colname":"X5"},{"name":"FemaleCoAuthor","size":3,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":58,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":37,"colname":"X5"},{"name":"FemaleCoAuthor","size":8,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":41,"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":29,"colname":"X5"},{"name":"FemaleCoAuthor","size":10,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":69,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":35,"colname":"X5"},{"name":"FemaleCoAuthor","size":6,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":76,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"},{"name":"2000","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":139,"colname":"X5"},{"name":"FemaleCoAuthor","size":34,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":320,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":77,"colname":"X5"},{"name":"FemaleCoAuthor","size":13,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":105,"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":58,"colname":"X5"},{"name":"FemaleCoAuthor","size":22,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":129,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":120,"colname":"X5"},{"name":"FemaleCoAuthor","size":13,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":236,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"},{"name":"2010","children":[{"name":"Article","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":175,"colname":"X5"},{"name":"FemaleCoAuthor","size":33,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":209,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":26,"colname":"X5"},{"name":"FemaleCoAuthor","size":6,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":26,"colname":"X4"}],"colname":"X3"}],"colname":"X2"},{"name":"Book","children":[{"name":"OtherPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":43,"colname":"X5"},{"name":"FemaleCoAuthor","size":5,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":56,"colname":"X4"}],"colname":"X3"},{"name":"TopPublisher","children":[{"name":"CoAuthored","children":[{"name":"MaleCoAuthor","size":35,"colname":"X5"},{"name":"FemaleCoAuthor","size":16,"colname":"X5"}],"colname":"X4"},{"name":"SingleAuthored","children":[],"size":106,"colname":"X4"}],"colname":"X3"}],"colname":"X2"}],"colname":"X1"}],"name":"root"},"options":{"legendOrder":["1960","1970","1980","1990","2000","2010","Book","Article","OtherPublisher","TopPublisher","CoAuthored","SingleAuthored","MaleCoAuthor","FemaleCoAuthor"],"colors":["","#F7FBFF","#DEEBF7","#C6DBEF","#9ECAE1","#6BAED6","#4292C6","#2171B5","#08519C","#CB181D","#EF3B2C","#FB6A4A","#FC9272","#FCBBA1","#FEE0D2"],"valueField":"size","percent":true,"count":true,"explanation":null,"breadcrumb":{"w":0,"h":25,"s":5,"t":10},"legend":{"w":150,"h":25,"s":5,"t":25},"sortFunction":null}},"evals":[],"jsHooks":{"render":[{"code":"\n      function(el, x){\n      d3.select(el).select('.sunburst-togglelegend').property('checked',true);\n      d3.select(el).select('.sunburst-togglelegend').on('click')();\n      }\n      ","data":null}]}}</script>
+<p>The JavaScript code chunk at the end is supposed to <a href="https://github.com/timelyportfolio/sunburstR/issues/15">simulate a click</a> so that the legend box is checked and expanded automatically on launch, however it stopped working for me after a while. Maybe a package update to <code>htmlwidgets</code> or <code>sunburstR</code> somehow broke it? Still, I left it in there in case you want to work it out yourself.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Technically, Shiny apps are hosted at <a href="https://Shinyapps.io">Shinyapps.io</a>; however I will be distributing the links to the apps on this website.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p><a href="https://bookdown.org/yihui/blogdown/workflow.html">General recommendation</a>, not through personal correspondence.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>

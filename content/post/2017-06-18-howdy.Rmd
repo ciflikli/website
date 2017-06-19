@@ -1,0 +1,67 @@
+---
+title: Howdy!
+author: Gokhan Ciflikli
+date: '2017-06-18'
+slug: howdy
+categories:
+  - R
+tags:
+  - R
+  - Shiny
+  - Plot
+description: 'A short introductory post accompanying the R code for generating the website logo.'
+---
+###Introduction
+
+Hello, and welcome to my new website. I will briefly lay out my MO in this post.
+
+The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly [Shiny apps and dashboards](https://shiny.rstudio.com/), for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet.[^1] Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.
+
+***
+###About the Website
+
+This webpage is built by using the `blogdown` package in R. The code itself is powered by [Hugo](https://themes.gohugo.io/), and I use a variation of the theme [cactus plus](https://themes.gohugo.io/hugo-theme-cactus-plus/).
+As per the recommendation of Yihui Xie[^2], I host my site on [netlify.com](https://netlify.com), which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.
+
+***
+###RMarkdown
+
+Speaking of RMarkdown, the logo of the website is created via the `sunburstR` package. The data shown are not artifically constructed; the graph indeed shows the breakdown of female author inclusion patterns in IR syllabi at the LSE for the 2015-2016 academic year. Hovering on the dial will display a breadcrumb trail on the top. Below you can find the R code used to generate the graph:
+
+```{r message = FALSE}
+library(readr)
+library(RColorBrewer)
+library(sunburstR)
+library(htmlwidgets)
+
+patch <- read_csv("patch.csv") #Sequence data for included publications
+
+#Assigning palettes to vectors so that we can ignore extremely light/dark colors via subsetting later
+
+blues <- c(brewer.pal(9, "Blues"))
+reds <- c(brewer.pal(9, "Reds"))
+
+htmlwidgets::onRender(
+      sunburst(patch, count = TRUE,
+               legend = list(w = 150, h = 25, s = 5, t = 25),
+               breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
+               colors = c("", blues[1:8], reds[7:2]), #For some reason, had to assign a blank colour first for
+               #the palette sequences to work as intended
+               legendOrder = c("1960", "1970", "1980", "1990", "2000", "2010",
+                               "Book", "Article",
+                               "OtherPublisher", "TopPublisher",
+                               "CoAuthored", "SingleAuthored",
+                               "MaleCoAuthor", "FemaleCoAuthor")),
+      "
+      function(el, x){
+      d3.select(el).select('.sunburst-togglelegend').property('checked',true);
+      d3.select(el).select('.sunburst-togglelegend').on('click')();
+      }
+      "
+    )
+```
+
+The JavaScript code chunk at the end is supposed to [simulate a click](https://github.com/timelyportfolio/sunburstR/issues/15) so that the legend box is checked and expanded automatically on launch, however it stopped working for me after a while. Maybe a package update to `htmlwidgets` or `sunburstR` somehow broke it? Still, I left it in there in case you want to work it out yourself.
+
+[^1]: Technically, Shiny apps are hosted at [Shinyapps.io](https://Shinyapps.io); however I will be distributing the links to the apps on this website.
+[^2]: [General recommendation](https://bookdown.org/yihui/blogdown/workflow.html), not through personal correspondence.
