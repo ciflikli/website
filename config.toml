@@ -1,14 +1,12 @@
 # Site settings
 baseurl = "/"
-# HTML Language Code Reference, such as en, zh-cn
 languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
-# Enter your tracking code to enable Google Analytics
 googleAnalytics = "UA-90951528-1"
 hasCJKLanguage = false
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-pygmentsuseclasses = true
+PygmentsUseClasses = true
 
 [params]
 	name = "Gokhan Ciflikli"
@@ -20,48 +18,19 @@ pygmentsuseclasses = true
 
 	# Disqus comment
 	disqusShortname = "gokhancif"
-	# Disable disqus comments by set `enableDisqus = "false"`
 	enableDisqus = true
-
-	# Duoshuo comment
-	duoshuoShortname = "your_duoshuo_short_name"
-	# Disable duoshuo comments by set `enableDuoshuo = "false"`
-	enableDuoshuo = false
 
 	enableGithubIssuesTips = false
 
 	# Enable googleAnalytics
 	enableGoogleAnalytics = true
 
-	# Enable baiduAnalytics
-	enableBaiduAnalytics = false
-	# Baidu Tongji Code
-	baiduAnalytics = 'your_baidu_tongji_code'
-
 	# Add custom assets with their paths relative to the static folder
 	custom_css = []
 	customJS  = []
 
-	# The variables below are optionally too and can be used to
-	# translate or customize each string of the theme.
-
-	# Navigation links
-	home = ""
-	about = ""
-	archive = ""
-	subscribe = ""
-	# Pagination links
-	olderPosts = ""
-	newerPosts = ""
-	readMore = ""
-	copyright = ""
 	# Sharing options and author information in posts
 	aboutAuthor = ""
-	tweet = ""
-	share = ""
-	# 404 page
-	title404 = ""
-	subtitle404 = ""
 
 	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
 	iconFont = "font-awesome"
@@ -74,6 +43,6 @@ pygmentsuseclasses = true
   # share on facebook
   shareOnFacebook = true
 
-# Add additional social link entries underneath
+  # Add additional social link entries underneath
 [social]
   github-square = "https://github.com/ciflikli"
