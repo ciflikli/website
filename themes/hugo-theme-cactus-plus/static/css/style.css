@@ -293,6 +293,7 @@ li	{ padding: .5em; line-height: 1.5em;}
 
 #post-body, p {
     line-height: 1.7;
+    margin-top: 10px;
 }
 #post-body p > a {
   word-break: break-word;

@@ -88,6 +88,8 @@ code.hljs {
   white-space: pre;
   overflow-x: auto;
   word-wrap: normal;
+  margin-top: 10px;
+  margin-bottom: 10 px;
 }
 
 .hljs-emphasis {
