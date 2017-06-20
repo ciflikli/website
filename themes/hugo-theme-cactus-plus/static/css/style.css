@@ -340,6 +340,7 @@ em, i {
 }
 
 .post h1 {
+	margin-top: 100px;
     margin-bottom: 20px;
     color: #222;
     font: 300 32px/1.4em "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -385,6 +386,8 @@ h3, h4, h5 {
 h3 {
     font-size: 20px;
     font-weight: 400;
+	text-align: justify;
+	margin-top: 50px;
 }
 
 h4 {
