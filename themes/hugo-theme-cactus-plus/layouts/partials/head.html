@@ -14,7 +14,7 @@
 		{{ range .Site.Params.customCSS }}
 		<link rel="stylesheet" href="{{ $.Site.BaseURL }}{{ . }}">
 		{{ end }}
-
+		
 		{{ if eq .Site.Params.iconFont "font-awesome" }}
 		<link rel="stylesheet" href="{{ .Site.BaseURL }}css/font-awesome.min.css">
 		{{ else }}

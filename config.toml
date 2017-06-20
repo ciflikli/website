@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "/"
+baseurl = "https://gokhan.netlify.com/"
 languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
@@ -10,17 +10,16 @@ PygmentsUseClasses = true
 
 [params]
 	name = "Gokhan Ciflikli"
-	description = "Computational Social Science, Data Science, Visualization, R, Python"
+	job = "Computational Social Science"
+	description = "Computational Social Science, Data Science, Visualization, Machine Learning, R, Python"
 	bio = "R | Shiny Apps | Data Visualization | ML | Python"
-	# Enter optionally your twitter account
-	twitter = "gokhan_ciflikli"
+
+	github = "ciflikli"
 	enableRSS = false
 
 	# Disqus comment
 	disqusShortname = "gokhancif"
 	enableDisqus = true
-
-	enableGithubIssuesTips = false
 
 	# Enable googleAnalytics
 	enableGoogleAnalytics = true
@@ -30,19 +29,16 @@ PygmentsUseClasses = true
 	customJS  = []
 
 	# Sharing options and author information in posts
-	aboutAuthor = ""
+	aboutAuthor = "Computational Social Scientist"
 
 	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
 	iconFont = "font-awesome"
   # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
   socialIconStyle = ""
   
-  # share on twitter
   shareOnTwitter = true
 
-  # share on facebook
   shareOnFacebook = true
 
-  # Add additional social link entries underneath
 [social]
   github-square = "https://github.com/ciflikli"

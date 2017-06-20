@@ -35,28 +35,20 @@
                 </section>
             </article>
             <footer id="post-meta" class="clearfix">
-                {{ with .Site.Params.twitter }}<a href="https://twitter.com/{{ . }}">{{ end }}
+                {{ with .Site.Params.github }}<a href="https://github.com/{{ . }}">{{ end }}
                         <img class="avatar" src="{{ .Site.BaseURL }}images/avatar.png">
                         <div>
-                            <!-- <span class="dark">{{ .Site.Params.name }}</span> -->
+                            <span class="dark">{{ .Site.Params.name }}</span>
                             <span>{{ .Site.Params.aboutAuthor }}</span>
                         </div>
-                    {{ with .Site.Params.twitter }}</a>{{ end }}
+                    {{ with .Site.Params.github }}</a>{{ end }}
                 <section id="sharing">
                     {{ partial "share.html" . }}
                 </section>
             </footer>
 
-            {{ if .Site.Params.enableGithubIssuesTips }}
-                {{ partial "github-issues-tip.html" . }}
-            {{ end }}
-
             {{ if .Site.Params.enableDisqus }}
                 {{ partial "disqus.html" . }}
-            {{ end }}
-
-            {{ if .Site.Params.enableDuoshuo }}
-                {{ partial "duoshuo.html" . }}
             {{ end }}
 
             {{ partial "footer.html" . }}
