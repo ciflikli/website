@@ -7,6 +7,8 @@ theme = "hugo-theme-cactus-plus"
 # Enter your tracking code to enable Google Analytics
 googleAnalytics = "UA-90951528-1"
 hasCJKLanguage = false
+ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+pygmentsuseclasses = true
 
 [params]
 	name = "Gokhan Ciflikli"
@@ -37,7 +39,7 @@ hasCJKLanguage = false
 	baiduAnalytics = 'your_baidu_tongji_code'
 
 	# Add custom assets with their paths relative to the static folder
-	customCSS = []
+	custom_css = []
 	customJS  = []
 
 	# The variables below are optionally too and can be used to

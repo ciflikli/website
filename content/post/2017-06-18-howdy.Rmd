@@ -20,13 +20,13 @@ output:
 
 Hello, and welcome to my new website. I will briefly lay out my MO in this post.
 
-The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly [Shiny apps and dashboards](https://shiny.rstudio.com/), for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet.[^1] Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.
+The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly [Shiny apps and dashboards](https://shiny.rstudio.com/), for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet[^1]. Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.
 
 ***
 ###About the Website
 
-This webpage is built by using the `blogdown` package in R. The code itself is powered by [Hugo](https://themes.gohugo.io/), and I use a variation of the theme [cactus plus](https://themes.gohugo.io/hugo-theme-cactus-plus/).
-As per the recommendation of Yihui Xie[^2], I host my site on [netlify.com](https://netlify.com), which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.
+This webpage is built by using the `blogdown` package in R. In turn, the package utilizes a static-site generator called [Hugo](https://themes.gohugo.io/), and I use a variation of the theme [cactus plus](https://themes.gohugo.io/hugo-theme-cactus-plus/).
+As per the recommendation of Amber Thomas and Yihui Xie[^2], I host my site on [netlify.com](https://netlify.com), which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.
 
 ***
 ###RMarkdown
@@ -50,7 +50,7 @@ htmlwidgets::onRender(
       sunburst(patch, count = TRUE,
                legend = list(w = 150, h = 25, s = 5, t = 25),
                breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
-               colors = c("", blues[1:8], reds[7:2]), #For some reason, I had to assign a blank colur first for
+               colors = c("", blues[1:8], reds[7:2]), #For some reason, I had to assign a blank color first for
                #the palette sequences to work as intended
                legendOrder = c("1960", "1970", "1980", "1990", "2000", "2010",
                                "Book", "Article",
@@ -69,4 +69,4 @@ htmlwidgets::onRender(
 The JavaScript code chunk at the end is supposed to [simulate a click](https://github.com/timelyportfolio/sunburstR/issues/15) so that the legend box is checked and expanded automatically on launch, however it stopped working for me after a while. Maybe a package update to `htmlwidgets` or `sunburstR` somehow broke it? Still, I left it in there in case you want to work it out yourself.
 
 [^1]: Technically, Shiny apps are hosted at [Shinyapps.io](https://Shinyapps.io); however I will be distributing the links to the apps on this website.
-[^2]: [General recommendation](https://bookdown.org/yihui/blogdown/workflow.html), not through personal correspondence.
+[^2]: See [recommended workflow](https://bookdown.org/yihui/blogdown/workflow.html).

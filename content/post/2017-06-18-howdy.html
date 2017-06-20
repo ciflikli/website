@@ -25,12 +25,12 @@ output:
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
 <p>Hello, and welcome to my new website. I will briefly lay out my MO in this post.</p>
-<p>The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly <a href="https://shiny.rstudio.com/">Shiny apps and dashboards</a>, for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.</p>
+<p>The primary reason why I switched from my old academic website in favor of a more functional (modern?) version is one of pure convenience. Nowadays, I have been building interactive web applications, mainly <a href="https://shiny.rstudio.com/">Shiny apps and dashboards</a>, for work and as a hobby. Consequently, I needed a central hub to host all the apps in one outlet<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Hopefully, there will also be occassional data visualization posts, as well as passing around code in R and Python.</p>
 <hr />
 </div>
 <div id="about-the-website" class="section level3">
 <h3>About the Website</h3>
-<p>This webpage is built by using the <code>blogdown</code> package in R. The code itself is powered by <a href="https://themes.gohugo.io/">Hugo</a>, and I use a variation of the theme <a href="https://themes.gohugo.io/hugo-theme-cactus-plus/">cactus plus</a>. As per the recommendation of Yihui Xie<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, I host my site on <a href="https://netlify.com">netlify.com</a>, which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.</p>
+<p>This webpage is built by using the <code>blogdown</code> package in R. In turn, the package utilizes a static-site generator called <a href="https://themes.gohugo.io/">Hugo</a>, and I use a variation of the theme <a href="https://themes.gohugo.io/hugo-theme-cactus-plus/">cactus plus</a>. As per the recommendation of Amber Thomas and Yihui Xie<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>, I host my site on <a href="https://netlify.com">netlify.com</a>, which offers continuous deployment from a git repository. All I have to do is to create a new Markdown/RMarkdown document and within seconds it will be deployed to the website. Pretty neat.</p>
 <hr />
 </div>
 <div id="rmarkdown" class="section level3">
@@ -52,7 +52,7 @@ htmlwidgets::onRender(
       sunburst(patch, count = TRUE,
                legend = list(w = 150, h = 25, s = 5, t = 25),
                breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
-               colors = c(&quot;&quot;, blues[1:8], reds[7:2]), #For some reason, I had to assign a blank colur first for
+               colors = c(&quot;&quot;, blues[1:8], reds[7:2]), #For some reason, I had to assign a blank color first for
                #the palette sequences to work as intended
                legendOrder = c(&quot;1960&quot;, &quot;1970&quot;, &quot;1980&quot;, &quot;1990&quot;, &quot;2000&quot;, &quot;2010&quot;,
                                &quot;Book&quot;, &quot;Article&quot;,
@@ -87,9 +87,6 @@ htmlwidgets::onRender(
 <hr />
 <ol>
 <li id="fn1"><p>Technically, Shiny apps are hosted at <a href="https://Shinyapps.io">Shinyapps.io</a>; however I will be distributing the links to the apps on this website.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="https://bookdown.org/yihui/blogdown/workflow.html">General recommendation</a>, not through personal correspondence.<a href="#fnref2">↩</a></p></li>
-</ol>
-</div>
-
+<li id="fn2"><p>See <a href="https://bookdown.org/yihui/blogdown/workflow.html">recommended workflow</a>.<a href="#fnref2">↩</a></p></li>
 </ol>
 </div>

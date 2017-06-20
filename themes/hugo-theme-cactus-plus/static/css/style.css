@@ -1,6 +1,6 @@
 /* Reset */
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
     border: 0;
     font-size: 100%;
     font: inherit;
@@ -105,7 +105,7 @@ table {
 /* Spacing */
 
 .post h1, h3, h4, h5, p, .post-body ul, #post-list li, pre {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 
@@ -224,13 +224,13 @@ nav.main-nav a.cta {
 }
 
 #wrapper {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 60px 40px 100px 40px;
 }
 
 #wrapper.home {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 0px 40px 20px 40px;
 }
@@ -269,16 +269,10 @@ a, #post-nav a, #post-list a {
     transition: all 0.15s ease;
 }
 
-ul {
-    margin: 0;
-    padding: 0;
-}
-
-li {
-    list-style-type: circle;
-    list-style-position: inside;
-}
-
+ul, ol { margin-left: 2em; }
+li	{ padding: .5em; line-height: 1.5em;}
+.footnotes { font-size: .9em; }
+.footnotes hr { width: 40%; margin: 40px auto 20px 0;}
 
 /* Line Height */
 
@@ -415,6 +409,12 @@ hr {
     height: 1px;
     margin: 40px auto;
     background: #eee;
+}
+
+span.code, code.highlighter-rouge { 
+	font-family: Inconsolata, Menlo, Monaco, Courier; 
+	background-color:#EEE; 
+	font-size:14px; 
 }
 
 table {
