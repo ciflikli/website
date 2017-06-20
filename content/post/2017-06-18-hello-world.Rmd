@@ -1,8 +1,8 @@
 ---
-title: Howdy!
+title: Hello, World!
 author: Gokhan Ciflikli
 date: '2017-06-18'
-slug: howdy
+slug: hello-world
 categories:
   - R
 tags:

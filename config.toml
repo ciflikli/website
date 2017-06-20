@@ -11,8 +11,8 @@ PygmentsUseClasses = true
 [params]
 	name = "Gokhan Ciflikli"
 	job = "Computational Social Science"
-	description = "Computational Social Science, Data Science, Visualization, Machine Learning, R, Python"
-	bio = "R | Shiny Apps | Data Visualization | ML | Python"
+	description = "Data Science, Visualization, Machine Learning, R, Python"
+	bio = "[R](https://gokhan.netlify.com/categories/r) | [Python](https://gokhan.netlify.com/categories/python) | [Visualization](https://gokhan.netlify.com/categories/visualization) | [Prediction](https://gokhan.netlify.com/categories/prediction)"
 
 	github = "ciflikli"
 	enableRSS = false
@@ -40,5 +40,5 @@ PygmentsUseClasses = true
 
   shareOnFacebook = true
 
-[social]
-  github-square = "https://github.com/ciflikli"
+#[social]
+ # github-square = "https://github.com/ciflikli"

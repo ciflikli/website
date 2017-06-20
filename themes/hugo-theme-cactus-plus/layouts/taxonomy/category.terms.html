@@ -1,0 +1,21 @@
+{{ partial "head.html" . }}
+   <body>
+      {{ partial "nav.html" . }}
+      {{ partial "profile.html" . }}
+
+
+       <section id="wrapper" class="category">
+           <div class="page-category" id="category">
+               {{ range $name, $taxonomy := .Site.Taxonomies.category }}
+                <span class="category">
+                    <a href="/category/{{ $name | urlize }}" rel="{{ len $taxonomy }}">{{ $name }}({{ len $taxonomy }})</a>
+                </span>
+               {{ end }}
+           </div>
+           {{ partial "footer.html" . }}
+       </section>
+
+       {{ partial "js.html" . }}
+       {{ partial "tagcloud.html" . }}
+   </body>
+</html>
