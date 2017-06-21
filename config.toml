@@ -11,7 +11,7 @@ ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
 	name = "Gokhan Ciflikli"
 	job = "Computational Social Science"
 	description = "Data Science, Visualization, Machine Learning, R, Python"
-	bio = "[R](https://gokhan.netlify.com/categories/r) | [Python](https://gokhan.netlify.com/categories/python) | [Visualization](https://gokhan.netlify.com/categories/visualization) | [Prediction](https://gokhan.netlify.com/categories/prediction)"
+	bio = "[R](https://gokhanciflikli.com/categories/r) | [Python](https://gokhanciflikli.com/categories/python) | [Visualization](https://gokhanciflikli.com/categories/visualization) | [Prediction](https://gokhanciflikli.com/categories/prediction)"
 
 	github = "ciflikli"
 	enableRSS = true
