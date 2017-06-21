@@ -10,16 +10,3 @@
 {{ if .Site.Params.enableGoogleAnalytics }}
   {{ template "_internal/google_analytics.html" . }}
 {{ end }}
-
-{{ if .Site.Params.enableBaiduAnalytics }}
-<script>
-var baiduAnalytics = '{{ .Site.Params.baiduAnalytics }}';
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-{{ end }}

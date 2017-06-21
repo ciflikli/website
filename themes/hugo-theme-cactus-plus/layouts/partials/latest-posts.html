@@ -4,7 +4,8 @@
     {{ $url := replace .Permalink .Site.BaseURL "" }}
         {{ if and (ne $url "about/") }}
         <li>
-            <a href="{{ .Permalink }}">{{ .Title }}<aside class="dates">{{ .Date.Format "Jan 2" }}</aside></a>
+            <a href="{{ .Permalink }}">{{ .Title }}<aside class="dates">{{ .Date.Format "Jan 2" }} </aside>
+            {{ partial "meta-terms.html" . }} </a>
         </li>
         {{ end }}
    {{ end }}
