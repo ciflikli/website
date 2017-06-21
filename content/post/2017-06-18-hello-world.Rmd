@@ -8,7 +8,9 @@ categories:
   - Visualization
 tags:
   - R
-  - Plot
+  - plot
+  - sunburstR
+  - htmlwidgets
 description: 'A short introductory post accompanying the R code for generating the website logo.'
 output:
   blogdown::html_page:
