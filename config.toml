@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "https://gokhan.netlify.com/"
+baseurl = "https://gokhanciflikli.com/"
 languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
