@@ -3,7 +3,7 @@
 {{ end }}-->
 
 {{ if .Params.tags }}
-<h6><i class="fa fa-tags" aria-hidden="true"></i>&nbsp;
+<h6><i class="fa fa-tags"></i>&nbsp;
   {{ range $index, $tag := .Params.tags }}{{ if gt $index 0 }},{{ end }}
 <i href="{{ "/tags/" | relLangURL }}" rel="tag">{{ . }}</i>{{ end }}</h6>
 {{ end }}
