@@ -6,6 +6,7 @@
                 <a href='{{ .Permalink }}'><aside class="dates">{{ .Date.Format "Jan 2" }}</aside></a>
                 <a href='{{ .Permalink }}'>
                     {{ .Title }} <h2>{{ .Description | markdownify }}</h2>
+                    {{ partial "meta-terms.html" . }}
                 </a>
             </li>
         {{ end }}

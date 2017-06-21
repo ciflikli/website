@@ -15,7 +15,7 @@ PygmentsUseClasses = true
 	bio = "[R](https://gokhan.netlify.com/categories/r) | [Python](https://gokhan.netlify.com/categories/python) | [Visualization](https://gokhan.netlify.com/categories/visualization) | [Prediction](https://gokhan.netlify.com/categories/prediction)"
 
 	github = "ciflikli"
-	enableRSS = false
+	enableRSS = true
 	
 	title404 = "This is not the web page you are looking for."
 	subtitle404 = "Perhaps your father wanted you to browse this page when you were old enough, but your uncle wouldn't allow it. He feared you might follow old Obi-Wan on some damn fool idealistic crusade like your father did..."
