@@ -5,6 +5,7 @@ date: '2017-06-18'
 slug: hello-world
 categories:
   - R
+  - Visualization
 tags:
   - R
   - Plot

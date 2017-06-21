@@ -12,7 +12,7 @@
 					<div class="post-item">
 						<div class="post-time">{{ .Date.Format "Jan 2" }}</div>
 						<a href="{{ .Permalink }}" class="post-link">
-							{{ .Title }}
+							{{ .Title }} {{ partial "meta-terms.html" . }}
 						</a>
 					</div>
 					{{ end }}
