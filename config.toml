@@ -6,7 +6,6 @@ theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 hasCJKLanguage = false
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-PygmentsUseClasses = true
 
 [params]
 	name = "Gokhan Ciflikli"
@@ -28,7 +27,7 @@ PygmentsUseClasses = true
 	enableGoogleAnalytics = true
 
 	# Add custom assets with their paths relative to the static folder
-	custom_css = []
+	custom_css = ["code.css"]
 	customJS  = []
 
 	# Sharing options and author information in posts
