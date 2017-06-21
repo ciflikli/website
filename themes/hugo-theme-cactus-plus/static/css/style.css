@@ -134,6 +134,22 @@ h2 {
     color: #bbb;
 }
 
+h1-1 {
+    margin-top: 100px;
+    margin-bottom: 50px;
+    color: #222;
+    font: 300 32px/1.4em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  
+}
+
+h3-1 {
+    font-size: 15px;
+    font-weight: 400;
+    text-align: justify;
+    margin-top: 50px;
+    font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .profile #wrapper {
     padding: 60px 40px 0px;
     max-width: 600px;
@@ -338,6 +354,7 @@ em, i {
 
 .post header {
     text-align: center;
+    margin-top: 100px;
 }
 
 .post h1 {

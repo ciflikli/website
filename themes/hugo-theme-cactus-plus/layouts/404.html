@@ -5,8 +5,9 @@
     <section id="wrapper" class="home">
         <article class="post">
             <header>
-                <h1>{{ with .Site.Params.title404 }}{{ . }}{{ else }}404 - Page not found{{ end }}</h1>
-                <h3>{{ with .Site.Params.subtitle404 }}{{ . }}{{ else }}Oops! Looks like the content you're looking for doesn't exist.{{ end }}</h3>
+                <h1-1>{{ with .Site.Params.title404 }}{{ . }}{{ else }}404 - Page not found{{ end }}</h1-1>
+                <br></br>
+                <h3-1>{{ with .Site.Params.subtitle404 }}{{ . }}{{ else }}Oops! Looks like the content you're looking for doesn't exist.{{ end }}</h3-1>
             </header>
             {{ partial "latest-posts.html" . }}
         </article>
