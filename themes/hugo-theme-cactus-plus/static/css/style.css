@@ -150,6 +150,21 @@ h3-1 {
     font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+h6-1 {
+    font-weight: 300;
+    font-size: small;
+}
+
+i {
+  font-weight: 300;
+  font-size: small;
+  text-decoration: none;
+}
+
+.post-404 {
+  margin-top: 100px;
+}
+
 .profile #wrapper {
     padding: 60px 40px 0px;
     max-width: 600px;
@@ -323,7 +338,7 @@ b, strong {
 }
 
 em, i {
-    font-style: italic;
+    /*font-style: italic;*/
 }
 
 #title {
@@ -355,7 +370,6 @@ em, i {
 
 .post header {
     text-align: center;
-    margin-top: 100px;
 }
 
 .post h1 {
@@ -396,6 +410,7 @@ em, i {
     color: #aaa;
     max-width: 400px;
     margin-top: 2px;
+    font-weight: 300;
 }
 
 h3, h4, h5 {
