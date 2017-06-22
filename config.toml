@@ -1,10 +1,9 @@
 # Site settings
-baseurl = "https://gokhanciflikli.com/"
+baseurl = "https://www.gokhanciflikli.com/"
 languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
-hasCJKLanguage = false
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
 
 [params]
@@ -19,24 +18,17 @@ ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
 	title404 = "This is not the web page you are looking for."
 	subtitle404 = "Perhaps your father wanted you to browse this page when you were old enough, but your uncle wouldn't allow it. He feared you might follow old Obi-Wan on some damn fool idealistic crusade like your father did..."
 
-	# Disqus comment
 	disqusShortname = "gokhancif"
 	enableDisqus = true
 
-	# Enable googleAnalytics
 	enableGoogleAnalytics = true
 
-	# Add custom assets with their paths relative to the static folder
-	custom_css = ["code.css"]
+	custom_css = []
 	customJS  = []
 
-	# Sharing options and author information in posts
 	aboutAuthor = "Computational Social Scientist"
 
-	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
 	iconFont = "font-awesome"
-  # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
-  socialIconStyle = ""
   
   shareOnTwitter = true
 

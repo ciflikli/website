@@ -1,2 +1,2 @@
 # Personal Website
-The code powering gokhanciflikli.com
+The source code powering gokhanciflikli.com
