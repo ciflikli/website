@@ -295,7 +295,7 @@ nav.main-nav a.cta {
 
 /*Accent color*/
 
-a, #title, #post-list a:hover, #post-list li:hover .dates, #title:hover {
+a, #title, #post-list a:hover, #post-list li:hover .dates, #title:hover, #post-list h2:hover {
     text-decoration: none;
     color: #5badf0;
     color: #5694f1;
@@ -317,7 +317,7 @@ a, #post-nav a, #post-list a {
 }
 
 ul, ol { margin-left: 2em; }
-li	{ padding: .5em; line-height: 1.5em;}
+/*li	{ padding: .5em; line-height: 1.5em;} */
 .footnotes { font-size: .9em; }
 .footnotes hr { width: 40%; margin: 40px auto 20px 0;}
 
@@ -325,7 +325,8 @@ li	{ padding: .5em; line-height: 1.5em;}
 
 #post-body, p {
     line-height: 1.7;
-    margin-top: 10px;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 #post-body p > a {
   word-break: break-word;
@@ -419,7 +420,7 @@ h3, h4, h5 {
 
 h3 {
     font-size: 20px;
-    font-weight: 400;
+    font-weight: 300;
 	  text-align: justify;
 	  margin-top: 10px;
 }
@@ -552,7 +553,7 @@ Post List
 #post-list a {
     color: #333;
     display: block;
-    font: bold 19px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif;
+    /*font: bold 19px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif; */
 }
 
 #post-list .dates {
