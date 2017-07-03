@@ -1,7 +1,7 @@
 ---
 title: Mapping ADA Voting Scores 1947-2015
 author: Gokhan Ciflikli
-date: '2017-07-03'
+date: '2017-07-04'
 slug: mapping-ada
 categories:
   - R
@@ -23,11 +23,11 @@ output:
 
 <div id="tracking-legislator-voting-patterns" class="section level3">
 <h3>Tracking Legislator Voting Patterns</h3>
-<p>How do the legislators vote once they get elected? Or, perhaps more dynamically, how do they react to external shocks (e.g. the dissolution of the Soviet Union, 9/11)? How does voting behavior change over time and space? Let’s try to answer these questions with R. You can jump straight to the interactive Shiny app by clicking <a href="https://gokhan.shinyapps.io/adamap/">here</a>.</p>
+<p>How do US legislators vote once they get elected? Or, perhaps more dynamically, how do they react to external shocks (e.g. the dissolution of the Soviet Union, 9/11) that might blur partisan lines? More generally, how does voting behavior change over time and space? Let’s try to provide some answers to these questions using R. You can jump straight to the interactive Shiny app by clicking <a href="https://gokhan.shinyapps.io/adamap/">here</a>.</p>
 </div>
 <div id="data" class="section level3">
 <h3>Data</h3>
-<p>Organizations such as the <a href="http://www.adaction.org/">Americans for Democratic Action</a>, among other things, track the consistency of the legislators by documenting their voting patterns after they get elected. An aggregated version of their data, compiled by <a href="http://trialstravails.blogspot.co.uk/2017/01/adjusted-ada-scores-from-1947-2015.html">Justin Briggs</a>, provides district-level voting data grouped by year, state, chamber, and party from 1947 to 2015. In addition to the nominal ADA voting scores, he also provides adjusted scores based on <a href="http://timgroseclose.com/adjusted-interest-group-scores/">this post</a> by Tim Groseclose.</p>
+<p>Organizations such as the <a href="http://www.adaction.org/">Americans for Democratic Action</a>, among other things, track the consistency of the legislators by documenting their voting patterns after they get elected. An aggregated version of their data, compiled by <a href="http://trialstravails.blogspot.co.uk/2017/01/adjusted-ada-scores-from-1947-2015.html">Justin Briggs</a>, provides district-level voting data grouped by year, state, chamber, and party from 1947 to 2015. In addition to the nominal ADA voting scores, he also provides adjusted scores based on <a href="http://timgroseclose.com/adjusted-interest-group-scores/">this post</a> by Tim Groseclose. Let’s take a look:</p>
 <pre class="r"><code>library(dplyr)
 library(readxl)
 adaData &lt;- read_excel(&quot;ada4715.xlsx&quot;) #aforementioned dataset
@@ -47,7 +47,7 @@ glimpse(adaData)</code></pre>
 ## $ Alt.Nominal.Score.Groseclose &lt;chr&gt; &quot;25&quot;, &quot;75&quot;, &quot;75&quot;, &quot;75&quot;, &quot;92&quot;, &quot;83...
 ## $ Adjusted.Score               &lt;dbl&gt; 24.017374, 70.699040, 70.699040, ...
 ## $ Mean.Adj.Score               &lt;dbl&gt; 22.56041, 29.70871, 23.96539, 52....</code></pre>
-<p>Still, some <code>dplyr</code> action will be needed to accomplish the task. We are probably interested in some averages for comparison. For starters, we can get the yearly averages by chamber and party:</p>
+<p>Looks pretty good. Still, some <code>dplyr</code> action will be needed to accomplish the task. We are probably interested in some sort of average score for comparison purposes. For starters, we can get the yearly averages by chamber and party:</p>
 <pre class="r"><code>annual &lt;- adaData %&gt;%
   group_by(Year, Chamber, Party) %&gt;%
   summarise(ADA = round(mean(Nominal.Score), 2),
@@ -79,7 +79,7 @@ head(states)</code></pre>
 ## 4  1947        AR       2 Democrat 70.00 46.40
 ## 5  1947        AZ       1 Democrat 87.00 74.43
 ## 6  1947        AZ       2 Democrat 95.00 68.96</code></pre>
-<p>We create multiple copies via <code>dplyr</code> primarily for the Shiny app in mind. Also note that some year/state/chamber combinations will be missing depending on the elections. Finally, we want some indicator of within-state change. A basic way of doing this would be calculating a lagged value of a grouping set:</p>
+<p>At this point, we create multiple copies using <code>dplyr</code> primarily for the Shiny app in mind. Also note that some year/state/chamber combinations will be missing depending on election performance. Finally, in addition to nation-wide averages, we would also want some indicator of within-state change over time. A basic way of doing this would be calculating a lagged value of this grouped set after arranging by year:</p>
 <pre class="r"><code>trend &lt;- states  %&gt;%
   arrange(Year) %&gt;%
   group_by(StateAbbr, Chamber, Party) %&gt;%
@@ -96,7 +96,7 @@ head(trend[trend$Year == 1948, ]) #First year will have NAs because of the lag s
 ## 4  1948        AR       2 Democrat 49.50 27.98 -20.50 -18.42
 ## 5  1948        AZ       1 Democrat 72.50 67.58 -14.50  -6.85
 ## 6  1948        AZ       2 Democrat 65.00 42.96 -30.00 -26.00</code></pre>
-<p>At this point, might as well provide a baseline value to signal the change from last year; that is, whether the shift is toward liberalism or conservatism:</p>
+<p>At this point, we might as well provide a baseline value to signal the change from the previous year; that is, whether the shift is toward liberalism or conservatism. Given the coding, this would simply lead to a binary classification based on sign:</p>
 <pre class="r"><code>trend$Threshold &lt;- factor(ifelse(trend$Diff &gt; 0, &quot;Liberal&quot;, &quot;Conservative&quot;),
                           levels = c(&quot;Liberal&quot;, &quot;Conservative&quot;))
 trend$Threshold2 &lt;- factor(ifelse(trend$Diff2 &gt; 0, &quot;Liberal&quot;, &quot;Conservative&quot;),
@@ -108,11 +108,13 @@ head(trend[trend$Year == 1948, 6:10], n = 2)</code></pre>
 ## 1 54.48 -18.11 -11.86 Conservative Conservative
 ## 2 70.52  -1.50   1.56 Conservative      Liberal</code></pre>
 <p>This wraps up the data setup.</p>
+<hr />
 </div>
 <div id="visualization" class="section level3">
 <h3>Visualization</h3>
-<p>Disclaimer: Apparently <code>blogdown</code> is not working very well some widgets (see <a href="https://github.com/jbkunst/highcharter/issues/283">1</a>, <a href="https://github.com/rstudio/blogdown/issues/20">2</a>, <a href="https://github.com/rstudio/blogdown/issues/88">3</a>, <a href="https://github.com/rstudio/blogdown/issues/38">4</a>, and <a href="https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme">5</a>). I only realized this after deploying the website. Specifically, <code>highcharter</code> maps that are displayed locally do not carry over to RMarkdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but it works. Hope <code>blogdown</code> fixes this soon, because it’s great. Moving on.</p>
-<p>There are many good R packages for charting maps. One of the better looking ones is <code>highcharter</code>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> It is powered by <code>htmlwidgets</code> so it comes with build-in Shiny integration. You can chart US states by simply calling:</p>
+<p>Disclaimer: Apparently <code>blogdown</code> is not playing well with some widgets (see <a href="https://github.com/jbkunst/highcharter/issues/283">1</a>, <a href="https://github.com/rstudio/blogdown/issues/20">2</a>, <a href="https://github.com/rstudio/blogdown/issues/88">3</a>, <a href="https://github.com/rstudio/blogdown/issues/38">4</a>, and <a href="https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme">5</a>). I only realized this after deploying the website. Specifically, <code>highcharter</code> maps that are displayed locally do not carry over to RMarkdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope <code>blogdown</code> fixes this soon, because it’s great. Moving on.</p>
+<hr />
+<p>There are many good R packages for charting maps. One of the better looking ones is <code>highcharter</code>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Furthermore, I have yet to try it so I will use this excuse to get to know it. <a href="https://imgs.xkcd.com/comics/automation.png">Relevant</a>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Anyway, it is powered by <code>htmlwidgets</code> so it comes with build-in Shiny integration. You can chart US states by simply calling:</p>
 <pre class="r"><code>library(highcharter)
 map1 &lt;- hcmap(&quot;countries/us/us-all&quot;)</code></pre>
 <iframe seamless src="../map1/index.html" width="100%" height="500">
@@ -148,7 +150,7 @@ hc &lt;- highchart(type = &quot;map&quot;) %&gt;%
                             format = &#39;{point.name}&#39;))    </code></pre>
 <iframe seamless src="../map2/index.html" width="100%" height="500">
 </iframe>
-<p>Looks good for a first cut. We first call the appropriate map data from <a href="https://code.highcharts.com/mapdata/">highcharts.com</a>. We specify the data set of interest with <code>df</code>. <code>value</code> takes a string that specifies the variable we want to chart. <code>joinBy</code> links the two data sets by a matching variable; in our case abbreviated state codes. I assigned a null color to differentiate zeros from <code>NA</code>s.</p>
+<p>Looks good for a first cut. We first call the appropriate map data from <a href="https://code.highcharts.com/mapdata/">highcharts.com</a>. We specify the data set of interest with <code>df</code>. <code>value</code> takes a string that specifies the variable we want to chart. <code>joinBy</code> links the two data sets by a matching variable; in our case abbreviated state codes. I assigned a null color to differentiate zeros from <code>NAs</code>.</p>
 <p>Still, the colors can use more work. At it is now, we get a spectrum between 0 and 100, with the former signaling a slide towards conservatism and the latter conveying more liberal voting patterns. You might want to assign canonical colors of the parties to advertise these shifts. For this, we need to supply stop breaks to the <code>hc_colorAxis</code>. Say we want to assign red to 0, white to 50 (to display moderation/on-the-fence behavior), and blue to 100:</p>
 <pre class="r"><code>stops &lt;- data.frame(q = c(0, .5, 1),
                     c = c(&quot;#ea5148&quot;, &quot;#ffffff&quot;, &quot;#18469e&quot;))
@@ -161,10 +163,10 @@ stops</code></pre>
 map3 &lt;- hc_colorAxis(hc, stops = stops)</code></pre>
 <iframe seamless src="../map3/index.html" width="100%" height="500">
 </iframe>
-<p>Let’s add a title. Similar to <code>ggplot</code>, <code>highcharter</code> uses the pipe operator to it’s a breeze:</p>
+<p>Let’s add a title and change the border color to black for increased visibility. Similar to <code>ggplot</code>, <code>highcharter</code> uses the pipe operator so it’s a breeze:</p>
 <pre class="r"><code>hc &lt;- highchart(type = &quot;map&quot;) %&gt;%
           hc_add_series_map(map = mapData, df = hd63, value = &quot;ADA&quot;, joinBy = c(&quot;hc-a2&quot;, &quot;StateAbbr&quot;),    
-                            name = &quot;ADA Voting Score&quot;, nullColor = &quot;#dadada&quot;, borderColor = &quot;black&quot;, #for visibility           
+                            name = &quot;ADA Voting Score&quot;, nullColor = &quot;#dadada&quot;, borderColor = &quot;black&quot;,        
                             dataLabels = list(enabled = TRUE, format = &#39;{point.name}&#39;)) %&gt;%
           hc_title(text = &quot;1963 House Democrats ADA Voting Scores&quot;)
 map4 &lt;- hc_colorAxis(hc, stops = stops)</code></pre>
@@ -188,24 +190,25 @@ p &lt;- ggbarplot(data = hd63T,
 p +
 geom_abline(slope = 0, color = &quot;gray&quot;)                   #add a reference line at zero</code></pre>
 <p><img src="/post/2017-07-03-mapping-ada_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>All good and well, however showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter <code>Shiny</code>. I will not go into the details of building the app, as the code is publicly available on <a href="https://github.com/ciflikli/adamap">GitHub</a>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Instead, I will briefly touch on how to transform the above code into reactive programming.</p>
+<p>All good and well, however showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on <a href="https://github.com/ciflikli/adamap">GitHub</a>.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> Instead, I will briefly touch on how to transform the above code into reactive programming.</p>
 <p>Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input on these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:</p>
 <pre class="r"><code>#Not evaluated
 selectedData &lt;- reactive({
     states &lt;- states[states$Year == input$Year &amp; states$Party == input$Party &amp;
                          states$Chamber == ifelse(input$Chamber == &quot;House&quot;, 1, 2), ]
   })</code></pre>
-<p>This creates a reactive data set called <code>selectedData()</code> that changes according to user input to any of the variables defined above. Within <code>Shiny</code>, you have to call reactive items with brackets<code>()</code>. Using them outside of <code>reactive</code> environments will also irritate R. Below is a screenshot of the opening page of the completed app:</p>
+<p>This creates a reactive data set called <code>selectedData()</code> that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets<code>()</code>. Using them outside of <code>reactive</code> environments will also irritate R. Below is a screenshot of the opening page of the completed app:</p>
 <div class="figure">
 <img src="/img/app.png" />
 
 </div>
-<p>If you made it this far and still haven’t checked the app, you should do so now! The inclusion of president portraits took some consideration, however it made a strong case for starting out with JFK.</p>
+<p>If you made it this far and still haven’t checked <a href="https://gokhan.shinyapps.io/adamap/">the app</a>, you should do so now! The inclusion of president portraits took some consideration, however it made a strong case for starting out with JFK.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>Get inspired at <a href="http://jkunst.com/highcharter/index.html" class="uri">http://jkunst.com/highcharter/index.html</a><a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>Which assumes some understanding of how <code>Shiny</code> works.<a href="#fnref2">↩</a></p></li>
+<li id="fn2"><p>Literally what happened.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Which assumes some understanding of how Shiny works. Feel free to contact me on any one of these platforms if you have questions.<a href="#fnref3">↩</a></p></li>
 </ol>
 </div>
