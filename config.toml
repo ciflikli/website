@@ -4,7 +4,7 @@ languageCode = "en"
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
-ignoreFiles = ["\\.Rmd$", "_files$", "_cache$", "map1.html$", "map2.html$", "map3.html$", "map4.html$"]
+ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
 
 [params]
 	name = "Gokhan Ciflikli"
