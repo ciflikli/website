@@ -23,7 +23,7 @@ How do the legislators vote once they get elected? Or, perhaps more dynamically,
 https://gokhan.shinyapps.io/adamap/).
 
 ###Data
-Organizations such as the [Americans for Democratic Action](http://www.adaction.org/), among other things, track the consistency of the legislators by documenting their voting patterns. An aggregated version of their data, compiled by [Justin Briggs](http://trialstravails.blogspot.co.uk/2017/01/adjusted-ada-scores-from-1947-2015.html), provides district-level voting data grouped by year, state, chamber, and party from 1947 to 2015. In addition to the nominal ADA voting scores, he also provides adjusted scores based on [this post](http://timgroseclose.com/adjusted-interest-group-scores/) by Tim Groseclose.
+Organizations such as the [Americans for Democratic Action](http://www.adaction.org/), among other things, track the consistency of the legislators by documenting their voting patterns after they get elected. An aggregated version of their data, compiled by [Justin Briggs](http://trialstravails.blogspot.co.uk/2017/01/adjusted-ada-scores-from-1947-2015.html), provides district-level voting data grouped by year, state, chamber, and party from 1947 to 2015. In addition to the nominal ADA voting scores, he also provides adjusted scores based on [this post](http://timgroseclose.com/adjusted-interest-group-scores/) by Tim Groseclose.
 
 ```{r, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -42,7 +42,7 @@ annual <- adaData %>%
 head(annual)
 ```
 
-_American Labor?_ Good old times, eh. Next, we include states to track them over time:
+_American Labor?_ [Good old times](http://www.crazywebsite.com/Website-Clipart-Pictures-Videos/American-Patriotic/Marshall_Ramsey_Cartoon_Happy_Labor_Day_Made_In_China-1LG.jpg), eh. Next, we include states to track them over time:
 
 ```{r, message=FALSE, warning=FALSE}
 states <- adaData %>%
@@ -77,9 +77,11 @@ This wraps up the data setup.
 
 ###Visualization
 
+Disclaimer: Apparently `blogdown` is not working very well some widgets (see [1](https://github.com/jbkunst/highcharter/issues/283), [2](https://github.com/rstudio/blogdown/issues/20), [3](https://github.com/rstudio/blogdown/issues/88), [4](https://github.com/rstudio/blogdown/issues/38), and [5](https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme)). I only realized this after deploying the website. Specifically, `highcharter` maps that are displayed locally do not carry over to RMarkdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but it works. Hope `blogdown` fixes this soon, because it's great. Moving on.
+
 There are many good R packages for charting maps. One of the better looking ones is `highcharter`.[^1] It is powered by `htmlwidgets` so it comes with build-in Shiny integration. You can chart US states by simply calling:
 
-```{r, message=FALSE, warning=FALSE, include=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(highcharter)
 map1 <- hcmap("countries/us/us-all")
 ```
@@ -97,7 +99,7 @@ mapData <- get_data_from_map(download_map_data("countries/us/us-all"))
 head(mapData$`hc-a2`)
 ```
 
-We see that state abbreviations are stores in `hc-a2`. We will us this as the key to match data in the states data set. Let's map House Democrats in 1963:
+We see that state abbreviations are stored in `hc-a2`. We will us this as the key to match it with the states data set. Let's map House Democrats in 1963:
 
 ```{r, message=FALSE, warning=FALSE}
 hd63 <- states[states$Year == 1963 & states$Party == "Democrat" & states$Chamber == 1, ]
@@ -115,42 +117,47 @@ hc <- highchart(type = "map") %>%
                             borderColor = "white",               #border outline color
                             dataLabels = list(enabled = TRUE,    #hover data display
                             format = '{point.name}'))    
-hc
 ```
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+htmlwidgets::saveWidget(hc, file = "map2.html", selfcontained = TRUE)
+```
+<iframe seamless src="../map2/index.html" width="100%" height="500"></iframe>
 
 Looks good for a first cut. We first call the appropriate map data from [highcharts.com](https://code.highcharts.com/mapdata/). We specify the data set of interest with `df`. `value` takes a string that specifies the variable we want to chart. `joinBy` links the two data sets by a matching variable; in our case abbreviated state codes. I assigned a null color to differentiate zeros from `NA`s.
 
-Let's add a title and a legend. Similar to `ggplot`, `highcharter` uses the pipe operator to it's a breeze:
-
-```{r, message=FALSE, warning=FALSE}
-hc %>%
-hc_title(text = "1963 House Democrats ADA Voting Scores") %>%
-hc_legend(layout = "vertical", align = "right", floating = TRUE, valueDecimals = 0)
-```
-
-Still, the colors can use more work. At it is now, we get a spectrum between 0 and 100, with the former signaling a slide towards conservatism and the latter conveying more liberal voting patterns. You might want to assign canonical colors of the parties to advertise these shifts. For this, we need to supply stop breaks to the `hc_colorAxis`. Say we want to assign red to 0, blue to 100, and white to 50 (to display moderation/on the fence behavior):
+Still, the colors can use more work. At it is now, we get a spectrum between 0 and 100, with the former signaling a slide towards conservatism and the latter conveying more liberal voting patterns. You might want to assign canonical colors of the parties to advertise these shifts. For this, we need to supply stop breaks to the `hc_colorAxis`. Say we want to assign red to 0, white to 50 (to display moderation/on-the-fence behavior), and blue to 100:
 
 ```{r, message=FALSE, warning=FALSE}
 stops <- data.frame(q = c(0, .5, 1),
                     c = c("#ea5148", "#ffffff", "#18469e"))
 stops
 stops <- list_parse2(stops)    #highcharter wrapper
-hc_colorAxis(hc, stops = stops)
+map3 <- hc_colorAxis(hc, stops = stops)
 ```
 
-If you want to keep the title and the legend, just pipe (`%>%`) them in during the initialization of `hc`:
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+htmlwidgets::saveWidget(map3, file = "map3.html", selfcontained = TRUE)
+```
+<iframe seamless src="../map3/index.html" width="100%" height="500"></iframe>
+
+Let's add a title. Similar to `ggplot`, `highcharter` uses the pipe operator to it's a breeze:
 
 ```{r, message=FALSE, warning=FALSE}
 hc <- highchart(type = "map") %>%
           hc_add_series_map(map = mapData, df = hd63, value = "ADA", joinBy = c("hc-a2", "StateAbbr"),    
                             name = "ADA Voting Score", nullColor = "#dadada", borderColor = "black", #for visibility           
                             dataLabels = list(enabled = TRUE, format = '{point.name}')) %>%
-          hc_title(text = "1963 House Democrats ADA Voting Scores") %>%
-          hc_legend(layout = "vertical", align = "right", floating = TRUE, valueDecimals = 0)
-hc_colorAxis(hc, stops = stops)
+          hc_title(text = "1963 House Democrats ADA Voting Scores")
+map4 <- hc_colorAxis(hc, stops = stops)
 ```
 
-We can also convey yearly changes with a deviation plot using the `ggpubr` package. We have already calculates within-state change by lagging the ADA scores by one year after grouping. `ggpubr` as the name suggests builds on `ggplot` so the grammar works the way you would expect:
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+htmlwidgets::saveWidget(map4, file = "map4.html", selfcontained = TRUE)
+```
+<iframe seamless src="../map4/index.html" width="100%" height="500"></iframe>
+
+We can also convey yearly changes with a deviation plot using the `ggpubr` package. We have already calculated within-state change by lagging the ADA scores by one year after grouping. `ggpubr` as the name suggests builds on `ggplot` so the grammar works the way you would expect:
 
 ```{r, message=FALSE, warning=FALSE}
 hd63T <- trend[trend$Year == 1963 & trend$Party == "Democrat" & trend$Chamber == 1, ]
@@ -183,11 +190,11 @@ selectedData <- reactive({
   })
 ```
 
-This creates a reactive data set called `selectedData()` that changes according to user input to any of the variables defined above. Within `Shiny`, you have to call reactive items with brackets(). Using them outside of `reactive` environments will also not work. Below is a screenshot of the opening page of the completed app:
+This creates a reactive data set called `selectedData()` that changes according to user input to any of the variables defined above. Within `Shiny`, you have to call reactive items with brackets`()`. Using them outside of `reactive` environments will also irritate R. Below is a screenshot of the opening page of the completed app:
 
-![Shiny App](app.png)
+![](/img/app.png)
 
-If you made it this far and still haven't checked the app, you should now! The inclusion of president portraits took some consideration, however it made the strong case for starting with JFK. 
+If you made it this far and still haven't checked the app, you should do so now! The inclusion of president portraits took some consideration, however it made a strong case for starting out with JFK.
 
 [^1]: Get inspired at http://jkunst.com/highcharter/index.html
 [^2]: Which assumes some understanding of how `Shiny` works.
