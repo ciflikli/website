@@ -79,10 +79,16 @@ This wraps up the data setup.
 
 There are many good R packages for charting maps. One of the better looking ones is `highcharter`.[^1] It is powered by `htmlwidgets` so it comes with build-in Shiny integration. You can chart US states by simply calling:
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, include=FALSE}
 library(highcharter)
-hcmap("countries/us/us-all")
+map1 <- hcmap("countries/us/us-all")
 ```
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+library(htmlwidgets)
+library(htmltools)
+htmlwidgets::saveWidget(map1, file = "map1.html", selfcontained = TRUE)
+```
+<iframe seamless src="../map1/index.html" width="100%" height="500"></iframe>
 
 `hcmap` creates an interactive legend by default; if you click on 'Series 1', the map will disappear because we have yet to project any other data. You can turn this behavior off by passing `showInLegend = FALSE`. You can also [get and download](http://jkunst.com/highcharter/highmaps.html) the map data:
 
