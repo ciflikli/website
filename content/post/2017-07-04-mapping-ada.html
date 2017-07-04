@@ -2,17 +2,18 @@
 title: Mapping ADA Voting Scores 1947-2015
 author: Gokhan Ciflikli
 date: '2017-07-04'
-slug: mapping-ada
 categories:
   - R
   - Visualization
 tags:
-  - R
-  - plot
-  - htmlwidgets
-  - highcharter
   - ggpubr
-description: 'A Shiny app that maps and tracks yearly changes in legislator voting behavior in the US.'
+  - highcharter
+  - htmlwidgets
+  - plot
+  - R
+slug: mapping-ada
+description: A Shiny app that maps and tracks yearly changes in legislator voting
+  behavior in the US.
 output:
   blogdown::html_page:
     fig_retina: 2
@@ -191,7 +192,7 @@ p +
 geom_abline(slope = 0, color = &quot;gray&quot;)                   #add a reference line at zero</code></pre>
 <p><img src="/post/2017-07-03-mapping-ada_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>All good and well, however showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on <a href="https://github.com/ciflikli/adamap">GitHub</a>.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> Instead, I will briefly touch on how to transform the above code into reactive programming.</p>
-<p>Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input on these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:</p>
+<p>Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input concerning these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:</p>
 <pre class="r"><code>#Not evaluated
 selectedData &lt;- reactive({
     states &lt;- states[states$Year == input$Year &amp; states$Party == input$Party &amp;

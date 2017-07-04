@@ -5,6 +5,7 @@ title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+paginate = 2
 
 [params]
 	name = "Gokhan Ciflikli"
