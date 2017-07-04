@@ -196,7 +196,7 @@ selectedData <- reactive({
 
 This creates a reactive data set called `selectedData()` that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets `()`. Using them outside of `reactive` environments will also irritate R. Below is a screenshot of the opening page of the completed app:
 
-![](/img/app.png)
+![](/img/app2.png)
 
 If you made it this far and still haven't checked [the app](https://gokhan.shinyapps.io/adamap/), you should do so now! The inclusion of president portraits took some consideration, however it made a strong case for starting out with JFK.
 
