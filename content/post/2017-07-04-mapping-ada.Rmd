@@ -80,7 +80,7 @@ This wraps up the data setup.
 
 ###Visualization
 
-Disclaimer: Apparently `blogdown` is not playing well with some widgets (see [1](https://github.com/jbkunst/highcharter/issues/283), [2](https://github.com/rstudio/blogdown/issues/20), [3](https://github.com/rstudio/blogdown/issues/88), [4](https://github.com/rstudio/blogdown/issues/38), and [5](https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme)). I only realized this after deploying the website. Specifically, `highcharter` maps that are displayed locally do not carry over to RMarkdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope `blogdown` fixes this soon, because it's great. Moving on.
+Disclaimer: Apparently `blogdown` is not playing well with some widgets (see [1](https://github.com/jbkunst/highcharter/issues/283), [2](https://github.com/rstudio/blogdown/issues/20), [3](https://github.com/rstudio/blogdown/issues/88), [4](https://github.com/rstudio/blogdown/issues/38), and [5](https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme)). I only realized this after deploying the website. Specifically, `highcharter` maps that are displayed locally do not carry over to R Markdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope `blogdown` fixes this soon, because it's great. Moving on.
 
 ---
 
@@ -146,7 +146,7 @@ htmlwidgets::saveWidget(map3, file = "map3.html", selfcontained = TRUE)
 ```
 <iframe seamless src="../map3/index.html" width="100%" height="500"></iframe>
 
-Let's add a title and change the border color to black for increased visibility. Similar to `ggplot`, `highcharter` uses the pipe operator so it's a breeze:
+Now we can clearly differentiate between voting patterns: States with blue hues maintained a liberal agenda, whereas those that did slide into voting more conservative (remember, we are only looking at House Democrats) are colored red. Finally, let's add a title and change the border color to black for increased visibility. Similar to `ggplot`, `highcharter` uses the pipe operator so it's a breeze:
 
 ```{r, message=FALSE, warning=FALSE}
 hc <- highchart(type = "map") %>%
@@ -195,7 +195,7 @@ selectedData <- reactive({
   })
 ```
 
-This creates a reactive data set called `selectedData()` that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets`()`. Using them outside of `reactive` environments will also irritate R. Below is a screenshot of the opening page of the completed app:
+This creates a reactive data set called `selectedData()` that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets `()`. Using them outside of `reactive` environments will also irritate R. Below is a screenshot of the opening page of the completed app:
 
 ![](/img/app.png)
 

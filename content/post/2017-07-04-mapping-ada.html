@@ -113,7 +113,7 @@ head(trend[trend$Year == 1948, 6:10], n = 2)</code></pre>
 </div>
 <div id="visualization" class="section level3">
 <h3>Visualization</h3>
-<p>Disclaimer: Apparently <code>blogdown</code> is not playing well with some widgets (see <a href="https://github.com/jbkunst/highcharter/issues/283">1</a>, <a href="https://github.com/rstudio/blogdown/issues/20">2</a>, <a href="https://github.com/rstudio/blogdown/issues/88">3</a>, <a href="https://github.com/rstudio/blogdown/issues/38">4</a>, and <a href="https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme">5</a>). I only realized this after deploying the website. Specifically, <code>highcharter</code> maps that are displayed locally do not carry over to RMarkdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope <code>blogdown</code> fixes this soon, because it’s great. Moving on.</p>
+<p>Disclaimer: Apparently <code>blogdown</code> is not playing well with some widgets (see <a href="https://github.com/jbkunst/highcharter/issues/283">1</a>, <a href="https://github.com/rstudio/blogdown/issues/20">2</a>, <a href="https://github.com/rstudio/blogdown/issues/88">3</a>, <a href="https://github.com/rstudio/blogdown/issues/38">4</a>, and <a href="https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme">5</a>). I only realized this after deploying the website. Specifically, <code>highcharter</code> maps that are displayed locally do not carry over to R Markdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope <code>blogdown</code> fixes this soon, because it’s great. Moving on.</p>
 <hr />
 <p>There are many good R packages for charting maps. One of the better looking ones is <code>highcharter</code>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Furthermore, I have yet to try it so I will use this excuse to get to know it. <a href="https://imgs.xkcd.com/comics/automation.png">Relevant</a>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Anyway, it is powered by <code>htmlwidgets</code> so it comes with build-in Shiny integration. You can chart US states by simply calling:</p>
 <pre class="r"><code>library(highcharter)
@@ -164,7 +164,7 @@ stops</code></pre>
 map3 &lt;- hc_colorAxis(hc, stops = stops)</code></pre>
 <iframe seamless src="../map3/index.html" width="100%" height="500">
 </iframe>
-<p>Let’s add a title and change the border color to black for increased visibility. Similar to <code>ggplot</code>, <code>highcharter</code> uses the pipe operator so it’s a breeze:</p>
+<p>Now we can clearly differentiate between voting patterns: States with blue hues maintained a liberal agenda, whereas those that did slide into voting more conservative (remember, we are only looking at House Democrats) are colored red. Finally, let’s add a title and change the border color to black for increased visibility. Similar to <code>ggplot</code>, <code>highcharter</code> uses the pipe operator so it’s a breeze:</p>
 <pre class="r"><code>hc &lt;- highchart(type = &quot;map&quot;) %&gt;%
           hc_add_series_map(map = mapData, df = hd63, value = &quot;ADA&quot;, joinBy = c(&quot;hc-a2&quot;, &quot;StateAbbr&quot;),    
                             name = &quot;ADA Voting Score&quot;, nullColor = &quot;#dadada&quot;, borderColor = &quot;black&quot;,        
@@ -190,7 +190,7 @@ p &lt;- ggbarplot(data = hd63T,
                legend.title = &quot;Trend Direction&quot;)
 p +
 geom_abline(slope = 0, color = &quot;gray&quot;)                   #add a reference line at zero</code></pre>
-<p><img src="/post/2017-07-03-mapping-ada_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="/post/2017-07-04-mapping-ada_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>All good and well, however showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on <a href="https://github.com/ciflikli/adamap">GitHub</a>.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> Instead, I will briefly touch on how to transform the above code into reactive programming.</p>
 <p>Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input concerning these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:</p>
 <pre class="r"><code>#Not evaluated
@@ -198,7 +198,7 @@ selectedData &lt;- reactive({
     states &lt;- states[states$Year == input$Year &amp; states$Party == input$Party &amp;
                          states$Chamber == ifelse(input$Chamber == &quot;House&quot;, 1, 2), ]
   })</code></pre>
-<p>This creates a reactive data set called <code>selectedData()</code> that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets<code>()</code>. Using them outside of <code>reactive</code> environments will also irritate R. Below is a screenshot of the opening page of the completed app:</p>
+<p>This creates a reactive data set called <code>selectedData()</code> that changes according to user input to any of the variables defined above. Within Shiny, you have to call reactive items with brackets <code>()</code>. Using them outside of <code>reactive</code> environments will also irritate R. Below is a screenshot of the opening page of the completed app:</p>
 <div class="figure">
 <img src="/img/app.png" />
 
