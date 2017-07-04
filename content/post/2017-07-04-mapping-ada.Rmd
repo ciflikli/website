@@ -20,8 +20,7 @@ output:
     fig_width: 7
 ---
 ###Tracking Legislator Voting Patterns
-How do US legislators vote once they get elected? Or, perhaps more dynamically, how do they react to external shocks (e.g. the dissolution of the Soviet Union, 9/11) that might blur partisan lines? More generally, how does voting behavior change over time and space? Let's try to provide some answers to these questions using R. You can jump straight to the interactive Shiny app by clicking [here](
-https://gokhan.shinyapps.io/adamap/).
+How do US legislators vote once they get elected? Or, perhaps more dynamically, how do they react to external shocks (e.g. the dissolution of the Soviet Union, 9/11) that might blur partisan lines? More generally, how does voting behavior change across time and space? Let's try to provide some answers to these questions using R. You can jump straight to the interactive Shiny app by clicking [here](https://gokhan.shinyapps.io/adamap/).
 
 ###Data
 Organizations such as the [Americans for Democratic Action](http://www.adaction.org/), among other things, track the consistency of the legislators by documenting their voting patterns after they get elected. An aggregated version of their data, compiled by [Justin Briggs](http://trialstravails.blogspot.co.uk/2017/01/adjusted-ada-scores-from-1947-2015.html), provides district-level voting data grouped by year, state, chamber, and party from 1947 to 2015. In addition to the nominal ADA voting scores, he also provides adjusted scores based on [this post](http://timgroseclose.com/adjusted-interest-group-scores/) by Tim Groseclose. Let's take a look:
@@ -53,7 +52,7 @@ states <- adaData %>%
 head(states)
 ```
 
-At this point, we create multiple copies using `dplyr` primarily for the Shiny app in mind. Also note that some year/state/chamber combinations will be missing depending on election performance. Finally, in addition to nation-wide averages, we would also want some indicator of within-state change over time. A basic way of doing this would be calculating a lagged value of this grouped set after arranging by year:
+At this point, we create multiple copies using `dplyr` primarily with the Shiny app in mind. Also note that some year/state/chamber combinations will be missing depending on election performance. Finally, in addition to nation-wide averages, we would also want some indicator of within-state change over time. A basic way of doing this is to calculate a lagged value of this grouped set after arranging by year:
 
 ```{r, message=FALSE, warning=FALSE}
 trend <- states  %>%
@@ -64,7 +63,7 @@ trend <- states  %>%
 head(trend[trend$Year == 1948, ]) #First year will have NAs because of the lag structure
 ```
 
-At this point, we might as well provide a baseline value to signal the change from the previous year; that is, whether the shift is toward liberalism or conservatism. Given the coding, this would simply lead to a binary classification based on sign:
+At this point, we might as well provide a baseline value to signal the change from the previous year; that is, whether the shift is toward liberalism or conservatism. Given the coding, this simply leads to a binary classification based on sign:
 
 ```{r, message=FALSE, warning=FALSE}
 trend$Threshold <- factor(ifelse(trend$Diff > 0, "Liberal", "Conservative"),
@@ -84,7 +83,7 @@ Disclaimer: Apparently `blogdown` is not playing well with some widgets (see [1]
 
 ---
 
-There are many good R packages for charting maps. One of the better looking ones is `highcharter`.[^1] Furthermore, I have yet to try it so I will use this excuse to get to know it. [Relevant](https://imgs.xkcd.com/comics/automation.png).[^2] Anyway, it is powered by `htmlwidgets` so it comes with build-in Shiny integration. You can chart US states by simply calling:
+There are many good R packages for charting maps. One of the better looking ones is `highcharter`.[^1] Furthermore, I have yet to try it so I will use this excuse to get to know it. [Relevant](https://imgs.xkcd.com/comics/automation.png).[^2] Anyway, it is powered by `htmlwidgets` so it comes with built-in Shiny integration. You can chart US states by calling:
 
 ```{r, message=FALSE, warning=FALSE}
 library(highcharter)
@@ -104,7 +103,7 @@ mapData <- get_data_from_map(download_map_data("countries/us/us-all"))
 head(mapData$`hc-a2`)
 ```
 
-We see that state abbreviations are stored in `hc-a2`. We will us this as the key to match it with the states data set. Let's map House Democrats in 1963:
+We see that state abbreviations are stored in `hc-a2`. We will us this as the key to match it with the states data set. Let's map House Democrats in 1963 as an example:
 
 ```{r, message=FALSE, warning=FALSE}
 hd63 <- states[states$Year == 1963 & states$Party == "Democrat" & states$Chamber == 1, ]
@@ -146,12 +145,12 @@ htmlwidgets::saveWidget(map3, file = "map3.html", selfcontained = TRUE)
 ```
 <iframe seamless src="../map3/index.html" width="100%" height="500"></iframe>
 
-Now we can clearly differentiate between voting patterns: States with blue hues maintained a liberal agenda, whereas those that did slide into voting more conservative (remember, we are only looking at House Democrats) are colored red. Finally, let's add a title and change the border color to black for increased visibility. Similar to `ggplot`, `highcharter` uses the pipe operator so it's a breeze:
+Now we can clearly differentiate between voting patterns: States with blue hues maintained a liberal agenda, whereas those that did slide into voting more conservative (remember, we are only looking at House Democrats) are colored red. Finally, let's add a title and change the border color to grey for increased visibility. Similar to `ggplot`, `highcharter` uses the pipe operator so it's a breeze:
 
 ```{r, message=FALSE, warning=FALSE}
 hc <- highchart(type = "map") %>%
           hc_add_series_map(map = mapData, df = hd63, value = "ADA", joinBy = c("hc-a2", "StateAbbr"),    
-                            name = "ADA Voting Score", nullColor = "#dadada", borderColor = "black",        
+                            name = "ADA Voting Score", nullColor = "#dadada", borderColor = "grey", borderWidth = .2,   
                             dataLabels = list(enabled = TRUE, format = '{point.name}')) %>%
           hc_title(text = "1963 House Democrats ADA Voting Scores")
 map4 <- hc_colorAxis(hc, stops = stops)
@@ -183,7 +182,7 @@ p +
 geom_abline(slope = 0, color = "gray")                   #add a reference line at zero
 ```
 
-All good and well, however showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on [GitHub](https://github.com/ciflikli/adamap).[^3] Instead, I will briefly touch on how to transform the above code into reactive programming.
+All good and well, however, showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on [GitHub](https://github.com/ciflikli/adamap).[^3] Instead, I will briefly touch on how to transform the above code into reactive programming.
 
 Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input concerning these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:
 
