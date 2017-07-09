@@ -18,6 +18,7 @@ output:
     fig_retina: 2
     fig_width: 7
     dev: svg
+    #highlight: pygments
 ---
 ###Introduction
 
@@ -32,7 +33,7 @@ As per the recommendation of Amber Thomas and Yihui Xie,[^2] I host my site on [
 ***
 ###RMarkdown
 
-Speaking of RMarkdown, the logo of the website is created via the `sunburstR` package. The data shown are not artifically constructed; the graph indeed shows the breakdown of female author inclusion patterns in IR syllabi at the LSE for the 2015-2016 academic year. Hovering on the dial will display a breadcrumb trail on the top. Below you can find the R code used to generate the graph:
+Speaking of RMarkdown, the logo of the website is created using the `sunburstR` package. The data shown are not artifically constructed; the graph indeed shows the breakdown of female author inclusion patterns in IR syllabi at the LSE for the 2015-2016 academic year. Hovering on the dial will display a breadcrumb trail on the top. Below you can find the R code used to generate the graph:
 
 ```{r message = FALSE}
 library(readr)
