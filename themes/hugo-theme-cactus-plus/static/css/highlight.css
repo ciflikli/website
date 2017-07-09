@@ -21,8 +21,7 @@ pre code {
     padding: 16px;
     padding-bottom: 14px;
     display: block;
-    color: #fdf6e3;
-    background: #073642;
+    background: #10363f;
     border: none;
     box-shadow: inset 0 0 0 1px #E4EBF2;
     border-radius: 4px
@@ -55,7 +54,7 @@ pre code {
 .hljs-params,
 .hljs-meta,
 .hljs-link {
-  color: #f5871f;
+  color: #f1bf25;
 }
 
 /* Tomorrow Yellow */
@@ -64,11 +63,10 @@ pre code {
 }
 
 /* Tomorrow Green */
-.hljs-string,
 .hljs-symbol,
 .hljs-bullet,
 .hljs-addition {
-  color: #2aa198;
+  color: #2ecec2;
 }
 
 /* Tomorrow Blue */
@@ -80,7 +78,7 @@ pre code {
 /* Tomorrow Purple */
 .hljs-keyword,
 .hljs-selector-tag {
-  color: #f547ac;
+  color: #ec4c49;
 }
 
 code.hljs {
@@ -90,6 +88,7 @@ code.hljs {
   word-wrap: normal;
   margin-top: 10px;
   margin-bottom: 10 px;
+  color: #dcdccc;
 }
 
 .hljs-emphasis {
@@ -99,3 +98,13 @@ code.hljs {
 .hljs-strong {
   font-weight: bold;
 }
+
+.hljs-string,
+.hljs-operator,
+.hljs-punctuation {
+  color: #5ee4e0;
+}
+
+/*.hljs-primitive {
+  color: #eab700;
+}*/
