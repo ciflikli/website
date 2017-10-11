@@ -38,3 +38,7 @@ vignettes/*.pdf
 
 #Readme
 README.md
+
+#OS
+Thumbs.db
+.DS_Store
