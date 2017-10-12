@@ -2,7 +2,7 @@ Here are some of the data projects I am currently working on. Links to Shiny app
 
 ***
 
-`duRation` An ensemble ML app that takes survival analysis as input, transforms it to logistic regression, and runs a series of classification models using `caret` to increase predictive accuracy.
+`duRation` An ensemble ML app that takes survival analysis as input, transforms it to logistic regression, and runs a series of classification models using `caret` to increase predictive accuracy. Currently under development.
 
 `adamap` A mapped aggregation of about 36,000 US legislator voting scores as recorded by the Americans for Democratic Action (ADA) from 1947 to 2015. The data is grouped by year, state, chamber, and party. [App Link](https://gokhan.shinyapps.io/adamap/) |  [GitHub](https://github.com/ciflikli/adamap)
 
