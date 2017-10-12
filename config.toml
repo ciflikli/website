@@ -5,13 +5,13 @@ title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-paginate = 2
+paginate = 3
 
 [params]
 	name = "Gokhan Ciflikli"
 	job = "Computational Social Science"
-	description = "Data Science, Visualization, Machine Learning, R, Python"
-	bio = "[R](https://gokhanciflikli.com/categories/r) | [Python](https://gokhanciflikli.com/categories/python) | [Visualization](https://gokhanciflikli.com/categories/visualization) | [Prediction](https://gokhanciflikli.com/categories/prediction)"
+	description = "Data Science, Visualization, Machine Learning, R"
+	bio = "[R](https://gokhanciflikli.com/categories/r) | [Data Visualization](https://gokhanciflikli.com/categories/visualization) | [Predictive Modeling](https://gokhanciflikli.com/categories/prediction)"
 
 	github = "ciflikli"
 	enableRSS = true
@@ -36,4 +36,4 @@ paginate = 2
   shareOnFacebook = true
 
 #[social]
- # github-square = "https://github.com/ciflikli"
+  github-square = "https://github.com/ciflikli"
