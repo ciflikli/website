@@ -8,6 +8,4 @@ I'm a political scientist by training (PhD candidate@[LSE](http://www.lse.ac.uk/
 
 I take inspiration from physics, biology, and complex systems theory, which allow me to employ various [mainstream statistical](http://blogs.lse.ac.uk/impactofsocialsciences/2014/09/23/data-science-statistics-communication/) and [machine learning](https://xkcd.com/1838/) tools to solve the problem at hand. Most of my work is on [GitHub](https://github.com/ciflikli). I have recently submitted this website to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from.
 
-***
-
 Other than all the serious-sounding stuff above, I also enjoy dabbling in NBA analytics (Let's Go #LakeShow!), dystopian sci-fi, and graphic design.
