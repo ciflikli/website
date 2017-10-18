@@ -5,7 +5,7 @@ title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-paginate = 3
+#paginate = 3
 
 [params]
 	name = "Gokhan Ciflikli"
@@ -35,5 +35,7 @@ paginate = 3
 
   shareOnFacebook = true
 
-#[social]
+[social]
   github-square = "https://github.com/ciflikli"
+  linkedin-square = "https://www.linkedin.com/in/gokhan-ciflikli/"
+  facebook-square = "https://www.facebook.com/g.ciflikli"
