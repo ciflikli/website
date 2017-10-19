@@ -114,7 +114,7 @@ head(trend[trend$Year == 1948, 6:10], n = 2)</code></pre>
 <div id="visualization" class="section level3">
 <h3>Visualization</h3>
 <p>Disclaimer: Apparently <code>blogdown</code> is not playing well with some widgets (see <a href="https://github.com/jbkunst/highcharter/issues/283">1</a>, <a href="https://github.com/rstudio/blogdown/issues/20">2</a>, <a href="https://github.com/rstudio/blogdown/issues/88">3</a>, <a href="https://github.com/rstudio/blogdown/issues/38">4</a>, and <a href="https://stackoverflow.com/questions/43594039/dt-package-not-working-with-blogdown-using-hugo-future-imperfect-theme">5</a>). I only realized this after deploying the website. Specifically, <code>highcharter</code> maps that are displayed locally do not carry over to R Markdown. I am currently implementing the solution (hack?) described in 5, which suggests binding the output and not evaluating the code, saving it as a widget, and then calling it as an iframe object (this is what you get to see). Yeah, not the prettiest method, but think of this as a band-aid solution for now. Hope <code>blogdown</code> fixes this soon, because it’s great. Moving on.</p>
-<p>Edit to Disclaimer: I decided to replace the hack with static pictures instead. Keeping the code just in case, but they are now commented out in invisible code chunks in RMarkdown—go to my website repo on GitHub for the underlying code.</p>
+<p>Edit to Disclaimer: I decided to replace the hack with static pictures instead, as it messes up the pagination settings.</p>
 <hr />
 <p>There are many good R packages for charting maps. One of the better looking ones is <code>highcharter</code>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Furthermore, I have yet to try it so I will use this excuse to get to know it. <a href="https://imgs.xkcd.com/comics/automation.png">Relevant</a>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Anyway, it is powered by <code>htmlwidgets</code> so it comes with built-in Shiny integration. You can chart US states by calling:</p>
 <pre class="r"><code>library(highcharter)
@@ -199,7 +199,7 @@ p &lt;- ggbarplot(data = hd63T,
                legend.title = &quot;Trend Direction&quot;)
 p +
 geom_abline(slope = 0, color = &quot;gray&quot;)                   #add a reference line at zero</code></pre>
-<p><img src="/post/2017-07-04-mapping-ada_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/post/2017-07-04-mapping-ada_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>All good and well, however, showing stats from a single year (plus only one chamber, one party) is not that captivating. Enter Shiny. I will not go into the details of building the app, as the code is publicly available on <a href="https://github.com/ciflikli/adamap">GitHub</a>.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> Instead, I will briefly touch on how to transform the above code into reactive programming.</p>
 <p>Assume we want to allow the users to switch years, chambers, party, and ADA score type. In order words, we need to have input concerning these four variables. The easiest way is to create a dynamic subsetting mechanism. An example would be:</p>
 <pre class="r"><code>#Not evaluated

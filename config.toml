@@ -36,6 +36,7 @@ ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
   shareOnFacebook = true
 
 [social]
+  empire = "mailto:g.ciflikli@lse.ac.uk"
   github-square = "https://github.com/ciflikli"
   linkedin-square = "https://www.linkedin.com/in/gokhan-ciflikli/"
   facebook-square = "https://www.facebook.com/g.ciflikli"
