@@ -12,7 +12,7 @@ tags:
   - plot
   - R
 slug: mapping-ada
-description: A Shiny app that maps and tracks yearly changes in legislator voting
+description: Shiny app that maps and tracks yearly changes in legislator voting
   behavior in the US.
 output:
   blogdown::html_page:
