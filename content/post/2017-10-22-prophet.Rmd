@@ -1,0 +1,206 @@
+---
+title: "Automatic Time-Series Forecasting with Prophet"
+author: "Gokhan Ciflikli"
+date: '2017-10-22'
+description: Predicting the weather in London using Facebook's open-source forecaster
+slug: prophet
+tags:
+- R
+- plot
+- prophet
+categories:
+- R
+- Prediction
+- Visualization
+---
+
+###Seasonality and Trends
+
+Time-series analysis is a battle on multiple fronts by definition. One has to deal with (dynamic) trends, seasonality effects, and good old noise. A general formula can be given as
+
+```{r eval = FALSE}
+y = level + trend + seasonality + noise
+```
+
+However, the relationships between these factors can be realized in many, and sometimes quite complex, ways. It is easy to over-fit noise, and the window for accurate prediction can be quite small (think of funnel-shaped confidence intervals).
+
+###Enter Prophet
+
+For the purposes of this post, there will be roughly two groups of people based on their initial inference: the ones who think of a divine emissary and those who roll with Laurence "Prophet" Barnes. The first subset is likely to get inspiration from the Abrahamic tradition whereas the latter folks prefer shooting aliens in the face playing *Crysis*. Note that we do not enforce mutual-exclusiveness on this website, except for when we do. The royal we is [good and alive](http://www.quickanddirtytips.com/education/grammar/the-royal-we). And we definitely thought of Mr. Nanosuit.
+
+![](/img/prophet.png)
+
+*They call him Prophet...Remember him? Hint: He remembers you.*
+
+The [Core Data Science team](https://research.fb.com/category/data-science/) at Facebook developed an automated time-series forecasting package called the [`prophet`](https://facebook.github.io/prophet/). It is maintained in parallel in both R and Python. The needs of massive companies like Facebook can go beyond the standard A/B testing when they want to test many features (and have access to *So.Much.Data.*) at once. A lot of their product features can also be influenced by seasonal behaviors. It is promoted as an easier-to-use alternative to the `forecast` package.
+
+###London Weather
+
+For those of us who do not have such data,[^1] a Google search is in order. Wanting to use London as a data example for a while, I happen to came across weather data. The European Climate Assessment & Data website offers free downloads of [daily observations](http://www.ecad.eu/dailydata/index.php) at meteorological stations throughout the region. I custom queried the mean temperature readings from Heathrow, UK that were recorded between 1960-01-01 and 2017-09-30. The resulting [subset](/post/londontmp.txt) contains about 21k observations. We do not need the source id (only Heathrow) and measurement validity (no variation; all valid) columns.
+
+```{r}
+londontmp <- read.csv("londontmp.txt")
+dim(londontmp)
+colnames(londontmp)
+londontmp <- londontmp[, 2:3] #subset date and measurement
+class(londontmp$DATE)
+```
+
+The dates are imported as integers. Use `lubridate` package to correctly format the dates:
+
+```{r message = FALSE}
+library(lubridate)
+Sys.setenv(TZ = "Europe/London") #only for locals!
+londontmp[, 1] <- ymd(londontmp[, 1], locale = Sys.getlocale("LC_TIME")) #locale can be skipped
+```
+
+Prophet expects `ds` and `y` as input. Furthermore, the temperature units are in 0.1C. We should correct both before moving on:
+
+```{r}
+colnames(londontmp) <- c("ds", "y")
+londontmp$y <- londontmp$y / 10
+summary(londontmp$y)
+```
+
+Now we have nearly 57 years worth of daily observations of mean temperature in London. It's good practice to conduct a sanity-check---the summary statistics look OK, but sometimes you need to look:
+
+```{r}
+h <- hist(londontmp$y, xlab = "Degrees Celcius",
+          main = "Heathrow Temperature Readings 1960-2017",
+          ylim = c(0, 3000))
+xfit <- seq(min(londontmp$y), max(londontmp$y)) 
+yfit <- dnorm(xfit, mean = mean(londontmp$y), sd = sd(londontmp$y)) 
+yfit <- yfit * diff(h$mids[1:2]) * length(londontmp$y) 
+lines(xfit, yfit, col = "#5694f1", lwd = 2)
+```
+
+Looking good. You can also opt for the kernel density by `plot(density(londontmp$y))` if you are so inclined.
+
+The `prophet` package will take care of daily/monthly/yearly trends easily. However, we might be interested in trends longer than a year as well. Let's look at decade averages. As it is the case in R, there are multiple ways of accomplishing the same task (looking at you, Py). I hope you don't get triggered by nested `ifelse` usage, as I am a serial offender:
+
+```{r}
+londontmp$year <- substr(londontmp$ds, 1, 4) #extract first four characters
+londontmp$year <- as.integer(londontmp$year)
+londontmp$decade <- ifelse(londontmp$year < 1970, "60s",
+                            ifelse(londontmp$year < 1980, "70s",
+                                ifelse(londontmp$year < 1990, "80s",
+                                    ifelse(londontmp$year < 2000, "90s",
+                                        ifelse(londontmp$year < 2010, "00s", "10s")))))
+londontmp$decade <- as.factor(londontmp$decade)
+londontmp$decade <- factor(londontmp$decade,
+                           levels(londontmp$decade)[c(3:6, 1:2)]) #correct order
+```
+
+That should do. Let's look for visual evidence of long-term change.
+
+```{r message = FALSE}
+library(sm)
+library(RColorBrewer)
+colfill <- brewer.pal(6, "BrBG") #diverging palette
+sm.density.compare(x = londontmp$y,
+                   group = londontmp$decade,
+                   xlab = "Mean Temperature (Celcius)",
+                   col = colfill, lty = c(rep(1, 6)),
+                   lwd = c(rep(2, 6)), xlim = c(-10, 30))
+title(main = "Distributions by Decade")
+legend("topright", levels(londontmp$decade),
+       fill = colfill, bty = "n")
+```
+
+The decades are grouped into two chunks; earlier earth-colored and later green-hues. If we pay attention to $t, t+1$ patterns, we can identify several trends. The most volatile change happens during the transition from 60s to 70s, a swing of about 10C in terms of the peaks (note that we are looking at densities). During the 80s, there is a similar reversal, but much smaller in magnitude. Actually, we spot somewhat stable mean temperatures (less sharper peaks) starting in 80s all the way to the present. We are definitely experiencing more higher-than-average days with every passing decade since then:
+
+```{r}
+library(psych) #yes, yes sapply and dirty deeds...I like using packages
+describeBy(londontmp[, 2], londontmp$decade)
+```
+
+Let's the see the magic of the prophet. (Sub) Daily seasonality is set to FALSE by default, I just wanted to highlight as it is a new feature. Our data do not have time-stamps so we cannot take advantage of it. You can also allow for MCMC sampling, although we will just go ahead using the package out-of-the-box.
+
+```{r message = FALSE}
+library(prophet)
+set.seed(1895) #in case you pass mcmc.samples below
+m <- prophet(londontmp, daily.seasonality = FALSE)
+```
+
+Following the [vignette](https://cran.r-project.org/web/packages/prophet/vignettes/quick_start.html), we need to create a holder for future dates first. If you include history, the new dataset will have all the existing rows plus the ones created for the forecast. Below, we only create the dataframe for next two years:
+
+```{r}
+future <- make_future_dataframe(m, periods = 365 * 2,
+                                include_history = FALSE)
+head(future)
+```
+
+Unsurprisingly, we can obtain forecasts by calling `predict` (this is good!):
+
+```{r}
+forecast <- predict(m, future)
+head(forecast)
+```
+
+We can go ahead and plot calling the model and the forecast. Depending on your hardware, this may or may not be instantaneous. In addition, we are plotting nearly 60 years of daily data, so it will be messy to look at in the beginning:
+
+```{r}
+plot(m, forecast)
+```
+
+Ehm, yes. As it is the case with most time-series packages, you can get component breakdowns that allows you to identify trends in varying resolutions:
+
+```{r}
+prophet_plot_components(m, forecast)
+```
+
+Couple of points. The monthly component looks reasonable, peaking around August. Second, the weekly breakdown gives some support to the notion that the universe teases you until Friday and the weather trend that led up to the weekend is negatively correlated with your enjoyment of the said weekend. On the flip side, Tuesdays are particularly singled-out. I'm open to all kinds of UK-idiosyncratic explanations.
+
+Finally, there is also the option for cross-validation (nice). If you use `caret`,[^2] you might be familiar with the forward rolling origin technique, which is a cross-validation method for time-series data. Basically, you designate a chunk to act as the training sample, and identify a horizon value that determines the next testing sample size. Depending on your setup, you can either have a fixed-window (that always moves forward with each fold), or always include the previous chunks (a constantly growing training sample). 
+
+![](/img/split_time.png)
+
+`Prophet` has a similar function. We can choose the initial window as the first fifty years, and try to forecast the next two years until we run out of data[^3]:
+
+```{r}
+df.cv <- cross_validation(m, initial = 365 * 50, horizon = 365 * 2, units = "days")
+head(df.cv)
+```
+
+Let's start with a crude mean comparison:
+
+```{r}
+t.test(df.cv$y, df.cv$yhat)
+```
+
+OK, not bad. Actually kind of good? Tingling senses? Yes, me too. Let's look at the actual and the predicted values a bit more in detail:
+
+```{r}
+summary(df.cv$y) #actual values
+summary(df.cv$yhat) #predicted values
+```
+
+Ah, that's not good! The curse of predicting extreme values, a common time-series ailment. Sometimes though, a plot in base R is more than a thousand descriptives:
+
+```{r}
+plot(df.cv$y, df.cv$yhat, xlim = c(-5, 30),
+     ylim = c(-5, 30), xlab = "Actual Values",
+     ylab = "Predicted Values")
+abline(a = 0, b = 1)
+```
+
+You probably want to squeeze the dots sideways so that they can also be on the edges. On a more serious note, there are a couple of reasons why this happens. First of all, we are predicting the next *two years* worth of *daily* data. I know some people make fun of meteorologists, but they are doing an amazing job in terms of forecasting given the hand they are dealt (i.e. probabilistic chaos). If an R package could just automatically give us accurate forecasts up to 2019, there will be certain employment-related consequences.
+
+![](https://imgs.xkcd.com/comics/10_day_forecast.png)
+
+Second, as alluded in the introduction, there are several factors that can mess up a time-series forecast. Outliers, missing values (although prophet can deal with those), and the frequency of data are the main culprits here. Combining both points, we would probably obtain higher quality forecasts if we try predicting the upcoming week or month.
+
+```{r}
+a.better.future <- make_future_dataframe(m, periods = 30,
+                                include_history = FALSE)
+a.better.forecast <- predict(m, a.better.future)
+head(a.better.forecast)
+```
+
+Let me know if those object names are earned or not!
+
+P.S. Contrary to popular belief, I am a good namer of objects. I use dots for objects and dashes for functions (in R, obviously). That's *+2* stack overflow style points right there!
+
+[^1]: Couple of years ago, I referenced one of their [published papers](https://research.fb.com/publications/a-61-million-person-experiment-in-social-influence-and-political-mobilization/) in a class I was teaching. This is one of those times when you are social scientist in academia and everyone else has better data. And they put their *n* in the title. All 61 million of it. It's an *experiment* as well. Observational crisis here I come.
+[^2]: I am aware that the technique existed before the package. However, I got acquainted with it while working with time-varying covariates in `caret`.
+[^3]: I should note that this is a somewhat ridiculous first test in terms of time coverage. Definitely belongs to the "break the model first, then lower expectations" camp of package testing.
