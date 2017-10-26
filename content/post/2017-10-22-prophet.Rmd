@@ -188,7 +188,7 @@ You probably want to squeeze the dots sideways so that they can also be on the e
 
 ![](https://imgs.xkcd.com/comics/10_day_forecast.png)
 
-Second, as alluded in the introduction, there are several factors that can mess up a time-series forecast. Outliers, missing values (although prophet can deal with those), and the frequency of data are the main culprits here. Combining both points, we would probably obtain higher quality forecasts if we try predicting the upcoming week or month.
+Second, as alluded in the introduction, there are several factors that can mess up a time-series forecast. Outliers, missing values (although `prophet` can deal with those), and the frequency of data are the main culprits here. Combining both points, we would probably obtain higher quality forecasts if we try predicting the upcoming week or month. Finally, we are taking this path on purpose, as you would normally build up and test for shorter predictions (and keep pushing the model until it breaks) rather than intentionally trying to break the model and then recover it.
 
 ```{r}
 a.better.future <- make_future_dataframe(m, periods = 30,
@@ -198,6 +198,20 @@ head(a.better.forecast)
 ```
 
 Let me know if those object names are earned or not!
+
+On a closing note, let's get a single day prediction that would likely fall outside the +4/+16C interval (in real life):
+
+```{r}
+better.days <- make_future_dataframe(m, periods = 120,
+                                include_history = FALSE)
+best.day <- better.days[better.days$ds == "2018-01-05", ]
+best.day <- as.data.frame(best.day) #prophet requires df
+best.day$ds <- best.day$best.day #list name becomes column name above
+the.forecast <- predict(m, best.day)
+the.forecast$yhat
+```
+
+RemindMe! 75 days "check prediction"
 
 P.S. Contrary to popular belief, I am a good namer of objects. I use dots for objects and dashes for functions (in R, obviously). That's *+2* stack overflow style points right there!
 
