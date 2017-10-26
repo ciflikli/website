@@ -286,8 +286,8 @@ head(a.better.forecast)</code></pre>
 <pre class="r"><code>better.days &lt;- make_future_dataframe(m, periods = 120,
                                 include_history = FALSE)
 best.day &lt;- better.days[better.days$ds == &quot;2018-01-05&quot;, ]
-best.day &lt;- as.data.frame(best.day)
-best.day$ds &lt;- best.day$best.day #list name becomes column name
+best.day &lt;- as.data.frame(best.day) #prophet requires df
+best.day$ds &lt;- best.day$best.day #list name becomes column name above
 the.forecast &lt;- predict(m, best.day)
 the.forecast$yhat</code></pre>
 <pre><code>## [1] 5.588844</code></pre>
