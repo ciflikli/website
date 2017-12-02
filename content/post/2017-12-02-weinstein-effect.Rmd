@@ -207,7 +207,7 @@ he.she.counts.before %>%
   expand_limits(y = 4)
 ```
 
-Several immediate and depressing trends emerge in the data. The top active verbs for women cluster on bringing charges: 'testified', 'filed'; whereas male verbs seem to react to those with 'argued', 'faces', 'acknowledges', and 'apologies'. Women 'awoke' and 'woke', matching the more violent male verbs such as 'drugged', 'assaulted', 'punched', and 'raped'. 'Alleged' occurs more than four times after she relative to he, and there is no mention of denial ('denied', 'denies') after he.
+Several immediate and depressing trends emerge in the data. The top active verbs for women cluster on bringing charges: 'testified', 'filed'; whereas male verbs seem to react to those with 'argued', 'faces', 'acknowledges', and 'apologized'. Women 'awoke' and 'woke', matching the more violent male verbs such as 'drugged', 'assaulted', 'punched', and 'raped'. 'Alleged' occurs more than four times after she relative to he, and there is no mention of denial ('denied', 'denies') after he.
 
 Another way of visualising the gendered differences is to plot their frequency. This time, we are not limited to just verbs; however we still filter out some uninteresting words. There are additional `ggplot` and `ggrepel` arguments in this plot. First, I added two reference lines: a red y-intercept with `geom_hline` and an invisible x-intercept using `geom_vline`. Do you not love tidy grammar? Last but not least, I insert `geom_text_repel` to give us more readability: `segment.alpha` controls the line transparency, while the `force` argument governs the aggressiveness of the jittering algorithm:
 
