@@ -23,6 +23,10 @@ categories:
 </div>
 <div id="getting-full-text-news-articles" class="section level3">
 <h3>Getting Full Text News Articles</h3>
+<div class="figure">
+<img src="/img/guardian.png" />
+
+</div>
 <p>My first instinct was to check out the <a href="http://developer.nytimes.com/">NYT APIs</a>—it made sense, given that they <a href="https://www.nytimes.com/2017/10/05/us/harvey-weinstein-harassment-allegations.html?_r=0">broke the news</a> (along with the <a href="https://www.newyorker.com/news/news-desk/from-aggressive-overtures-to-sexual-assault-harvey-weinsteins-accusers-tell-their-stories">New Yorker</a>). Everything seemed to be working out just fine, until I realised you cannot get the full text—only the lead. Staying true to my strict data scientist training, I googled ‘full text newspaper api r’ and there it was: <code>GuardianR</code>. Sorry NYC mates, we reckon we will have to cross the pond for this one.</p>
 <p>Note that any one source will always be biased. If you are not familiar with the Guardian, it’s British and has a <a href="https://mediabiasfactcheck.com/the-guardian/">left-centre bias</a>. It might be prudent to pair it with a right-centre newspaper, however not all newspapers provide APIs (which in itself is another selection bias). Alas, we will move on just with the Guardian—insert idiom regarding salt. Finally, you will need to get a free API key from their <a href="http://open-platform.theguardian.com/">open source platform</a>. You still have to register, but you are only in danger if you vote Tory and stand on the left side of the escalator. Once you got it, install/load the package via CRAN:</p>
 <pre class="r"><code>library(GuardianR)
@@ -36,8 +40,8 @@ articles &lt;- get_guardian(keywords = &quot;sexual+harassment&quot;,
                          to.date = &quot;2017-11-30&quot;,
                          api.key = &quot;your-key-here&quot;)</code></pre>
 <p>Running the above chunk with your own key will get you all articles published in the Guardian in the last five years tagged under the news section ‘world’<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> and containing the keywords ‘sexual harassment’ in the Guardian API. The keywords can be as simple or complicated as you want; just add more terms using the plus sign.</p>
-<p>You might think the time frame is a bit skewed towards the ‘pre’ era—the news broke out on October 5, 2017. Going all the way back five full years, we are comparing 58 months worth of ‘pre’ to only 2 months of ‘post’ Weinstein. However, blog posts are not written in real-time, so you get to see the final result to bear with me. And no, this is not at all like scientists running 514 regressions and failing to mention this tidbit in their publication. <a href="https://xkcd.com/882/">Relevant xkcd.</a></p>
-<p>No, the reason is purely pragmatism. Running the code and getting the articles on real-time would slow down this site. Hence, I am working with downloaded data. Feel free to subset the data to see whether the results change if you use a different cut-off point. Also, if you go back the same amount of time (i.e. two months before October 5), that would lead to 183 articles for pre and 121 articles for the post time period—it has blown up alright. Going back five years gets us 1224 articles in total; so we actually have 1103-pre and 121-post articles (89% to 11%). That’s more or less cross-validation ratio (well, a bit on the less side maybe), and we will roll with that.</p>
+<p>You might think the time frame is a bit skewed towards the ‘pre’ era—the news broke out on October 5, 2017. Going all the way back five full years, we are comparing 58 months worth of ‘pre’ to only 2 months of ‘post’ Weinstein. However, luckily for you blog posts are not written in real-time, meaning you get to see the final result so just bear with me. And no, this is not at all like scientists running 514 regressions and failing to mention this tidbit in their publication. <a href="https://xkcd.com/882/">Relevant xkcd.</a></p>
+<p>No, the reason is pure pragmatism. Running the code and getting the articles on real-time would slow down this site. Hence, I am working with downloaded data. Feel free to subset the data to see whether the results change if you use a different cut-off point. Also, if you go back the same amount of time (i.e. two months before October 5), that would lead to 183 articles for pre and 121 articles for the post time period—it has blown up alright. Going back five years gets us 1224 articles in total; so we actually have 1103-pre and 121-post articles (89% to 11%). That’s more or less cross-validation ratio (well, a bit on the less side maybe), and we will roll with that.</p>
 <pre class="r"><code>articles &lt;- read.csv(&quot;articles.csv&quot;, stringsAsFactors = FALSE)
 dim(articles)</code></pre>
 <pre><code>## [1] 1224   27</code></pre>
@@ -53,15 +57,17 @@ dim(articles)</code></pre>
 ## [19] &quot;allowUgc&quot;             &quot;isPremoderated&quot;       &quot;byline&quot;              
 ## [22] &quot;publication&quot;          &quot;newspaperEditionDate&quot; &quot;shouldHideAdverts&quot;   
 ## [25] &quot;liveBloggingNow&quot;      &quot;commentCloseDate&quot;     &quot;body&quot;</code></pre>
-<p>We get a bunch of variables (27), but we don’t really need most of them for our analysis:</p>
-<pre class="r"><code>want.var &lt;- c(&quot;webPublicationDate&quot;, &quot;body&quot;) #laziest subset for only two variables
+<p>We get a bunch of variables (27) with that call, but we won’t be needing most of them for our analysis:</p>
+<pre class="r"><code>#laziest subset for only two variables
+want.var &lt;- c(&quot;webPublicationDate&quot;, &quot;body&quot;)
 want &lt;- which(colnames(articles) %in% want.var)
 articles &lt;- articles[, want]
 articles$webPublicationDate &lt;- as.Date.factor(articles$webPublicationDate)</code></pre>
 <p>The body contains the full-text, however it’s in HTML:</p>
 <pre class="r"><code>dplyr::glimpse(articles$body[1])</code></pre>
 <pre><code>##  chr &quot;&lt;p&gt;Numerous women have accused Don Burke of indecent assault, sexual harassment and bullying during the 1980s a&quot;| __truncated__</code></pre>
-<p>At this point, I must admit I resorted to hacking a bit. I’m sure there is a more elegant solution here. I’ll go with this <a href="https://stackoverflow.com/a/17227415/6550364">SO answer</a> to extract text from HTML:</p>
+<p>At this point, I must admit I resorted to hacking a bit. I’m sure there is a more elegant solution here. I’ll go with this <a href="https://stackoverflow.com/a/17227415/6550364">SO answer</a> to extract text from HTML. Basically, the cleaning function removes the HTML using regex. Unfortunately, this does not clear up various apostrophes found in the text. For that, we switch the encoding from ASCII to byte:</p>
+<pre class="r"><code>articles$body &lt;- iconv(articles$body, &quot;&quot;, &quot;ASCII&quot;, &quot;byte&quot;)</code></pre>
 <pre class="r"><code>cleanFun &lt;- function(htmlString) {
   return(gsub(&quot;&lt;.*?&gt;&quot;, &quot;&quot;, htmlString))
 }
@@ -69,9 +75,7 @@ articles$webPublicationDate &lt;- as.Date.factor(articles$webPublicationDate)</c
 articles$body &lt;- cleanFun(articles$body)
 dplyr::glimpse(articles$body[1])</code></pre>
 <pre><code>##  chr &quot;Numerous women have accused Don Burke of indecent assault, sexual harassment and bullying during the 1980s and &quot;| __truncated__</code></pre>
-<p>Unfortunately, this does not clear up various apostrophes. For that, we switch the encoding from ASCII to byte:</p>
-<pre class="r"><code>articles$body &lt;- iconv(articles$body, &quot;&quot;, &quot;ASCII&quot;, &quot;byte&quot;)</code></pre>
-<p>This will end up cutting some legitimate apostrophes (e.g. “hasn’t”, “didn’t” etc.) in some cases, but we will fix that later on.</p>
+<p>This will end up cutting some legitimate apostrophes (e.g. “hasn’t”, “didn’t” to “hasn”, “didn”) in some cases, but we will fix that later on.</p>
 <p>Let’s split the data on date October 5, 2017 and get rid of the date column afterwards:</p>
 <pre class="r"><code>#You can also use negative index for subsetting
 articles.before &lt;- articles[articles$webPublicationDate &lt; &quot;2017-10-05&quot;, ]
@@ -96,7 +100,7 @@ bigrams.before &lt;- full.text.before %&gt;%
                 token = &quot;ngrams&quot;,
                 n = 2)
 nrow(bigrams.before)</code></pre>
-<pre><code>## [1] 1635193</code></pre>
+<pre><code>## [1] 1311051</code></pre>
 <pre class="r"><code>head(bigrams.before)</code></pre>
 <pre><code>##        bigram
 ## 1    the walk
@@ -129,17 +133,17 @@ he.she.words.before &lt;- he.she.words.before %&gt;%
 #10 random samples; the numbers are row numbers not counts
 set.seed(1895)
 dplyr::sample_n(he.she.words.before, 10)</code></pre>
-<pre><code>##       word1     word2
-## 4496    she expressed
-## 3811    she testified
-## 5331     he    worked
-## 12112   she        is
-## 4056    she      said
-## 3256     he     tells
-## 4036     he     could
-## 4980     he      gave
-## 9511     he      knew
-## 9606     he       was</code></pre>
+<pre><code>##       word1  word2
+## 4403    she doesnt
+## 3732     he    was
+## 5222    she  wasnt
+## 11862   she   said
+## 3972    she  wrote
+## 3189     he   says
+## 3952    she   sees
+## 4878     he    was
+## 9314     he   went
+## 9408    she  noted</code></pre>
 <pre class="r"><code>#Transform words into counts, add +1 for log transformation
 he.she.counts.before &lt;- he.she.words.before %&gt;%
   count(word1, word2) %&gt;%
@@ -156,13 +160,13 @@ head(he.she.counts.before)</code></pre>
 <pre><code>## # A tibble: 6 x 6
 ##       word2           he          she total log.ratio abs.ratio
 ##       &lt;chr&gt;        &lt;dbl&gt;        &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 testified 0.0002155869 0.0026861662    18  3.639207  3.639207
-## 2     awoke 0.0001077935 0.0010446202     6  3.276637  3.276637
-## 3     filed 0.0002155869 0.0019400090    13  3.169722  3.169722
-## 4      woke 0.0002155869 0.0019400090    13  3.169722  3.169722
-## 5    misses 0.0001077935 0.0007461573     4  2.791210  2.791210
-## 6   quickly 0.0001077935 0.0007461573     4  2.791210  2.791210</code></pre>
-<p>A couple of observations. First, n-grams overlap, resulting in 1.6M observations (and this is only the pre-period). However, we will only use the gendered subset,<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> which is much more smaller in size. Second, as we define the log ratio as she / he, the sign of the log ratio determines the direction (positive for she, negative for he), while the absolute value of the log ratio is just the effect size (without direction).</p>
+## 1 testified 0.0002194908 0.0027206771    18  3.631734  3.631734
+## 2     awoke 0.0001097454 0.0010580411     6  3.269163  3.269163
+## 3     filed 0.0002194908 0.0021160822    14  3.269163  3.269163
+## 4      woke 0.0002194908 0.0019649335    13  3.162248  3.162248
+## 5    misses 0.0001097454 0.0007557437     4  2.783737  2.783737
+## 6   quickly 0.0001097454 0.0007557437     4  2.783737  2.783737</code></pre>
+<p>A couple of observations. First, n-grams overlap, resulting in 1.6M observations (and this is only the pre-period). However, we will only use the gendered subset,<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> which is much more smaller in size. Second, as we define the log ratio as (she / he), the sign of the log ratio determines the direction (positive for she, negative for he), while the absolute value of the log ratio is just the effect size (without direction).</p>
 <p>Good stuff, no? Wait until you see the visualisations.</p>
 </div>
 <div id="let-there-be-ggraphs" class="section level3">
@@ -181,7 +185,7 @@ theme_set(theme_roboto())</code></pre>
 <p><code>.25x   .5x   x   2x    4x</code></p>
 <p>whereas David uses directions, i.e.</p>
 <p><code>'more he'    4x    2x    x   2x    4x    'more she'</code></p>
-<p>In both cases, x denotes the same frequency (equally likely) of usage. I don’t think one approach is necessarily better than the other, but I went with David’s approach. Finally, I filter out non-verbs plus ‘have’ and only plot verbs that occur at least five times. If you are serious about filtering out classes of words (say a certain sentiment or adjectives), you should locate a dictionary from a NLP package and extract the relevant words from there. Here, I am doing it quite ad-hoc (and manually):</p>
+<p>In both cases, x denotes the same frequency (equally likely) of usage. I don’t think one approach is necessarily better than the other, but I went with David’s approach. Finally, I filter out non-verbs plus ‘have’ and only plot verbs that occur at least five times. If you are serious about filtering out classes of words (say a certain sentiment or adjectives), you should locate a dictionary from an NLP package and extract the relevant words from there. Here, I am doing it quite ad-hoc (and manually):</p>
 <pre class="r"><code>he.she.counts.before %&gt;%
   filter(!word2 %in% c(&quot;himself&quot;, &quot;herself&quot;, &quot;ever&quot;, &quot;quickly&quot;,
                        &quot;actually&quot;, &quot;sexually&quot;, &quot;allegedly&quot;, &quot;have&quot;),
@@ -196,15 +200,15 @@ theme_set(theme_roboto())</code></pre>
   labs(x = &quot;&quot;,
        y = &#39;Relative appearance after &quot;she&quot; compared to &quot;he&quot;&#39;,
        fill = &quot;&quot;,
-       title = &quot;Pre Weinstein: 2012-2017 Guardian Articles on Sexual Harassment&quot;,
+       title = &quot;Pre Weinstein: 2012-17 The Guardian Articles on Sexual Harassment&quot;,
        subtitle = &quot;Top 15 Most Gendered (Skewed) Verbs after he/she; at least 5 occurrences.&quot;) +
   scale_y_continuous(labels = c(&quot;8X&quot;, &quot;6X&quot;, &quot;4X&quot;, &quot;2X&quot;, &quot;Same&quot;, &quot;2X&quot;, &quot;4X&quot;, &quot;6X&quot;, &quot;8X&quot;),
                      breaks = seq(-4, 4)) +
   guides(fill = guide_legend(reverse = TRUE)) +
   expand_limits(y = c(-4, 4))</code></pre>
 <p><img src="/post/2017-12-02-weinstein-effect_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
-<p>Several immediate and depressing trends emerge in the data. The top active verbs for women cluster on bringing charges: ‘testified’, ‘filed’; whereas male verbs seem to react to those with ‘argued’, ‘faces’, ‘acknowledges’, and ‘apologized’. Women ‘awoke’ and ‘woke’, matching the more violent male verbs such as ‘drugged’, ‘assaulted’, ‘punched’, and ‘raped’. ‘Alleged’ occurs more than four times after she relative to he, and there is no mention of denial (‘denied’, ‘denies’) after he.</p>
-<p>Another way of visualising the gendered differences is to plot their frequency. This time, we are not limited to just verbs; however we still filter out some uninteresting words. There are additional <code>ggplot</code> and <code>ggrepel</code> arguments in this plot. First, I added two reference lines: a red y-intercept with <code>geom_hline</code> and an invisible x-intercept using <code>geom_vline</code>. Do you not love tidy grammar? Last but not least, I insert <code>geom_text_repel</code> to give us more readability: <code>segment.alpha</code> controls the line transparency, while the <code>force</code> argument governs the aggressiveness of the jittering algorithm:</p>
+<p>Several immediate and depressing trends emerge from the data. The top active verbs for women cluster on bringing charges: ‘testified’, ‘filed’; whereas male verbs seem to react to those with ‘argued’, ‘faces’, ‘acknowledges’, and ‘apologized’. Women ‘awoke’ and ‘woke’, matching the more violent male verbs such as ‘drugged’, ‘assaulted’, ‘punched’, and ‘raped’. ‘Alleged’ occurs more than four times after she relative to he, and there is no mention of denial (e.g. ‘denied’, ‘denies’) after he.</p>
+<p>Another way of visualising the gendered differences is to plot their magnitude in addition to their frequency . This time, we are not limited to just verbs; however we still filter out some uninteresting words. There are additional <code>ggplot</code> and <code>ggrepel</code> arguments in this plot. First, I added two reference lines: a red y-intercept with <code>geom_hline</code> to act as a baseline and an invisible x-intercept using <code>geom_vline</code> to give the labels more space on the left-hand side. Do you not love tidy grammar? Last but not least, I insert <code>geom_text_repel</code> to give us more readability: <code>segment.alpha</code> controls the line transparency, while the <code>force</code> argument governs the aggressiveness of the jittering algorithm. We could supply it with a <code>fill</code> argument that corresponds to a factor variable to highlight a certain characteristic (say, total occurrence), however there is not much meaningful variation there in our case.</p>
 <pre class="r"><code>he.she.counts.before %&gt;%
   filter(!word2 %in% c(&quot;himself&quot;, &quot;herself&quot;, &quot;she&quot;, &quot;too&quot;, &quot;later&quot;, &quot;apos&quot;, &quot;just&quot;, &quot;says&quot;),
          total &gt;= 10) %&gt;%
@@ -213,33 +217,33 @@ theme_set(theme_roboto())</code></pre>
   geom_point() +
   geom_vline(xintercept = 5, color = &quot;NA&quot;) +
   geom_hline(yintercept = 0, color = &quot;red&quot;) +
-  scale_x_log10(breaks = c(10, 100, 1000),
-                labels = comma_format()) +
+  scale_x_log10(breaks = c(10, 100, 1000)) +
   geom_text_repel(aes(label = word2), segment.alpha = .1, force = 2) +
   scale_y_continuous(breaks = seq(-4, 4),
                      labels = c(&#39;8X &quot;he&quot;&#39;, &#39;6X &quot;he&quot;&#39;, &#39;4X &quot;he&quot;&#39;, &#39;2X &quot;he&quot;&#39;, &quot;Same&quot;,
                                 &#39;2X &quot;she&quot;&#39;, &#39;4X &quot;she&quot;&#39;, &#39;6X &quot;she&quot;&#39;, &#39;8X &quot;she&quot;&#39;)) +
   labs(x = &#39;Total uses after &quot;he&quot; or &quot;she&quot; (Logarithmic scale)&#39;,
        y = &#39;Relative uses after &quot;she&quot; to after &quot;he&quot;&#39;,
-       title = &quot;Gendered Reporting: Pre Weinstein&quot;,
-       subtitle = &quot;Words occurring at least 10 times after he/she; n = 1223 (100 displayed).&quot;) +
+       title = &quot;Gendered Reporting: Pre Weinstein, The Guardian&quot;,
+       subtitle = &quot;Words occurring at least 10 times after he/she:
+                  160 unique words (100 displayed) | 11,013 occurrences in total&quot;) +
   expand_limits(y = c(4, -4))</code></pre>
 <p><img src="/post/2017-12-02-weinstein-effect_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
 <p>Plotting frequencies complement the first plot quite nicely. We can infer reported characteristics more easily when there is a tangible baseline. Words around the red line occur after she or he more or less equally: the y-axis determines the relational effect size (with regards to gender), and the x-axis displays the total amount of occurrences. Some additional insights: we see that ‘sexually’ and ‘allegedly’ popping up after he quite frequently. There is also the verb ‘admitted’, as well as ‘denies’ (even though visually it is located above the red line, if you follow the grey segment, it’s located around 1X ‘he’). For women, words like ‘suffered’, ‘died’ are added to the mix. There are also nuances regarding the tense; ‘claims’ follows she twice more than he, while ‘claimed’ is twice likely to come after he.<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a></p>
 <p>Moving on to the post-Weinstein period (‘the effect’), I quietly run the same code, and plot the equivalent graphics below. Some caveats: with the smaller sample size, I lowered the inclusion threshold to 2. Additionally, although it is top 15 most skewed verbs per gender, because of frequent ties, it ends up having more than that at the end.</p>
 <p><img src="/post/2017-12-02-weinstein-effect_files/figure-html/unnamed-chunk-14-1.png" width="768" /></p>
-<p>After the scandal broke, we see that women are reported to have ‘complained’, ‘hoped’, and ‘became’. On the other hand, men are vehemently denying the accusations, with ‘denies’ and ‘denied’ being the most skewed verbs following he.</p>
+<p>After the scandal broke, we see that women are reported to have ‘complained’, ‘hoped’, and ‘became’. On the other hand, men are vehemently denying the accusations, with ‘denies’ and ‘denied’ being the most skewed verbs following he. Random point: in the pre-period, it’s ‘apologized’, in the post-period, it’s ‘apologised’. Maybe Brexit can manifest in mysterious ways.</p>
 <p><img src="/post/2017-12-02-weinstein-effect_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
-<p>Again we turn to the frequency plot to infer more. In addition to denial, men are also reported to use words such as ‘categorically’ and ‘utterly’. Both ‘claims’ and ‘claimed’ occur more after she, not repeating the earlier dynamic regarding the tense. In addition, we don’t see ‘alleged’ or ‘allegedly’ featured in the plot at all. How much of this change can we attribute to the effect? At a glance, we definitely see a difference. For example, verbs display a good variation for both genders. The post-frequency plot features less violent words than the pre-frequency plot. There is a lot more ‘denial’ and not much ‘allegations’ in the post-Weinstein period.</p>
-<p>Some are definitely data artefacts. The post-frequency plot is ‘cleaner’—in addition to the smaller <em>n</em>—because the cut-off point is set to more than one occurrence: remove the filter and all the violence is back in. Some are probably reporter/reporting bias plus the prevalent gendered thinking (that occurs both consciously and not). And perhaps some are genuine effects—true signal. It is still too early to pass judgement on whether the Weinstein effect will result in tangible, positive change. Currently, we are just getting a small, limited glimpse at the available data.</p>
-<p>Hopefully you managed to enjoy this rather depressing data exercise using the <code>tidytext</code> package. As usual, the underlying code is available on <a href="https://github.com/ciflikli/website/tree/master/content/post/2017-12-02-weinstein-effect.Rmd">GitHub</a>. N-grams are powerful. Imagine the possibilities: assume you have access to a rich dataset (say, minimum 100K very long articles/essays). You can construct n-grams sequentially; i.e. 2-grams; 3-grams, 4-grams etc., separate the words, and subset for gendered pronouns. This would give you access to structures like “he” + “word” + “her” (direct action) and “she” + “word” + “word” + “him” (allowing for adjective + verb). Then it would be possible to look for all kinds of interactions, revealing their underlying structure. I will be reporting more on this front, until I move onto image processing (looking at you, <code>keras</code>).</p>
+<p>Again we turn to the frequency plot to infer more. In addition to denial, men are also reported to use words such as ‘categorically’ and ‘utterly’. Both ‘claims’ and ‘claimed’ occur more after she, not repeating the earlier dynamic regarding the tense. In addition, we don’t see ‘alleged’ or ‘allegedly’ featured in the plot at all. How much of this change can we attribute to the effect? At a glance, we definitely see a difference. For example, verbs display a good variation for both genders. The post-frequency plot features less violent words than the pre-frequency plot. There is a lot more ‘denying’ and not much ‘alleging’ in the post-Weinstein period.</p>
+<p>Some are definitely data artefacts. The post-frequency plot is ‘cleaner’—in addition to (and directly caused by) the smaller <em>n</em>—because the cut-off point is set to ‘more than once’: if we remove the filter, all the violence and harassment terms are back in. Some are probably reporter/reporting biases plus the prevalent gendered thinking (that occurs both on a conscious level and below). And perhaps some are genuine effects—true signal. It is still too early to pass judgement on whether the Weinstein effect will result in tangible, positive change. Currently, all we can get is a short, limited glimpse at the available data.</p>
+<p>Hopefully you managed to enjoy this rather depressing data undertaking using the <code>tidytext</code> package. As usual, the underlying code is available on <a href="https://github.com/ciflikli/website/tree/master/content/post/2017-12-02-weinstein-effect.Rmd">GitHub</a>. N-grams are powerful. Imagine the possibilities: assume you have access to a rich dataset (say, minimum 100K very long articles/essays). You can construct n-grams sequentially; i.e. 2-grams; 3-grams, 4-grams etc., separate the words, and subset for gendered pronouns. This would give you access to structures like “he” + “word” + “her” (direct action) and “she” + “word” + “word” + “him” (allowing for adjective + verb). Then it would be possible to look for all kinds of interactions, revealing their underlying structure. I will be reporting more on this front, until I move onto image processing (looking at you, <code>keras</code>).</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>Assuming you are reading this just after it’s written (December 2017).<a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>For a pool of possible news section names, consult the <a href="https://cran.rstudio.com/web/packages/GuardianR/GuardianR.pdf">package manual</a>.<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>Get it? A bigram. Two words. It is.<a href="#fnref3">↩</a></p></li>
+<li id="fn3"><p>Get it? A bigram. Two words. It is!<a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>As with most of the research on gender, I will have to treat it as a binary variable rather than a continuous one as it manifests itself in real-life.<a href="#fnref4">↩</a></p></li>
 <li id="fn5"><p>Yes, you should load all the required libraries first thing. <a href="https://ih0.redbubble.net/image.90820803.1852/flat,550x550,075,f.u3.jpg">I know.</a><a href="#fnref5">↩</a></p></li>
 <li id="fn6"><p>This one mentioned in the comments section of Julia’s post; however I am not sure how much of that transfers here.<a href="#fnref6">↩</a></p></li>
