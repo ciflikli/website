@@ -3,9 +3,9 @@
 {{ end }}-->
 
 {{ if .Params.tags }}
-<h6-1><i class="fa fa-tags"></i>&nbsp;
+<i class="fa fa-tags"></i>
   {{ range $index, $tag := .Params.tags }}{{ if gt $index 0 }}{{ end }}
-<code href="{{ "/tags/" | relLangURL }}" rel="tag">{{ . }}</code>{{ end }}</h6-1>
+<code href='{{ "/tags/" | relLangURL }}' rel="tag">{{ . }}</code>{{ end }}
 {{ end }}
 
 {{- /* vim: set ts=2 sw=2 et: */}}
