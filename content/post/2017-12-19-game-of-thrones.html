@@ -109,7 +109,7 @@ summary(got.corpus, 10, showmeta = FALSE)</code></pre>
 ##  s01e10  1094   4804       418
 ## 
 ## Source:  No peaking!
-## Created: Wed Dec 20 14:18:43 2017
+## Created: Wed Dec 20 22:09:06 2017
 ## Notes:</code></pre>
 <p>I intentionally turned on the message option in the above chunk so that you can see <code>quanteda</code> is thoughtful enough to leave you with a single core for your <em>other</em> computational purposes. The Night King certainly approves. You could also pass a <code>compress = TRUE</code> argument while creating a corpus, which is basically a trade-off between memory space and computation speed. We don’t have that much text so it’s not a necessity for us, but it’s good to know that the option exists.</p>
 <p>When you do things for the first couple of times, it’s good practice to conduct a couple of sanity checks. The <code>kwic</code> function, standing for ‘keywords-in-context’, returns a list of such words in their immediate context. This context is formally defined by the <code>window</code> argument, which is bi-directional and includes punctuation. If only there were sets of words in the GoT universe that are highly correlated with certain houses…</p>
@@ -202,26 +202,26 @@ got.group.corpus &lt;- corpus(got)
 got.group.dfm &lt;- dfm(got.group.corpus, ngrams = 1:3, groups = &quot;season&quot;,
                      remove = stopwords(&quot;SMART&quot;), remove_punct = TRUE)</code></pre>
 <p>One convenient feature of having a grouped corpus is that we can analyse temporal trends. Say, you are known by many names and/or happen to be fond of titles:</p>
-<pre class="r"><code>dany &lt;- c(&quot;daenerys&quot;, &quot;stormborn&quot;, &quot;khaleesi&quot;,&quot;the_unburnt&quot;,
+<pre class="r"><code>dany &lt;- c(&quot;daenerys&quot;, &quot;stormborn&quot;, &quot;khaleesi&quot;, &quot;the_unburnt&quot;,
           &quot;mhysa&quot;, &quot;mother_of_dragons&quot;, &quot;breaker_of_chains&quot;)
 titles &lt;- got.group.dfm[, colnames(got.group.dfm) %in% dany]
 titles &lt;- as.data.frame(titles)
 #Divide all cells with their row sums and round them up
 round(titles / rowSums(titles), 2)</code></pre>
-<pre><code>##   daenerys stormborn khaleesi mhysa mother_of_dragons the_unburnt
-## 1     0.20      0.02     0.78  0.00              0.00        0.00
-## 2     0.13      0.08     0.54  0.00              0.25        0.00
-## 3     0.11      0.11     0.35  0.35              0.05        0.00
-## 4     0.19      0.04     0.30  0.44              0.04        0.00
-## 5     0.46      0.04     0.04  0.31              0.15        0.00
-## 6     0.41      0.16     0.09  0.06              0.16        0.03
-##   breaker_of_chains
-## 1              0.00
-## 2              0.00
-## 3              0.03
-## 4              0.00
-## 5              0.00
-## 6              0.09</code></pre>
+<pre><code>##   daenerys stormborn khaleesi mhysa mother_of_dragons breaker_of_chains
+## 1     0.20      0.02     0.78  0.00              0.00              0.00
+## 2     0.13      0.08     0.54  0.00              0.25              0.00
+## 3     0.11      0.11     0.35  0.35              0.05              0.03
+## 4     0.19      0.04     0.30  0.44              0.04              0.00
+## 5     0.46      0.04     0.04  0.31              0.15              0.00
+## 6     0.41      0.16     0.09  0.06              0.16              0.09
+##   the_unburnt
+## 1        0.00
+## 2        0.00
+## 3        0.00
+## 4        0.00
+## 5        0.00
+## 6        0.03</code></pre>
 <p>Khaleesi dominates the first season (~80%), and it is her most one-sided title usage of any season. In S2, she gets the moniker of ‘mother of dragons’ in addition to khaleesi (25% and 55%, respectively). Seasons 3 and 4 are the most balanced, when she was known as khaleesi and mhysa somewhat equally (~35% both). In the last two seasons (in our dataset, at least), she is most commonly (&gt;40%) called/mentioned by her actual name. This particular exercise would have definitely benefited from S7 scripts. You can refer to the titles object to see the raw counts rather than column percentages by row.</p>
 <p>Yet another thing we can calculate is term similarity and distance. Using <code>textstat_simil</code>, we can get the top <em>n</em> words that are associated with it:</p>
 <pre class="r"><code>sim &lt;- textstat_simil(got.dfm, diag = TRUE, c(&quot;throne&quot;, &quot;realm&quot;, &quot;walkers&quot;),
@@ -376,7 +376,7 @@ tm_legend(show = FALSE)</code></pre>
 
 </div>
 <p>Download the map in <a href="/img/westeros.pdf">PDF.</a></p>
-<p>Woo! Okay, let’s go over what happened before wrapping this up. <code>tmap</code> operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: ‘westeros’ for the regions, ‘locations’ for the castles and manually added/subtracted places, and ‘holds’ for the capitals (which is just a subset of locations really). The <code>tm</code> parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by ‘ClaimedBy’, which would normally return the names of the Houses. However, that’s only the fill argument, and the text parameter in the next line calls ‘name’, which is the name of the regions (and what gets plotted). You can download <a href="https://fontmeme.com/fonts/game-of-thrones-font/">GoT fonts</a> for added ambiance. We pass our custom castle shape by calling <code>shape = castle</code> and remove the square borders around the .png with the <code>border.lwd = NA</code>. Finally, the <code>ymod</code> argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on <a href="https://github.com/ciflikli/website/tree/master/content/post">GitHub</a> and mess around! Idea: calculate term frequencies of location names using <code>quanteda</code> first and then pass them using <code>tm_bubble</code> with the argument <code>size = frequency</code> so that it gives you a visual representation of their relative importance in the show.</p>
+<p>Woo! Okay, let’s go over what happened before wrapping this up. <code>tmap</code> operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: ‘westeros’ for the regions, ‘locations’ for the castles and manually added/subtracted places, and ‘holds’ for the capitals (which is just a subset of locations really). The <code>tm</code> parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by ‘ClaimedBy’, which would normally return the names of the Houses. However, that’s only the fill argument, and the text parameter in the next line calls ‘name’, which is the name of the regions (and what gets plotted). You can download <a href="https://fontmeme.com/fonts/game-of-thrones-font/">GoT fonts</a> for added ambiance. We pass our custom castle shape by calling <code>shape = castle</code> and remove the square borders around the .png with the <code>border.lwd = NA</code>. Finally, the <code>ymod</code> argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on <a href="https://github.com/ciflikli/website/tree/master/content/post">GitHub</a> and mess around! Idea: calculate term frequencies of location names using <code>quanteda</code> first and then pass them using <code>tm_bubbles</code> with the argument <code>size = frequency</code> so that it gives you a visual representation of their relative importance in the show.</p>
 </div>
 <div class="footnotes">
 <hr />
