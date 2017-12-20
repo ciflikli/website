@@ -1,0 +1,310 @@
+---
+title: Mining Game of Thrones Scripts with R
+author: Gokhan Ciflikli
+date: '2017-12-20'
+slug: game-of-thrones
+categories:
+  - R
+  - Visualization
+tags:
+  - R
+  - plot
+  - quanteda
+  - ggridges
+  - rvest
+description: "Evolution of Dany's Titles and mapping Westeros in R"
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+###Quantitative Text Analysis Part II
+
+I meant to showcase the `quanteda` package in my previous post on [the Weinstein Effect](https://www.gokhanciflikli.com/post/weinstein-effect/) but had to switch to `tidytext` at the last minute. Today I will make good on that promise. `quanteda` is developed by [Ken Benoit](http://kenbenoit.net/) and maintained by [Kohei Watanabe](https://koheiw.net/) - go LSE! On that note, the first [2018 LondonR meeting](http://www.londonr.org/) will be taking place at the LSE on January 16, so do drop by if you happen to be around. `quanteda` v1.0 will be unveiled there as well.
+
+Given that I have already used the data I had in mind, I have been trying to identify another interesting (and hopefully less depressing) dataset for this particular calling. Then it snowed in London, and the dire consequences of this supernatural phenomenon were covered extensively by the [r/CasualUK/](https://www.reddit.com/r/CasualUK/). One thing led to another, and before you know it I was analysing Game of Thrones scripts:
+
+![](https://image.ibb.co/cJpV0R/IMG_2223.jpg)
+
+He looks like he also hates the lack of native parallelism in R.
+
+###Getting the Scripts
+
+Mandatory spoilers tag, the rest of the post contains (surprise) spoilers (although only up until the end of the sixth season).
+
+I intend to keep to the organic three-step structure I have developed lately in my posts: obtaining data, showcasing a package, and visualising the end result. With GoT, there are two obvious avenues: full-text books or the show scripts. I decided to go with the show because I'm a filthy casual fan. A wise man once quipped: _'Never forget what you are. The rest of the world will not. Wear it like armor, and it can never be used to hurt you.'_  It's probably a Chinese proverb.
+
+Nowadays it's really easy to scrape interesting stuff online. `rvest` package is especially convenient to use. How it works is that you feed it a URL, it reads the html, you locate which html tag/class contains the information you want to extract, and finally it lets you clean up the text by removing the html bits. Let's do an example.
+
+Mighty Google told me that [this website](https://www.springfieldspringfield.co.uk) has GoT scripts online. Cool, let's fire up the very first episode. With any modern browser, you should be able to inspect the page to see the underlying code. If you hover where the text is located in inspection mode, you'll find that it's wrapped in 'scrolling-script-container' tags. This is not a general rule, so you'll probably have to do this every time you try to scrape a new website.
+
+```{r message = FALSE}
+library(rvest)
+library(tidyverse)
+url <- "https://www.springfieldspringfield.co.uk/view_episode_scripts.php?tv-show=game-of-thrones&episode=s01e01"
+webpage <- read_html(url)
+#note the dot before the node
+script <- webpage %>% html_node(".scrolling-script-container")
+full.text <- html_text(script, trim = TRUE)
+glimpse(full.text)
+```
+
+Alright, that got us the first episode. Sixty-something more to go! Let's set up and execute a for-loop in R because we like to live dangerously:
+
+```{r cache = TRUE}
+#Loop for getting all GoT scripts
+baseurl <- "https://www.springfieldspringfield.co.uk/view_episode_scripts.php?tv-show=game-of-thrones&episode="
+s <- c(rep(1:6, each = 10), rep(7, 7))
+season <- paste0("s0", s)
+ep <- c(rep(1:10, 6), 1:7)
+episode <- ifelse(ep < 10, paste0("e0", ep), paste0("e", ep))
+all.scripts <- NULL
+
+#Only the first 6 seasons
+for (i in 1:60) {
+  url <- paste0(baseurl, season[i], episode[i])
+  webpage <- read_html(url)
+  script <- webpage %>% html_node(".scrolling-script-container")
+  all.scripts[i] <- html_text(script, trim = TRUE)
+}
+```
+
+Now, the setup was done in a way to get all aired episodes, but the website does not currently have S07E01 (apparently they had an incident and still recovering data). We can find it somewhere else of course, however the point is not to analyse GoT in a complete way but to practice data science with R. So I'll just cut the loop short by only running it until the end of the sixth season. Let's see what we got:
+
+```{r}
+got <- as.data.frame(all.scripts, stringsAsFactors = FALSE)
+counter <- paste0(season, episode)
+row.names(got) <- counter[1:60]
+colnames(got) <- "text"
+as.tibble(got)
+```
+
+Those are the first sentences of the first ten GoT episodes - looks good! We won't worry about the backslash on line 7 for now. One quirk of this website is that they seem to have used small case L for capital I (e.g. "l'snt" in line 2 above) in some places. You can easily fix those with a string replacement solution; I'll let them be. Right, let's generate some numbers to go along with all this text.
+
+###Text Analysis with Quanteda
+
+As I covered n-grams in my previous post, I will try to diversify a bit. That should be doable -  `quanteda` offers a smooth ride and it has a nicely documented [website](http://docs.quanteda.io/reference/). Which is great, otherwise I don't think I'd have gotten into it! Let's transform our scripts dataset into a corpus. The `showmeta` argument should cut off the additional information you get at the end of a summary, however it doesn't work on my computer. Yet, we can manipulate the meta data manually as well:
+
+```{r}
+library(quanteda)
+got.corpus <- corpus(got)
+metacorpus(got.corpus, "source") <- "No peaking!"
+summary(got.corpus, 10, showmeta = FALSE)
+```
+
+I intentionally turned on the message option in the above chunk so that you can see `quanteda` is thoughtful enough to leave you with a single core for your _other_ computational purposes. The Night King certainly approves. You could also pass a `compress = TRUE` argument while creating a corpus, which is basically a trade-off between memory space and computation speed. We don't have that much text so it's not a necessity for us, but it's good to know that the option exists.
+
+When you do things for the first couple of times, it's good practice to conduct a couple of sanity checks. The `kwic` function, standing for 'keywords-in-context', returns a list of such words in their immediate context. This context is formally defined by the `window` argument, which is bi-directional and includes punctuation. If only there were sets of words in the GoT universe that are highly correlated with certain houses...
+
+```{r width = "400"}
+#Money money money
+kwic(got.corpus, phrase("always pays"), window = 2)
+
+#What's coming
+kwic(got.corpus, "winter", window = 3)
+```
+
+We find that these Lannister folks sound like they are the paying-back sort and this winter business had a wild ride before it finally arrived. However, our findings indicate many saw this coming.^[I'll see myself out.] Moving on, let's look at tokens. We'll get words, including n-grams up to three, and remove punctuation:
+
+```{r}
+got.tokens <- tokens(got.corpus, what = "word", ngrams = 1:3, remove_punct = TRUE)
+head(got.tokens[[7]], 15)
+```
+
+See, we didn't have to worry about the backslash after all.
+
+Tokens are good, however for the nitty-gritty, we want to convert our corpus into a document-feature matrix using the `dfm` function. After that, we can populate the top _n_ features by episode:
+
+```{r}
+got.dfm <- dfm(got.corpus, remove = stopwords("SMART"), remove_punct = TRUE)
+top.words <- topfeatures(got.dfm, n = 5,  groups = docnames(got.dfm))
+#S06E05
+top.words[55]
+```
+
+Sad times. One quick note - we removed stopwords using the SMART dictionary that comes with `quanteda`. We could also use `stopwords("english")` and several other languages. SMART differs from English somewhat, however both are arbitrary by design. You can call `stopwords("dictionary_name")` to see what they contain; these words will be ignored. Sometimes, you might want to tweak the dictionary if they happen to include words that you rather keep.
+
+Let's repeat the previous chunk, but this time we group by season. Recycle the season variable and re-do the corpus:
+
+```{r}
+#Include the season variable we constructed earlier
+got$season <- s[1:60]
+got.group.corpus <- corpus(got)
+got.group.dfm <- dfm(got.group.corpus, ngrams = 1:3, groups = "season",
+                     remove = stopwords("SMART"), remove_punct = TRUE)
+```
+
+One convenient feature of having a grouped corpus is that we can analyse temporal trends. Say, you are known by many names and/or happen to be fond of titles:
+
+```{r}
+dany <- c("daenerys", "stormborn", "khaleesi","the_unburnt",
+          "mhysa", "mother_of_dragons", "breaker_of_chains")
+titles <- got.group.dfm[, colnames(got.group.dfm) %in% dany]
+titles <- as.data.frame(titles)
+#Divide all cells with their row sums and round them up
+round(titles / rowSums(titles), 2)
+```
+
+Khaleesi dominates the first season (~80%), and it is her most one-sided title usage of any season. In S2, she gets the moniker of 'mother of dragons' in addition to khaleesi (25% and 55%, respectively). Seasons 3 and 4 are the most balanced, when she was known as khaleesi and mhysa somewhat equally (~35% both). In the last two seasons (in our dataset, at least), she is most commonly (>40%) called/mentioned by her actual name. This particular exercise would have definitely benefited from S7 scripts. You can refer to the titles object to see the raw counts rather than column percentages by row.
+
+Yet another thing we can calculate is term similarity and distance. Using `textstat_simil`, we can get the top _n_ words that are associated with it:
+
+```{r}
+sim <- textstat_simil(got.dfm, diag = TRUE, c("throne", "realm", "walkers"),
+                      method = "cosine", margin = "features")
+lapply(as.list(sim), head)
+```
+
+Shadowcats? White Walker pups?
+
+Finally, one last thing before we move on to the visualisations. We will model topic similarities and call it a package.^[Yes, `quanteda` can do wordclouds, but friends don't let friends use wordclouds.] We'll need `topicmodels`, and might as well write another for-loop (double-trouble). The below code is not evaluated here, but if you do, you'll find that GoT consistently revolves around lords, kings, the realm, men, and fathers with the occasional khaleesi thrown in.
+
+```{r eval = FALSE}
+library(topicmodels)
+for (i in 1:6) {
+  x <- 1
+  got.LDA <- LDA(convert(got.dfm[x:(x + 9), ], to = "topicmodels"),
+                 k = 3, method = "Gibbs")
+  topics <- get_terms(got.LDA, 4)
+  print(paste0("Season", i))
+  print(topics)
+  x <- x + 10
+}
+```
+
+###Joy Plots
+
+Numbers and Greek letters are cool, however you'll find that a well-made graph can convey a lot at a glance. `quanteda` readily offers several statistics that lend themselves very well to [Joy plots](https://i.ytimg.com/vi/V3Ioohi9aqE/maxresdefault.jpg). When you call summary on a corpus, it reports descriptives on type, tokens, and sentences. These are all counts, and the difference between a type and a token is that the former provides a count of distinct tokens: (a, b, c, c) is four tokens but three types.
+
+Let's recycle our corpus as a dataframe and clean it up. After that, we'll get rid of the redundant first column, followed by renaming the contents of the season variable and make sure it's a factor. Then, we'll calculate the average length of a sentence by dividing token count by the sentence count. Finally, we shall `gather` the spread-out variables of type, tokens, and sentences into a single 'term' and store their counts under 'frequency'. Usually one (i.e. who works with uncurated data) does the transformation the other way around; you `spread` a single variable into many to tidy it up - it's good to utilise this lesser-used form from time to time. Also, we are doing all of this just to be able to use the `facet_grid` argument: you can manually plot four separate graphs and display them together but that's not how we roll around here. 
+
+```{r, eval = FALSE}
+#Setup; first two lines are redundant if you populated them before
+got$season <- s[1:60]
+got.group.corpus <- corpus(got)
+got.stats <- as.data.frame(summary(got.group.corpus), row.names = 1:60)
+got.stats <- got.stats[, 2:5]
+got.stats$season <- paste0("Season ", got.stats$season)
+got.stats$season <- as.factor(got.stats$season)
+got.stats$`Average Sentence Length` <- got.stats$Token / got.stats$Sentences
+got.stats <- gather(got.stats, term, frequency, -season)
+means <- got.stats %>%
+          group_by(season, term) %>%
+            summarise(mean = floor(mean(frequency)))
+
+#Plot
+library(ggplot2)
+library(ggridges)
+library(viridis)
+#Refer to previous post for installing the below two
+library(silgelib)
+theme_set(theme_roboto())
+
+#counts by season data
+ ggplot(got.stats, aes(x = frequency, y = season)) +
+#add facets for type, tokens, sentences, and average
+  facet_grid(~term, scales = "free") +
+#add densities
+  geom_density_ridges(aes(fill = season)) +
+#assign colour palette; reversed legend if you decide to include one
+  scale_fill_viridis(discrete = TRUE, option = "D", direction = -1,
+                     guide = guide_legend(reverse = TRUE)) +
+#add season means at the bottom
+  geom_rug(data = means, aes(x = mean, group = season), alpha = .5, sides = "b") +
+  labs(title = "Game of Thrones (Show) Corpus Summary",
+       subtitle = "Episode Statistics Grouped by Season
+       Token: Word Count | Type: Unique Word Count | Sentence : Sentence Count | Sentence Length: Token / Sentence",
+       x = "Frequency", y = NULL) +
+#hide the colour palette legend and the grid lines
+  theme(legend.position = "none", panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+```
+
+![](https://image.ibb.co/hGrzum/joyplot.png)
+
+[Larger PDF version here.](/img/joyplot.pdf) Some remarks. Each ridge represents a season and contains counts from ten episodes. These are distributions, so sharp peaks indicate clustering and multiple peaks/gradual changes signal diffusion. For example, in the first column (sentence length), we see that S1 has three peaks: some episodes cluster around 9, some at 10.5 and others at slightly less than 12. In contrast, S5 average sentence length is very specific: nearly all episodes have a mean of 9 tokens/sentence.
+
+Moving on to the second column, we find that the number of sentences in episodes rise from S1 to S3, and then gradually go down all the way to S1 levels by the end of S6. Token and type counts follow similar trends. In other words, if we flip the coordinates, we would see a single peak between S3 and S4: increasing counts of individual terms as you get closer to the peak from both directions (i.e. from S1 to S3 and from S6 to S4), but also shorter average sentence lengths. We should be cautious about making strong inferences, however - we don't really have the means to account for the quality of writing. Longer sentences do not necessarily imply an increase in complexity, even coupled with higher numbers of type (unique words).
+
+###WesteRos
+
+In case you have seen cool `ggridges` plots before or generally are a not-so-easily-impressed (that counts as _one_ token, by the way) type, let's map Westeros in R. If you are also wondering why there is a [shapefile for Westeros](https://www.cartographersguild.com/showthread.php?t=30472) in the first place, that makes two of us. But don't let these kinds of things stop you from doing data science.
+
+The zip file contains several shapefiles; I will only read in 'political' and 'locations'. You will need these files (all of them sharing the same name, not just the .shp file) in your working directory so that you can call it with `"."`. The spatial data come as factors, and I made some arbitrary modifications to them (mostly for aesthetics). First, in the original file the Night's Watch controls two regions: New Gift and Bran's Gift. I removed one an renamed the other "The Wall". Spatial data frames are S4 objects so you need to call `@data$` instead of the regular `$`.
+
+Second, let's identify the capitals of the regions and set a custom .png icon so that we can differentiate them on the map. At this point, I realised the shapefile does not have an entry for Casterly Rock - maybe they haven't paid back the creator yet? We'll have to do without it for now. Third, let's manually add in some of the cool places by placing them in a vector called 'interesting'. Conversely, we shall get rid of some so that they do not overlap with region names ('intheway'). I'm using a `%nin` operator (not in) that comes with `Hmisc`, but there are other ways of doing it. Finally, using `RColorBrewer` I assigned a bunch of reds and blues - `viridis` looked a bit odd next to the colour of the sea.
+
+```{r eval = FALSE}
+library(Hmisc)
+library(rgdal)
+library(tmap)
+library(RColorBrewer)
+
+#Read in two shapefiles
+westeros <- readOGR(".", "political")
+locations <- readOGR(".", "locations")
+
+#Cleaning factor levels
+westeros@data$name <- `levels<-`(addNA(westeros@data$name),
+                                 c(levels(westeros@data$name),
+                                   "The Lands of Always Winter"))
+levels(westeros@data$name)[1] <- "The Wall"
+levels(westeros@data$name)[4] <- ""
+levels(westeros@data$ClaimedBy)[11] <- "White Walkers"
+
+#Identify capitals
+places <- as.character(locations@data$name)
+places <- gsub(" ", "_", places)
+capitals <- c("Winterfell", "The Eyrie", "Harrenhal", "Sunspear",
+              "King's Landing", "Castle Black", "Pyke",
+              "Casterly Rock", "Storm's End", "Highgarden")
+holds <- locations[locations@data$name %in% capitals, ]
+
+#Castle icon
+castle <- tmap_icons(file = "https://image.ibb.co/kykHfR/castle.png", keep.asp = TRUE)
+
+#Locations we rather keep
+interesting <- c("Fist of the First Men", "King's Landing",
+                 "Craster's Keep", "Tower of Joy")
+
+#Locations we rather get rid of
+intheway <- c("Sarsfield", "Hornvale", "Cider Hall",
+              "Hayford Castle", "Griffin's Roost")
+
+#Subsetting
+locations <- locations[locations@data$type == "Castle" |
+                       locations@data$name %in% interesting, ]
+locations <- locations[locations@data$name %nin% intheway, ]
+
+#Color palettes - the hard way
+blues <- brewer.pal(6, "Blues")
+reds <- brewer.pal(7, "Reds")
+sorted <- c(blues[3], reds[4], blues[4], reds[2], reds[6],
+            #vale, stormlands, iron islands, westerlands, dorne
+            blues[6], blues[5], reds[3], reds[1], reds[5], blues[1])
+            #wall, winterfell, crownsland, riverlands, reach, beyond the wall
+
+#Map
+tm_shape(westeros) +
+#Colour regions using the sorted palette and plot their names
+  tm_fill("ClaimedBy", palette = sorted) +
+  tm_text("name", fontfamily = "Game of Thrones", size = .4, alpha = .6) +
+#Plot location names and put a dot above them
+tm_shape(locations) +
+  tm_text("name", size = .2, fontfamily = "Roboto Condensed", just = "top") +
+  tm_dots("name", size = .01, shape = 20, col = "black", ymod = .1) +
+#Plot capitals and add custom shape
+tm_shape(holds) +
+  tm_dots("name", size = .05, alpha = .5, shape = castle, border.lwd = NA, ymod = .2) + 
+#Fluff
+tm_compass(type = "8star", position = c("right", "top"), size = 1.5) +
+tm_layout(bg.color = "lightblue", main.title = "Westeros", frame.lwd = 2,
+          fontfamily = "Game of Thrones") +
+tm_legend(show = FALSE)
+```
+
+![](https://image.ibb.co/fWZSx6/westeros.png)
+
+Download the map in [PDF.](/img/westeros.pdf)
+
+Woo! Okay, let's go over what happened before wrapping this up. `tmap` operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: 'westeros' for the regions, 'locations' for the castles and manually added/subtracted places, and 'holds' for the capitals (which is just a subset of locations really). The `tm` parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by 'ClaimedBy', which would normally return the names of the Houses. However, that's only the fill argument, and the text parameter in the next line calls 'name', which is the name of the regions (and what gets plotted). You can download [GoT fonts](https://fontmeme.com/fonts/game-of-thrones-font/) for added ambiance. We pass our custom castle shape by calling `shape = castle` and remove the square borders around the .png with the `border.lwd = NA`. Finally, the `ymod` argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on [GitHub](https://github.com/ciflikli/website/tree/master/content/post) and mess around! Idea: calculate term frequencies of location names using `quanteda` first and then pass them using `tm_bubble` with the argument `size = frequency` so that it gives you a visual representation of their relative importance in the show.
