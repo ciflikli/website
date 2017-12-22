@@ -109,7 +109,7 @@ summary(got.corpus, 10, showmeta = FALSE)</code></pre>
 ##  s01e10  1094   4804       418
 ## 
 ## Source:  No peaking!
-## Created: Wed Dec 20 22:09:06 2017
+## Created: Fri Dec 22 09:31:23 2017
 ## Notes:</code></pre>
 <p>I intentionally turned on the message option in the above chunk so that you can see <code>quanteda</code> is thoughtful enough to leave you with a single core for your <em>other</em> computational purposes. The Night King certainly approves. You could also pass a <code>compress = TRUE</code> argument while creating a corpus, which is basically a trade-off between memory space and computation speed. We don’t have that much text so it’s not a necessity for us, but it’s good to know that the option exists.</p>
 <p>When you do things for the first couple of times, it’s good practice to conduct a couple of sanity checks. The <code>kwic</code> function, standing for ‘keywords-in-context’, returns a list of such words in their immediate context. This context is formally defined by the <code>window</code> argument, which is bi-directional and includes punctuation. If only there were sets of words in the GoT universe that are highly correlated with certain houses…</p>
@@ -375,7 +375,7 @@ tm_legend(show = FALSE)</code></pre>
 <img src="https://image.ibb.co/fWZSx6/westeros.png" />
 
 </div>
-<p>Download the map in <a href="/img/westeros.pdf">PDF.</a></p>
+<p>Download the map in <a href="/img/westeros_hires.png">hi-res</a>.</p>
 <p>Woo! Okay, let’s go over what happened before wrapping this up. <code>tmap</code> operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: ‘westeros’ for the regions, ‘locations’ for the castles and manually added/subtracted places, and ‘holds’ for the capitals (which is just a subset of locations really). The <code>tm</code> parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by ‘ClaimedBy’, which would normally return the names of the Houses. However, that’s only the fill argument, and the text parameter in the next line calls ‘name’, which is the name of the regions (and what gets plotted). You can download <a href="https://fontmeme.com/fonts/game-of-thrones-font/">GoT fonts</a> for added ambiance. We pass our custom castle shape by calling <code>shape = castle</code> and remove the square borders around the .png with the <code>border.lwd = NA</code>. Finally, the <code>ymod</code> argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on <a href="https://github.com/ciflikli/website/tree/master/content/post">GitHub</a> and mess around! Idea: calculate term frequencies of location names using <code>quanteda</code> first and then pass them using <code>tm_bubbles</code> with the argument <code>size = frequency</code> so that it gives you a visual representation of their relative importance in the show.</p>
 </div>
 <div class="footnotes">
