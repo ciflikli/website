@@ -230,9 +230,9 @@ Moving on to the second column, we find that the number of sentences in episodes
 
 In case you have seen cool `ggridges` plots before or generally are a not-so-easily-impressed (that counts as _one_ token, by the way) type, let's map Westeros in R. If you are also wondering why there is a [shapefile for Westeros](https://www.cartographersguild.com/showthread.php?t=30472) in the first place, that makes two of us. But don't let these kinds of things stop you from doing data science.
 
-The zip file contains several shapefiles; I will only read in 'political' and 'locations'. You will need these files (all of them sharing the same name, not just the .shp file) in your working directory so that you can call it with `"."`. The spatial data come as factors, and I made some arbitrary modifications to them (mostly for aesthetics). First, in the original file the Night's Watch controls two regions: New Gift and Bran's Gift. I removed one an renamed the other "The Wall". Spatial data frames are S4 objects so you need to call `@data$` instead of the regular `$`.
+The zip file contains several shapefiles; I will only read in 'political' and 'locations'. You will need these files (all of them sharing the same name, not just the .shp file) in your working directory so that you can call it with `"."`. The spatial data come as factors, and I made some arbitrary modifications to them (mostly for aesthetics). First, in the original file the Night's Watch controls two regions: New Gift and Bran's Gift. I removed one and renamed the other "The Wall". Spatial data frames are S4 objects so you need to call `@data$` instead of the regular `$`.
 
-Second, let's identify the capitals of the regions and set a custom .png icon so that we can differentiate them on the map. At this point, I realised the shapefile does not have an entry for Casterly Rock - maybe they haven't paid back the creator yet? We'll have to do without it for now. Third, let's manually add in some of the cool places by placing them in a vector called 'interesting'. Conversely, we shall get rid of some so that they do not overlap with region names ('intheway'). I'm using a `%nin` operator (not in) that comes with `Hmisc`, but there are other ways of doing it. Finally, using `RColorBrewer` I assigned a bunch of reds and blues - `viridis` looked a bit odd next to the colour of the sea.
+Second, let's identify the capitals of the regions and set a custom .png icon so that we can differentiate them on the map. At this point, I realised the shapefile does not have an entry for Casterly Rock - maybe they haven't paid back the creator yet? We'll have to do without it for now. Third, let's manually add in some of the cool places by placing them in a vector called 'interesting'. Conversely, we shall get rid of some so that they do not overlap with region names ('intheway'). I'm using the `%nin` operator (not in) that comes with `Hmisc`, but there are other ways of doing it. Finally, using `RColorBrewer` I assigned a bunch of reds and blues - `viridis` looked a bit odd next to the colour of the sea.
 
 ```{r eval = FALSE}
 library(Hmisc)
@@ -269,12 +269,13 @@ interesting <- c("Fist of the First Men", "King's Landing",
 
 #Locations we rather get rid of
 intheway <- c("Sarsfield", "Hornvale", "Cider Hall",
-              "Hayford Castle", "Griffin's Roost")
+              "Hayford Castle", "Griffin's Roost", "Vulture's Roost")
 
-#Subsetting
+#Subsetting for keeping only "castles" and interesting places
 locations <- locations[locations@data$type == "Castle" |
                        locations@data$name %in% interesting, ]
-locations <- locations[locations@data$name %nin% intheway, ]
+#Subsetting for places in the way and capitals - we will plot them with the holds layer
+locations <- locations[locations@data$name %nin% c(intheway, capitals), ]
 
 #Color palettes - the hard way
 blues <- brewer.pal(6, "Blues")
@@ -285,26 +286,31 @@ sorted <- c(blues[3], reds[4], blues[4], reds[2], reds[6],
             #wall, winterfell, crownsland, riverlands, reach, beyond the wall
 
 #Map
-tm_shape(westeros) +
+m <- tm_shape(westeros) +
 #Colour regions using the sorted palette and plot their names
-  tm_fill("ClaimedBy", palette = sorted) +
-  tm_text("name", fontfamily = "Game of Thrones", size = .4, alpha = .6) +
+      tm_fill("ClaimedBy", palette = sorted) +
+      tm_text("name", fontfamily = "Game of Thrones", size = .4, alpha = .6) +
 #Plot location names and put a dot above them
-tm_shape(locations) +
-  tm_text("name", size = .2, fontfamily = "Roboto Condensed", just = "top") +
-  tm_dots("name", size = .01, shape = 20, col = "black", ymod = .1) +
+     tm_shape(locations) +
+      tm_text("name", size = .2, fontfamily = "Roboto Condensed", just = "top") +
+      tm_dots("name", size = .01, shape = 20, col = "black", ymod = .1) +
 #Plot capitals and add custom shape
-tm_shape(holds) +
-  tm_dots("name", size = .05, alpha = .5, shape = castle, border.lwd = NA, ymod = .2) + 
+     tm_shape(holds) +
+      tm_text("name", size = .25, fontfamily = "Roboto Condensed") +
+      tm_dots("name", size = .05, alpha = .5, shape = castle, border.lwd = NA, ymod = .3) + 
 #Fluff
-tm_compass(type = "8star", position = c("right", "top"), size = 1.5) +
-tm_layout(bg.color = "lightblue", main.title = "Westeros", frame.lwd = 2,
+     tm_compass(type = "8star", position = c("right", "top"), size = 1.5) +
+     tm_layout(bg.color = "lightblue", main.title = "Westeros", frame.lwd = 2,
           fontfamily = "Game of Thrones") +
-tm_legend(show = FALSE)
+     tm_legend(show = FALSE)
+m
+
+#Code for hi-res version
+#save_tmap(m, "westeros_hires.png", dpi = 300, asp = 0, height = 30, scale = 3)
 ```
 
 ![](https://image.ibb.co/fWZSx6/westeros.png)
 
 Download the map in [hi-res](/img/westeros_hires.png).
 
-Woo! Okay, let's go over what happened before wrapping this up. `tmap` operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: 'westeros' for the regions, 'locations' for the castles and manually added/subtracted places, and 'holds' for the capitals (which is just a subset of locations really). The `tm` parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by 'ClaimedBy', which would normally return the names of the Houses. However, that's only the fill argument, and the text parameter in the next line calls 'name', which is the name of the regions (and what gets plotted). You can download [GoT fonts](https://fontmeme.com/fonts/game-of-thrones-font/) for added ambiance. We pass our custom castle shape by calling `shape = castle` and remove the square borders around the .png with the `border.lwd = NA`. Finally, the `ymod` argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on [GitHub](https://github.com/ciflikli/website/tree/master/content/post) and mess around! Idea: calculate term frequencies of location names using `quanteda` first and then pass them using `tm_bubbles` with the argument `size = frequency` so that it gives you a visual representation of their relative importance in the show.
+Woo! Okay, let's go over what happened before wrapping this up. `tmap` operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: 'westeros' for the regions, 'locations' for the castles and manually added/subtracted places, and 'holds' for the capitals (which is really just a subset of locations). The `tm` parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by 'ClaimedBy', which would normally return the names of the Houses. However, that's only the fill argument, and the text parameter in the next line calls 'name', which is the name of the regions (and what gets plotted). You can download [GoT fonts](https://fontmeme.com/fonts/game-of-thrones-font/) for added ambiance. We pass our custom castle shape by calling `shape = castle` and remove the square borders around the .png with the `border.lwd = NA`. Finally, the `ymod` argument helps us avoid overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on [GitHub](https://github.com/ciflikli/website/tree/master/content/post) and mess around! Idea: calculate term frequencies of location names using `quanteda` first and then pass them using `tm_bubbles` with the argument `size = frequency` so that it gives you a visual representation of their relative importance in the show.

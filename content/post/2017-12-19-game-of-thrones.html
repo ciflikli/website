@@ -109,7 +109,7 @@ summary(got.corpus, 10, showmeta = FALSE)</code></pre>
 ##  s01e10  1094   4804       418
 ## 
 ## Source:  No peaking!
-## Created: Fri Dec 22 09:31:23 2017
+## Created: Fri Dec 22 19:57:14 2017
 ## Notes:</code></pre>
 <p>I intentionally turned on the message option in the above chunk so that you can see <code>quanteda</code> is thoughtful enough to leave you with a single core for your <em>other</em> computational purposes. The Night King certainly approves. You could also pass a <code>compress = TRUE</code> argument while creating a corpus, which is basically a trade-off between memory space and computation speed. We don’t have that much text so it’s not a necessity for us, but it’s good to know that the option exists.</p>
 <p>When you do things for the first couple of times, it’s good practice to conduct a couple of sanity checks. The <code>kwic</code> function, standing for ‘keywords-in-context’, returns a list of such words in their immediate context. This context is formally defined by the <code>window</code> argument, which is bi-directional and includes punctuation. If only there were sets of words in the GoT universe that are highly correlated with certain houses…</p>
@@ -208,20 +208,20 @@ titles &lt;- got.group.dfm[, colnames(got.group.dfm) %in% dany]
 titles &lt;- as.data.frame(titles)
 #Divide all cells with their row sums and round them up
 round(titles / rowSums(titles), 2)</code></pre>
-<pre><code>##   daenerys stormborn khaleesi mhysa mother_of_dragons breaker_of_chains
-## 1     0.20      0.02     0.78  0.00              0.00              0.00
-## 2     0.13      0.08     0.54  0.00              0.25              0.00
-## 3     0.11      0.11     0.35  0.35              0.05              0.03
-## 4     0.19      0.04     0.30  0.44              0.04              0.00
-## 5     0.46      0.04     0.04  0.31              0.15              0.00
-## 6     0.41      0.16     0.09  0.06              0.16              0.09
-##   the_unburnt
-## 1        0.00
-## 2        0.00
-## 3        0.00
-## 4        0.00
-## 5        0.00
-## 6        0.03</code></pre>
+<pre><code>##   daenerys stormborn khaleesi mhysa mother_of_dragons the_unburnt
+## 1     0.20      0.02     0.78  0.00              0.00        0.00
+## 2     0.13      0.08     0.54  0.00              0.25        0.00
+## 3     0.11      0.11     0.35  0.35              0.05        0.00
+## 4     0.19      0.04     0.30  0.44              0.04        0.00
+## 5     0.46      0.04     0.04  0.31              0.15        0.00
+## 6     0.41      0.16     0.09  0.06              0.16        0.03
+##   breaker_of_chains
+## 1              0.00
+## 2              0.00
+## 3              0.03
+## 4              0.00
+## 5              0.00
+## 6              0.09</code></pre>
 <p>Khaleesi dominates the first season (~80%), and it is her most one-sided title usage of any season. In S2, she gets the moniker of ‘mother of dragons’ in addition to khaleesi (25% and 55%, respectively). Seasons 3 and 4 are the most balanced, when she was known as khaleesi and mhysa somewhat equally (~35% both). In the last two seasons (in our dataset, at least), she is most commonly (&gt;40%) called/mentioned by her actual name. This particular exercise would have definitely benefited from S7 scripts. You can refer to the titles object to see the raw counts rather than column percentages by row.</p>
 <p>Yet another thing we can calculate is term similarity and distance. Using <code>textstat_simil</code>, we can get the top <em>n</em> words that are associated with it:</p>
 <pre class="r"><code>sim &lt;- textstat_simil(got.dfm, diag = TRUE, c(&quot;throne&quot;, &quot;realm&quot;, &quot;walkers&quot;),
@@ -303,8 +303,8 @@ theme_set(theme_roboto())
 <div id="westeros" class="section level3">
 <h3>WesteRos</h3>
 <p>In case you have seen cool <code>ggridges</code> plots before or generally are a not-so-easily-impressed (that counts as <em>one</em> token, by the way) type, let’s map Westeros in R. If you are also wondering why there is a <a href="https://www.cartographersguild.com/showthread.php?t=30472">shapefile for Westeros</a> in the first place, that makes two of us. But don’t let these kinds of things stop you from doing data science.</p>
-<p>The zip file contains several shapefiles; I will only read in ‘political’ and ‘locations’. You will need these files (all of them sharing the same name, not just the .shp file) in your working directory so that you can call it with <code>&quot;.&quot;</code>. The spatial data come as factors, and I made some arbitrary modifications to them (mostly for aesthetics). First, in the original file the Night’s Watch controls two regions: New Gift and Bran’s Gift. I removed one an renamed the other “The Wall”. Spatial data frames are S4 objects so you need to call <code>@data$</code> instead of the regular <code>$</code>.</p>
-<p>Second, let’s identify the capitals of the regions and set a custom .png icon so that we can differentiate them on the map. At this point, I realised the shapefile does not have an entry for Casterly Rock - maybe they haven’t paid back the creator yet? We’ll have to do without it for now. Third, let’s manually add in some of the cool places by placing them in a vector called ‘interesting’. Conversely, we shall get rid of some so that they do not overlap with region names (‘intheway’). I’m using a <code>%nin</code> operator (not in) that comes with <code>Hmisc</code>, but there are other ways of doing it. Finally, using <code>RColorBrewer</code> I assigned a bunch of reds and blues - <code>viridis</code> looked a bit odd next to the colour of the sea.</p>
+<p>The zip file contains several shapefiles; I will only read in ‘political’ and ‘locations’. You will need these files (all of them sharing the same name, not just the .shp file) in your working directory so that you can call it with <code>&quot;.&quot;</code>. The spatial data come as factors, and I made some arbitrary modifications to them (mostly for aesthetics). First, in the original file the Night’s Watch controls two regions: New Gift and Bran’s Gift. I removed one and renamed the other “The Wall”. Spatial data frames are S4 objects so you need to call <code>@data$</code> instead of the regular <code>$</code>.</p>
+<p>Second, let’s identify the capitals of the regions and set a custom .png icon so that we can differentiate them on the map. At this point, I realised the shapefile does not have an entry for Casterly Rock - maybe they haven’t paid back the creator yet? We’ll have to do without it for now. Third, let’s manually add in some of the cool places by placing them in a vector called ‘interesting’. Conversely, we shall get rid of some so that they do not overlap with region names (‘intheway’). I’m using the <code>%nin</code> operator (not in) that comes with <code>Hmisc</code>, but there are other ways of doing it. Finally, using <code>RColorBrewer</code> I assigned a bunch of reds and blues - <code>viridis</code> looked a bit odd next to the colour of the sea.</p>
 <pre class="r"><code>library(Hmisc)
 library(rgdal)
 library(tmap)
@@ -339,12 +339,13 @@ interesting &lt;- c(&quot;Fist of the First Men&quot;, &quot;King&#39;s Landing&
 
 #Locations we rather get rid of
 intheway &lt;- c(&quot;Sarsfield&quot;, &quot;Hornvale&quot;, &quot;Cider Hall&quot;,
-              &quot;Hayford Castle&quot;, &quot;Griffin&#39;s Roost&quot;)
+              &quot;Hayford Castle&quot;, &quot;Griffin&#39;s Roost&quot;, &quot;Vulture&#39;s Roost&quot;)
 
-#Subsetting
+#Subsetting for keeping only &quot;castles&quot; and interesting places
 locations &lt;- locations[locations@data$type == &quot;Castle&quot; |
                        locations@data$name %in% interesting, ]
-locations &lt;- locations[locations@data$name %nin% intheway, ]
+#Subsetting for places in the way and capitals - we will plot them with the holds layer
+locations &lt;- locations[locations@data$name %nin% c(intheway, capitals), ]
 
 #Color palettes - the hard way
 blues &lt;- brewer.pal(6, &quot;Blues&quot;)
@@ -355,28 +356,33 @@ sorted &lt;- c(blues[3], reds[4], blues[4], reds[2], reds[6],
             #wall, winterfell, crownsland, riverlands, reach, beyond the wall
 
 #Map
-tm_shape(westeros) +
+m &lt;- tm_shape(westeros) +
 #Colour regions using the sorted palette and plot their names
-  tm_fill(&quot;ClaimedBy&quot;, palette = sorted) +
-  tm_text(&quot;name&quot;, fontfamily = &quot;Game of Thrones&quot;, size = .4, alpha = .6) +
+      tm_fill(&quot;ClaimedBy&quot;, palette = sorted) +
+      tm_text(&quot;name&quot;, fontfamily = &quot;Game of Thrones&quot;, size = .4, alpha = .6) +
 #Plot location names and put a dot above them
-tm_shape(locations) +
-  tm_text(&quot;name&quot;, size = .2, fontfamily = &quot;Roboto Condensed&quot;, just = &quot;top&quot;) +
-  tm_dots(&quot;name&quot;, size = .01, shape = 20, col = &quot;black&quot;, ymod = .1) +
+     tm_shape(locations) +
+      tm_text(&quot;name&quot;, size = .2, fontfamily = &quot;Roboto Condensed&quot;, just = &quot;top&quot;) +
+      tm_dots(&quot;name&quot;, size = .01, shape = 20, col = &quot;black&quot;, ymod = .1) +
 #Plot capitals and add custom shape
-tm_shape(holds) +
-  tm_dots(&quot;name&quot;, size = .05, alpha = .5, shape = castle, border.lwd = NA, ymod = .2) + 
+     tm_shape(holds) +
+      tm_text(&quot;name&quot;, size = .25, fontfamily = &quot;Roboto Condensed&quot;) +
+      tm_dots(&quot;name&quot;, size = .05, alpha = .5, shape = castle, border.lwd = NA, ymod = .3) + 
 #Fluff
-tm_compass(type = &quot;8star&quot;, position = c(&quot;right&quot;, &quot;top&quot;), size = 1.5) +
-tm_layout(bg.color = &quot;lightblue&quot;, main.title = &quot;Westeros&quot;, frame.lwd = 2,
+     tm_compass(type = &quot;8star&quot;, position = c(&quot;right&quot;, &quot;top&quot;), size = 1.5) +
+     tm_layout(bg.color = &quot;lightblue&quot;, main.title = &quot;Westeros&quot;, frame.lwd = 2,
           fontfamily = &quot;Game of Thrones&quot;) +
-tm_legend(show = FALSE)</code></pre>
+     tm_legend(show = FALSE)
+m
+
+#Code for hi-res version
+#save_tmap(m, &quot;westeros_hires.png&quot;, dpi = 300, asp = 0, height = 30, scale = 3)</code></pre>
 <div class="figure">
 <img src="https://image.ibb.co/fWZSx6/westeros.png" />
 
 </div>
 <p>Download the map in <a href="/img/westeros_hires.png">hi-res</a>.</p>
-<p>Woo! Okay, let’s go over what happened before wrapping this up. <code>tmap</code> operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: ‘westeros’ for the regions, ‘locations’ for the castles and manually added/subtracted places, and ‘holds’ for the capitals (which is just a subset of locations really). The <code>tm</code> parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by ‘ClaimedBy’, which would normally return the names of the Houses. However, that’s only the fill argument, and the text parameter in the next line calls ‘name’, which is the name of the regions (and what gets plotted). You can download <a href="https://fontmeme.com/fonts/game-of-thrones-font/">GoT fonts</a> for added ambiance. We pass our custom castle shape by calling <code>shape = castle</code> and remove the square borders around the .png with the <code>border.lwd = NA</code>. Finally, the <code>ymod</code> argument helps us overcome overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on <a href="https://github.com/ciflikli/website/tree/master/content/post">GitHub</a> and mess around! Idea: calculate term frequencies of location names using <code>quanteda</code> first and then pass them using <code>tm_bubbles</code> with the argument <code>size = frequency</code> so that it gives you a visual representation of their relative importance in the show.</p>
+<p>Woo! Okay, let’s go over what happened before wrapping this up. <code>tmap</code> operates similarly to ggplot grammar, so it should be understandable (relatively speaking). We are calling three shapefiles here: ‘westeros’ for the regions, ‘locations’ for the castles and manually added/subtracted places, and ‘holds’ for the capitals (which is really just a subset of locations). The <code>tm</code> parameters (fill, text, dots) under these shapes handle the actual plotting. For example, under westeros, we fill the regions by ‘ClaimedBy’, which would normally return the names of the Houses. However, that’s only the fill argument, and the text parameter in the next line calls ‘name’, which is the name of the regions (and what gets plotted). You can download <a href="https://fontmeme.com/fonts/game-of-thrones-font/">GoT fonts</a> for added ambiance. We pass our custom castle shape by calling <code>shape = castle</code> and remove the square borders around the .png with the <code>border.lwd = NA</code>. Finally, the <code>ymod</code> argument helps us avoid overlapping labels by slightly moving them up in the y-axis. Feel free to fork the code for this post on <a href="https://github.com/ciflikli/website/tree/master/content/post">GitHub</a> and mess around! Idea: calculate term frequencies of location names using <code>quanteda</code> first and then pass them using <code>tm_bubbles</code> with the argument <code>size = frequency</code> so that it gives you a visual representation of their relative importance in the show.</p>
 </div>
 <div class="footnotes">
 <hr />
