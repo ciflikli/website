@@ -555,7 +555,7 @@ Post List
 #post-list a {
     color: #333;
     display: block;
-    font: 18px/1.7 "Avenir", helvetica, Arial, sans-serif;
+    font: 18px/1.4 "Avenir", helvetica, Arial, sans-serif;
 }
 
 #post-list .dates {
@@ -891,8 +891,8 @@ h2.month {
     color: #5694f1;
 }
 
-.fa.fa-heart:hover {
-    color: #ff3356;
+.fas.fa-coffee:hover {
+    color: #f05bab;
     transition: 0.7s ease-out;
     cursor: pointer;
 }
