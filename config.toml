@@ -40,8 +40,7 @@ protocol = "https://"
   shareOnFacebook = true
 
 [social]
-  envelope-square = "mailto:g.ciflikli@lse.ac.uk"
+
   github-square = "https://github.com/ciflikli"
-  linkedin-square = "https://www.linkedin.com/in/gokhan-ciflikli/"
-  #facebook-square = "https://www.facebook.com/g.ciflikli"
+  linkedin = "https://www.linkedin.com/in/gokhan-ciflikli/"
   twitter-square = "https://www.twitter.com/gokhan_ciflikli"

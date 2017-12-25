@@ -116,13 +116,14 @@ html, body {
 }
 
 body {
-    font: 16px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 300 16px/1.4em "Avenir", Helvetica, Arial, sans-serif;
     color: #666;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
 
 h1 {
+    font: 300 32px/1.4em "Avenir";
     font-size: 30px;
     letter-spacing: -1px;
     color: #222;
@@ -377,7 +378,8 @@ em, i {
 	margin-top: 20px;
     margin-bottom: 20px;
     color: #222;
-    font: 300 32px/1.4em "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 300 32px/1.4em "Avenir", Helvetica, Arial, sans-serif;
+    font-weight: bold;
 }
 
 .post h2 {
@@ -553,14 +555,14 @@ Post List
 #post-list a {
     color: #333;
     display: block;
-    /*font: bold 19px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif; */
+    font: 18px/1.7 "Avenir", helvetica, Arial, sans-serif;
 }
 
 #post-list .dates {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.8 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 17px/1.8 "Avenir", helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -730,7 +732,7 @@ h2.month {
 
 #archive-list a {
     display: block;
-    font: bold 17px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: bold 17px/1.7 "Avenir", helvetica, Arial, sans-serif;
     color: #333;
 }
 
@@ -738,7 +740,7 @@ h2.month {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.7 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 17px/1.7 "Avenir", helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -761,12 +763,12 @@ h2.month {
 }
 
 #post-list.archive.readmore h3 {
-    font: 400 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 400 20px "Avenir", Helvetica, Arial, sans-serif;
     margin-bottom: 30px;
 }
 
 #post-list.archive.readmore a {
-    font: 400 16px/1.6 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 400 16px/1.6 "Avenir", helvetica, Arial, sans-serif;
     color: #5694f1;
 }
 
@@ -895,6 +897,18 @@ h2.month {
     cursor: pointer;
 }
 
+.fa, .fas {
+    color: #5badf0;
+    font-weight: 900;
+}
+
+.fab:hover {
+  color: #5badf0;
+}
+
+.fab {
+  color: #6db6f1;
+}
 
 /* CUSTOM ADDITIONS */
 
@@ -980,7 +994,7 @@ a.symbol:hover {
 }
 
 .page-tags .tags {
-    font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: "Avenir", Helvetica, Arial, sans-serif;
     margin: 10px 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
