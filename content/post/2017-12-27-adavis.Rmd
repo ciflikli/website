@@ -50,7 +50,7 @@ us <- statebins(data[data$Year == 1962 & data$Chamber == 1 & data$Party == "Demo
           theme(axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank(),
                 panel.grid.minor = element_blank(), panel.grid.major = element_blank(),
                 panel.background = element_rect(fill = "white", linetype = "blank"),
-                legend.position = c(.075, .85), legend.direction = "horizontal",
+                legend.position = c(.075, .85),
                 legend.text = element_text(colour = "#232d33", size = 14),
                 legend.title = element_text(colour = "#232d33", size = 18),
                 legend.key.height = grid::unit(.01, "snpc"),
