@@ -1,0 +1,197 @@
+---
+title: 'Quantitative Story Telling with Shiny: Gender Bias in Syllabi'
+author: Gokhan Ciflikli
+date: '2018-01-10'
+slug: lse-gender
+categories:
+  - R
+  - Visualization
+tags:
+  - bokeh
+  - bubbles
+  - htmlwidgets
+  - R
+  - shinydashboard
+  - sunburstR
+
+description: 'Interactive visualisations of author gender breakdown in LSE IR reading lists'
+---
+
+
+
+<div id="lse-ir-gender-and-diversity-project" class="section level3">
+<h3>LSE IR Gender <del>and Diversity</del> Project</h3>
+<p>Two <code>shinydashboard</code> posts in a row, that’s a first. As I mentioned on Twitter, I’m not really this productive; rather, the apps had been on the proverbial shelf for a while and I’m just releasing them now. In fact, this is one of my earlier works: quantifying the gender imbalance as it manifests itself in the LSE International Relations (IR) reading lists. You can access the app <a href="https://gokhan.shinyapps.io/gender/">here</a>.</p>
+<p>This is a much larger project that I got involved during its second year, so I’m just visualising other peoples’ hard work.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> The recentness of my contribution to the project was clearly on display when I amused my audience by saying cross-sectional feminism instead of inter-sectional. <em>Are you a statistician or what?</em> Baby steps.</p>
+<p>In a nutshell, about twenty or so PhD candidates at the department manually (!) scraped the reading lists of 43 courses that were on offer during the 2015-2016 academic year, resulting in a dataset containing 12,358 non-unique publications.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Of those, 2,574 involves at least one female author, while 9,784 features at least one male author. Morevoer, 81% of the syllabi is written exclusively by male scholars.</p>
+<p>Recently, I have been working on a talk proposal about (Shiny) design, so I will let some of those guidelines dictate the structure for the rest of this post. I will touch upon three main themes: i) how to emphasise contrast and make a point out of it, ii) how to unpack the whole and present disaggregated data, and iii) how to design useful interactivity that connects with your intended audience. As usual, there will be sprinkles of random thoughts and semi-relevant sidetracking in between.</p>
+<p>On that note, this project used to be (still?) called the Gender and Diversity Project. You may have noticed that I struck through the latter bit in the title. Well, when I ran the classification models - predicting binary outcomes as male/female,<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> diverse/not diverse etc. - two things stuck out. First, if you do not subsample, the sheer male dominance of the field will result in lazy models that are &gt;90% accurate: it will always predict male, and will be correct most of the time (especially when you subset the data). Naturally, this is uninformative.</p>
+<p>However, the second point eclipses the first: when you try to predict diversity, well, you can’t. Because even though women are severely under-represented (leading to lazy algorithms), <em>everyone</em> is white. You can’t even make a cross-section joke anymore. Another unintended side effect of this is that if you rely on an API like <a href="https://genderize.io/">genderize</a>, you don’t have to worry about whether it will work well on, say, an Indian name. Feel free to make your own inferences about the state of the discipline.</p>
+</div>
+<div id="visualising-contrast" class="section level3">
+<h3>Visualising Contrast</h3>
+<p>On that uplifting note, let’s move on to the first theme: contrast. What I mean by contrast here is striking difference, or difference in juxtaposition; not the graphical design contrast/hue/saturation.<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> Given the subject matter, I thought a basic comparison over time stratified by gender will do nicely. It would not be surprising to see an increase in the number of included works by female authors as time progresses. However, we don’t know whether that (if exists) is an independent effect or a general one. We can set up a hover plot with <code>ggplot2</code> to illustrate this point: the first (static) plot only shows the female author subset, and upon hovering/clicking, it reveals the second plot that displays the whole data. Like the previous post, I’m only providing unevaluated (read: motivational) code here; you can always fork the functional code on <a href="https://github.com/ciflikli/gendeR">GitHub</a>:</p>
+<pre class="r"><code>#Only the hover part of the Shiny code
+  fluidRow(column(width = 6,
+                  plotOutput(&quot;plot1&quot;, height = 400,
+                             hover = hoverOpts(
+                               id = &quot;plot1_hover&quot;,
+                               nullOutside = FALSE))),
+          column(width = 6,
+                 conditionalPanel(
+                   condition = &quot;input.plot1_hover != null&quot;,
+                   plotOutput(&quot;plot2&quot;, height = 400))))</code></pre>
+<div class="figure">
+<img src="/img/plots.gif" />
+
+</div>
+<p>On the left panel, we see what we expected: works by female authors see a surge after 1990. The drop-off at the end is probably indicative of the lag present in publication date and the time needed to make it into a reading list. However, when we plot both genders on the right panel, we realise the trend is universal - male authors also get included more and more.</p>
+<p>Our illustration demonstrates two separate effects. First, there is absolute improvement over time; in syllabi, the number of publications by female authors tripled in the last three decades. Second, there is comparatively <em>little</em> relative progress in the same timeframe. Any statement more precise than that will need to involve statistics (cough, we may have a manuscript under review).</p>
+<p>One thing we may not have accomplished with the above is the clear communication of year-to-year ratios. We could have used stacked bar charts rather than histograms, but I wanted to divide the workload - don’t put all your tricks into one plot (as they are more likely to break). <code>dygraphs</code> is a powerful library and will serve our needs well with its interactivity. <code>plotly</code> can achieve similar results as well, but I used it as an example in my previous post so let’s go for diversity (ha):</p>
+<pre class="r"><code>library(dygraphs)
+dygraph(data = authors) %&gt;%
+      dyOptions(fillGraph = TRUE, fillAlpha = 0.1, panEdgeFraction = 0.1, drawPoints = TRUE,
+                strokeWidth = 1.2, drawGapEdgePoints = TRUE, drawGrid = FALSE, mobileDisableYTouch = TRUE) %&gt;%
+      dyLimit(.2, color = &quot;black&quot;) %&gt;%
+      dyLegend(width = 400, hideOnMouseOut = FALSE) %&gt;%
+      dyAxis(&quot;y&quot;, label = &quot;Percentage of All Readings&quot;, valueRange = c(.01, 1.005), rangePad = 1) %&gt;%
+      dyAxis(&quot;x&quot;, label = &quot;Date of Publication&quot;) %&gt;%
+      dySeries(&quot;V2&quot;, label = &quot;Female Author Ratio&quot;, color = &quot;#1fbfc3&quot;, stepPlot = TRUE) %&gt;%
+      dySeries(&quot;V3&quot;, label = &quot;Male Author Ratio&quot;, color = &quot;#f5766f&quot;, stepPlot = TRUE, fillGraph = TRUE)</code></pre>
+<div class="figure">
+<img src="/img/ts.png" />
+
+</div>
+<p>Now, we can see that the majority of publication-years include less than 20% female authors, indicated by the dashed line. In the live app, users can hover and the legend on the top right corner will update to display the ratios for both genders. Unsurprisingly, we observe a similar trend after 1990; the relative improvement is about double: pre-1990, the female author ratio averages around 10%, while post-1990 it’s about 20%. I believe I have already made a sarcastic remark about the state of the discipline.</p>
+</div>
+<div id="disaggregating-content" class="section level3">
+<h3>Disaggregating Content</h3>
+<p>Okay, so we have all these crude yearly statistics and plotted them to the best of our ability. What next? We need to go deeper <em>ala</em> Inception. This part is naturally governed by the richness of your data. In our case, we have some publication characteristics (year, type, number of authors, author gender) and data on independent courses. Let’s illustrate them both.</p>
+<p>Publication characteristics easily lend themselves to segmented, colour-coded graphics. There are multiple libraries that you can utilise in R. I will go with <code>sunburstR</code> for no other reason that I liked the graphics so much, I made it my website favicon. It’s also featured in my <a href="https://www.gokhanciflikli.com/post/hello-world/">first blog post</a>. We all have our favourites.</p>
+<pre class="r"><code>library(htmlwidgets)
+library(sunburstR)
+library(RColorBrewer)
+
+blues &lt;- c(brewer.pal(9, &quot;Blues&quot;))
+reds &lt;- c(brewer.pal(9, &quot;Reds&quot;))
+
+#Sunburst using static patch data (code at the end makes sure the legend is on by default; use with htmlwidgets)
+  
+  output$sb &lt;- renderSunburst({
+    htmlwidgets::onRender(
+      sunburst(patch, count = TRUE,
+               legend = list(w = 150, h = 25, s = 5, t = 25),
+               breadcrumb = list(w = 0, h = 25, s = 5, t = 10),
+               colors = c(&quot;&quot;, blues[1:8], reds[7:2]),
+               legendOrder = c(&quot;1960&quot;, &quot;1970&quot;, &quot;1980&quot;, &quot;1990&quot;, &quot;2000&quot;, &quot;2010&quot;,
+                               &quot;Book&quot;, &quot;Article&quot;,
+                               &quot;OtherPublisher&quot;, &quot;TopPublisher&quot;,
+                               &quot;CoAuthored&quot;, &quot;SingleAuthored&quot;,
+                               &quot;MaleCoAuthor&quot;, &quot;FemaleCoAuthor&quot;), withD3 = TRUE),
+    &quot;
+    function(el,x){
+    d3.select(el).select(&#39;.sunburst-togglelegend&#39;).property(&#39;checked&#39;, true);
+    d3.select(el).select(&#39;.sunburst-legend&#39;).style(&#39;visibility&#39;, &#39;&#39;);
+    }
+    &quot;
+    )
+  })</code></pre>
+<div class="figure">
+<img src="/img/sunburstR.png" />
+
+</div>
+<p>You will need to wrangle your data to create sequences that <code>sunburstR</code> can plot, which is usually achieved with multiple <code>group_by</code> arguments with <code>dplyr</code>. The JavaScript code at the end renders a click so that the legend is on by default. You need to load <code>htmlwidgets</code> first and make sure you pass <code>withD3 = TRUE</code> as an argument during the call. Users can navigate the dial inside-out and the selection descriptives will be displayed in the middle, both as percentages and as a raw count.</p>
+<p>Moving onto course breakdown, I got inspired by the <code>bokeh</code> <a href="http://hafen.github.io/rbokeh/">tutorial</a> featuring the periodic table. We first cluster the courses into subfields of the discipline. Then, I manually (painfully) arranged the courses because all my automated attempts resulted in not-so-elegant outputs. Luckily, I happen to have a large whiteboard in my room (you don’t?), so I just drew the coordinate matrix there and then copy-pasted them. I’m sure you will find a way, too.</p>
+<pre class="r"><code>library(rbokeh)
+#Bokeh using static course data
+  
+  output$bokeh &lt;- renderRbokeh({
+    figure(title = &quot;&quot;,
+           tools = c(&quot;pan&quot;, &quot;wheel_zoom&quot;, &quot;reset&quot;, &quot;hover&quot;, &quot;save&quot;),
+           font = &quot;Roboto Condensed&quot;,
+           ylim = as.character(1:6),
+           xlim = as.character(0:14), 
+           xgrid = FALSE, ygrid = FALSE,
+           xaxes = FALSE, yaxes = FALSE,
+           height = 400, width = 1050,
+           h_symmetry = TRUE, v_symmetry = TRUE,
+           toolbar_location = &quot;right&quot;) %&gt;%
+      #Create cluster boxes as indicators
+      ly_crect(xcor, ycor, data = indicator, width = 2.95, height = .95,
+               fill_color = colors, line_color = &quot;#252525&quot;, fill_alpha = .6,
+               hover = list(Subfield, Courses)) %&gt;%
+      ly_text(symx, ycor, text = clusters, data = indicator,
+              font = &quot;Roboto Condensed&quot;,
+              font_style = &quot;normal&quot;, font_size = &quot;14pt&quot;,
+              align = &quot;center&quot;, baseline = &quot;middle&quot;) %&gt;%
+      #Create centered rectangles
+      ly_crect(xcor, ycor, data = course, width = .95, height = .95,
+               fill_color = color, line_color = &quot;#252525&quot;, fill_alpha = .6,
+               hover = list(Convener, Readings)) %&gt;%
+      #F/M ratio
+      ly_text(symx, ycor, text = Ratio, data = course,
+              font = &quot;Roboto Condensed&quot;,
+              font_style = &quot;bold&quot;, font_size = &quot;14pt&quot;,
+              align = &quot;left&quot;, baseline = &quot;middle&quot;) %&gt;%
+      #Core course indicator
+      ly_text(symx2, numbery, text = Core, data = course, font = &quot;Roboto Condensed&quot;,
+              font_style = &quot;bold&quot;, font_size = &quot;6pt&quot;, align = &quot;left&quot;, baseline = &quot;middle&quot;) %&gt;%
+      #Course level
+      ly_text(symx, massy, text = Level, data = course, font = &quot;Roboto Condensed&quot;,
+              font_size = &quot;6pt&quot;, align = &quot;left&quot;, baseline = &quot;middle&quot;) %&gt;%
+      theme_title(text_font = &quot;Roboto Condensed&quot;, text_font_size = &quot;16pt&quot;,
+                  background_fill_color = &quot;#ecf0f5&quot;, text_font_style = &quot;normal&quot;) %&gt;%
+      theme_plot(background_fill_color = &quot;#ecf0f5&quot;, border_fill_color = &quot;#ecf0f5&quot;, outline_line_alpha = 0)
+  })</code></pre>
+<div class="figure">
+<img src="/img/bokeh.png" />
+
+</div>
+<p>We want to convey two things at a glance with the course breakdown: which subfields feature more readings by female authors, and the level of dispersion within the clusters. Thus, I sorted the clusters from the lowest overall ratio to the highest, as well as dividing the courses into five categories. I removed both axes as they would be more confusing given the layout. In the app, you can hover on the boxes to reveal additional info: for courses, the gender and rank of the convener and the total of number of readings included; for clusters, it shows the full name of the subfield so that you can find out what IPE actually means.</p>
+</div>
+<div id="impactful-interactivity" class="section level3">
+<h3>Impactful Interactivity</h3>
+<p>Finally, sometimes you want to give the users finer control over the end result. In the first couple of plots, they can see yearly ratios, but cannot do much more than that. One way of achieving this would be giving them control over creating yearly dummies and then plotting it as a binary outcome for whether that mark is reached or not. For example, you can manipulate the dataframe to create dummies for whether that year has equal or greater than 20% F/M ratio. I will not embed the code here as it is just a <code>ggplot</code> with slider inputs, but the output would look like the following:</p>
+<div class="figure">
+<img src="/img/logit.png" />
+
+</div>
+<p>In addition, we can also give them control over visualising the co-authorship patterns. We have three variables of interest for each entry: the total number of authors, the number of female authors, and the number of male authors. I calcuate the circle radii using square root as otherwise you would only see a huge M (if you include single-authored work in the mix) and nothing else. We transform all three into sliders and emulate the <a href="https://gallery.shinyapps.io/087-crandash/">CRAN package shiny app</a>:</p>
+<pre class="r"><code>devtools::install_github(&quot;jcheng5/bubbles&quot;)
+library(bubbles)
+#Bubbles using reactive coData()
+  
+  output$bubbles &lt;- renderBubbles({
+    if (nrow(coData()) == 0)
+      return()
+    bubbles(sqrt(coData()$n), coData()$AutGen, key = coData()$AutGen,
+            tooltip = coData()$n, color = &quot;#222d32&quot;, textColor = &quot;white&quot;)
+  })</code></pre>
+<div class="figure">
+<img src="/img/bubbles.png" />
+
+</div>
+<p>Last but not least, as this whole project is about publications, it wouldn’t be right to gloss over the publishers themselves. Again, we are looking at the publishers from a single-year snapshot of the LSE IR department, so it wouldn’t be poignant to generalise beyond that. At least, this is what reviewer 2 told us. Using <code>DT</code>, it’s a breeze to create interactive tables. In Shiny, do call <code>renderDataTable</code> via <code>DT</code>:</p>
+<pre class="r"><code>library(DT)
+#selectedData will update based on slider settings
+DT::renderDataTable(selectedData())
+                     options(DT.options = list(
+                       pageLength = 10, order = list(list(4, &quot;desc&quot;)),
+                       class = &quot;hover&quot;,
+                       language = list(search = &quot;Enter Publisher Name:&quot;,
+                                       info = &quot;Displaying _START_ to _END_ of _TOTAL_ publishers&quot;)))</code></pre>
+<div class="figure">
+<img src="/img/pub.png" />
+
+</div>
+<p>We see that the more ‘prestigious’ the publisher is, the more it gets close to the ‘status quo’ of 20% F/M ratio. However, if you decrease the number of total publications to ten (lowest allowed), you will find that there are publishers that go beyond 50%. Well, two of them, anyway.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The full list of contributors can be found in the about section of the app.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Non-unique as in, if an identical publication is included in two different courses, it’s counted twice.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Like many others, we had to resort to using a binary variable for coding purposes.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>If you switch between R and Photoshop as frequently as I do, you’ll make some mistakes along the way.<a href="#fnref4">↩</a></p></li>
+</ol>
+</div>
