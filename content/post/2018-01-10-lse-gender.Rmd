@@ -58,7 +58,7 @@ On the left panel, we see what we expected: works by female authors see a surge 
 
 Our illustration demonstrates two separate effects. First, there is absolute improvement over time; in syllabi, the number of publications by female authors tripled in the last three decades. Second, there is comparatively _little_ relative progress in the same timeframe. Any statement more precise than that will need to involve statistics (cough, we may have a manuscript under review).
 
-One thing we may not have accomplished with the above is the clear communication of year-to-year ratios. We could have used stacked bar charts rather than histograms, but I wanted to divide the workload - don't put all your tricks into one plot (as they are more likely to break). ```dygraphs``` is a powerful library and will serve our needs well with its interactivity. ```plotly``` can achieve similar results as well, but I used it as an example in my previous post so let's go for diversity (ha):
+One thing we may not have accomplished with the above is the clear communication of year-to-year ratios. We could have used stacked bar charts rather than histograms, but I wanted to divide the workload - don't put all your tricks into one plot (as they are more likely to break). ```dygraphs``` is a powerful library and will serve our needs well with its interactivity. ```plotly``` can achieve similar results as well, but I used it as an example in my previous post so let's go for diversity. _Ha_.
 
 ```{r}
 library(dygraphs)
@@ -118,7 +118,7 @@ reds <- c(brewer.pal(9, "Reds"))
 
 You will need to wrangle your data to create sequences that ```sunburstR``` can plot, which is usually achieved with multiple ```group_by``` arguments with ```dplyr```. The JavaScript code at the end renders a click so that the legend is on by default. You need to load ```htmlwidgets``` first and make sure you pass ```withD3 = TRUE``` as an argument during the call. Users can navigate the dial inside-out and the selection descriptives will be displayed in the middle, both as percentages and as a raw count.
 
-Moving onto course breakdown, I got inspired by the ```bokeh``` [tutorial](http://hafen.github.io/rbokeh/) featuring the periodic table. We first cluster the courses into subfields of the discipline. Then, I manually (painfully) arranged the courses because all my automated attempts resulted in not-so-elegant outputs. Luckily, I happen to have a large whiteboard in my room (you don't?), so I just drew the coordinate matrix there and then copy-pasted them. I'm sure you will find a way, too.
+Moving onto course breakdown, I got inspired by the ```bokeh``` [tutorial](http://hafen.github.io/rbokeh/) featuring the periodic table. We first cluster the courses into subfields of the discipline. Then, I manually (painfully) arranged the courses because all my automated attempts resulted in not-so-elegant outputs. Luckily, I happen to have a large whiteboard in my room (you don't?), so I just drew the coordinate matrix there and then copy-pasted it. I'm sure you will find a way, too.
 
 ```{r}
 library(rbokeh)
