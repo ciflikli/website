@@ -16,7 +16,7 @@ Here are some of the data projects I am currently working on. Links to Shiny app
 
 `gendeR` Thorough author-gender analysis of nearly 13,000 publications included in reading lists constituting the International Relations programme---Undergraduate, Masters, and PhD levels---at the London School of Economics during the 2015-16 academic year. Accompanies a co-authored manuscript. [App Link](https://gokhan.shinyapps.io/gender/) |  [GitHub](https://github.com/ciflikli/gender)
 
-![](/img/sunburst.png)
+![](/img/sunburstR.png)
 
 `duRation` Ensemble ML app that takes survival analysis as input, transforms it to logistic regression, and runs a series of classification models using `caret` to increase predictive accuracy. Currently under development.
 
