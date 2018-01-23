@@ -38,7 +38,7 @@ But fret not; if this was a journal article, the abstract would be short and swe
 
 ### Creating an Image Dataset for Conflict Duration
 
-Today's undertaking is a bit convoluted—no, I'm not setting you up for an eventual neural network joke—we first need to construct an image dataset, and then basically de-construct it into a tensor. Tensors are multidimensional arrays, which may not be immensely helpful definition if you're like me and thought all arrays are multidimensional (i.e. scalar > vector > matrix > array). But I digress, I'm sure it's a case of my maths failing me. How do we go on about creating images to train our model? Well, the simplest option I could think of was getting a hold of an event-count dataset and extract density kernels of each conflict. Say, the number of incidents of political violence over time.
+Today's undertaking is a bit convoluted—no, I'm not setting you up for an eventual neural network joke—we first need to construct an image dataset, and then basically de-construct it into a tensor. Tensors are multidimensional arrays, which may not be an immensely helpful definition if you're like me and thought all arrays are multidimensional (i.e. scalar > vector > matrix > array). But I digress, I'm sure it's a case of my maths failing me. How do we go on about creating images to train our model? Well, the simplest option I could think of was getting a hold of an event-count dataset and extract density kernels of each conflict. Say, the number of incidents of political violence over time.
 
 I will use the Uppsala Conflict Data Program ([UCDP](http://ucdp.uu.se/)) Geo-Referenced Dataset (GED) for this task. We don't need the geo-spatial variables but this is one of the datasets I'm most familiar with. The temporal coverage is 1989-2016. We will first filter for state-based violence, one of the three categories: ^[The other two are non-state and one-sided violence, see [here](http://pcr.uu.se/research/ucdp/charts-graphs-and-maps/).]
 
@@ -183,7 +183,7 @@ model %>% compile(
   metrics = metric_binary_accuracy)
 ```
 
-As with activation functions, there are several options for the each of the above; refer to the RStudio guide cited earlier to get a sense of what's what. One should be able to set seed for Keras in R with ```use_session_with_seed(seed)```, as I have at the beginning of this post, however I can definitely tell you that it does not _consistenly_ work (also see [issue#42](https://github.com/rstudio/keras/issues/42), [issue#119](https://github.com/rstudio/keras/pull/119), and [issue#120](https://github.com/rstudio/keras/pull/120)). So no promise of perfect reproducibility. Running the below will result in 100 runs over the whole training data, using 256 samples simultaneously in each iteration, with a 70/30 train/test split for in-sample validation:
+As with activation functions, there are several options for the each of the above; refer to the RStudio guide cited earlier to get a sense of what's what. One should be able to set seed for Keras in R with ```use_session_with_seed(seed)```, as I have at the beginning of this post, however I can definitely tell you that it does not _consistently_ work (also see [issue#42](https://github.com/rstudio/keras/issues/42), [issue#119](https://github.com/rstudio/keras/pull/119), and [issue#120](https://github.com/rstudio/keras/pull/120)). So no promise of perfect reproducibility. Running the below will result in 100 runs over the whole training data, using 256 samples simultaneously in each iteration, with a 70/30 train/test split for in-sample validation:
 
 ```{r}
 history <- model %>% fit(
@@ -195,7 +195,7 @@ history <- model %>% fit(
 plot(history) + theme(legend.position = c(.9, .9))
 ```
 
-What's up with the gatekeeping jargon? If you run the above chuck live, you'll find that (in RStudio at least) you get a nice plot that automatically updates itself at the end of each epoch. I can tell you anecdotally that cheering for your neural network adds around +-3% accuracy on average. Finally, we can evaluate our model using the test data and extract out-of-sample predictions:
+What's up with the gatekeeping jargon? If you run the above chunk live, you'll find that (in RStudio at least) you get a nice plot that automatically updates itself at the end of each epoch. I can tell you anecdotally that cheering for your neural network adds around +-3% accuracy on average. Finally, we can evaluate our model using the test data and extract out-of-sample predictions:
 
 ```{r}
 model %>% evaluate(x_test, y_test)

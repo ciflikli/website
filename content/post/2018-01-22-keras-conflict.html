@@ -24,7 +24,7 @@ description: Creating an image dataset with ggplot to train deep learning models
 </div>
 <div id="creating-an-image-dataset-for-conflict-duration" class="section level3">
 <h3>Creating an Image Dataset for Conflict Duration</h3>
-<p>Today’s undertaking is a bit convoluted—no, I’m not setting you up for an eventual neural network joke—we first need to construct an image dataset, and then basically de-construct it into a tensor. Tensors are multidimensional arrays, which may not be immensely helpful definition if you’re like me and thought all arrays are multidimensional (i.e. scalar &gt; vector &gt; matrix &gt; array). But I digress, I’m sure it’s a case of my maths failing me. How do we go on about creating images to train our model? Well, the simplest option I could think of was getting a hold of an event-count dataset and extract density kernels of each conflict. Say, the number of incidents of political violence over time.</p>
+<p>Today’s undertaking is a bit convoluted—no, I’m not setting you up for an eventual neural network joke—we first need to construct an image dataset, and then basically de-construct it into a tensor. Tensors are multidimensional arrays, which may not be an immensely helpful definition if you’re like me and thought all arrays are multidimensional (i.e. scalar &gt; vector &gt; matrix &gt; array). But I digress, I’m sure it’s a case of my maths failing me. How do we go on about creating images to train our model? Well, the simplest option I could think of was getting a hold of an event-count dataset and extract density kernels of each conflict. Say, the number of incidents of political violence over time.</p>
 <p>I will use the Uppsala Conflict Data Program (<a href="http://ucdp.uu.se/">UCDP</a>) Geo-Referenced Dataset (GED) for this task. We don’t need the geo-spatial variables but this is one of the datasets I’m most familiar with. The temporal coverage is 1989-2016. We will first filter for state-based violence, one of the three categories: <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 <pre class="r"><code>ucdp &lt;- read.csv(&quot;ged171.csv&quot;, stringsAsFactors = FALSE)
 dim(ucdp)</code></pre>
@@ -158,7 +158,7 @@ model %&gt;%
   optimizer = optimizer_adamax(),
   loss = loss_binary_crossentropy,
   metrics = metric_binary_accuracy)</code></pre>
-<p>As with activation functions, there are several options for the each of the above; refer to the RStudio guide cited earlier to get a sense of what’s what. One should be able to set seed for Keras in R with <code>use_session_with_seed(seed)</code>, as I have at the beginning of this post, however I can definitely tell you that it does not <em>consistenly</em> work (also see <a href="https://github.com/rstudio/keras/issues/42">issue#42</a>, <a href="https://github.com/rstudio/keras/pull/119">issue#119</a>, and <a href="https://github.com/rstudio/keras/pull/120">issue#120</a>). So no promise of perfect reproducibility. Running the below will result in 100 runs over the whole training data, using 256 samples simultaneously in each iteration, with a 70/30 train/test split for in-sample validation:</p>
+<p>As with activation functions, there are several options for the each of the above; refer to the RStudio guide cited earlier to get a sense of what’s what. One should be able to set seed for Keras in R with <code>use_session_with_seed(seed)</code>, as I have at the beginning of this post, however I can definitely tell you that it does not <em>consistently</em> work (also see <a href="https://github.com/rstudio/keras/issues/42">issue#42</a>, <a href="https://github.com/rstudio/keras/pull/119">issue#119</a>, and <a href="https://github.com/rstudio/keras/pull/120">issue#120</a>). So no promise of perfect reproducibility. Running the below will result in 100 runs over the whole training data, using 256 samples simultaneously in each iteration, with a 70/30 train/test split for in-sample validation:</p>
 <pre class="r"><code>history &lt;- model %&gt;% fit(
   x_train, y_train, 
   epochs = 100, batch_size = 256, 
@@ -167,7 +167,7 @@ model %&gt;%
 #Default is ggplot so we can tweak it easily
 plot(history) + theme(legend.position = c(.9, .9))</code></pre>
 <p><img src="/post/2018-01-22-keras-conflict_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>What’s up with the gatekeeping jargon? If you run the above chuck live, you’ll find that (in RStudio at least) you get a nice plot that automatically updates itself at the end of each epoch. I can tell you anecdotally that cheering for your neural network adds around +-3% accuracy on average. Finally, we can evaluate our model using the test data and extract out-of-sample predictions:</p>
+<p>What’s up with the gatekeeping jargon? If you run the above chunk live, you’ll find that (in RStudio at least) you get a nice plot that automatically updates itself at the end of each epoch. I can tell you anecdotally that cheering for your neural network adds around +-3% accuracy on average. Finally, we can evaluate our model using the test data and extract out-of-sample predictions:</p>
 <pre class="r"><code>model %&gt;% evaluate(x_test, y_test)</code></pre>
 <pre><code>## $loss
 ## [1] 0.6687286
