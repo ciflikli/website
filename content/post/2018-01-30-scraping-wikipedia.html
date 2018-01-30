@@ -1,0 +1,244 @@
+---
+title: Scraping Wikipedia Tables from Lists for Visualisation
+author: Gokhan Ciflikli
+date: '2018-01-30'
+slug: scraping-wikipedia
+categories:
+  - R
+  - Visualization
+tags:
+  - R
+  - rvest
+  - ggridges
+  - quanteda
+description: "Extracting table contents from Wikipedia and generating plots going back two millennia"
+---
+
+
+
+<div id="get-wikitables-from-lists" class="section level3">
+<h3>Get WikiTables from Lists</h3>
+<p>Recently I was asked to submit a short take-home challenge and I thought what better excuse for writing a quick blog post! It was on short notice so initially I stayed within the confines of my comfort zone and went for something safe and bland. However, I alleviated that rather fast; I guess you want to stand out a bit in a competitive setting. Note that it was a visualisation task, so the data scraping was just a necessary evil. On that note.</p>
+<p>I resorted to using Wikipedia as I was asked to visualise change in a certain <code>x</code> going back about 500 hundred years. Not many academic datasets go that far, so Wiki will have to do for our purposes. And once you are there, why only visualise half a millennium, let’s go from 1 AD to present day. First, we need a subject. I went with my PhD topic, war duration. So let’s get the list of lists first using <code>rvest</code>:</p>
+<pre class="r"><code>#Get wikipedia time periods for List of Wars
+url &lt;- &quot;https://en.wikipedia.org/wiki/Timeline_of_wars&quot;
+periods &lt;- url %&gt;%
+  read_html() %&gt;%
+  html_nodes(&quot;ul&quot;) %&gt;%
+  html_text(trim = TRUE) %&gt;%
+  strsplit(split = &quot;\n&quot;) %&gt;%
+  unlist()
+periods &lt;- periods[18:26]
+periods[1] &lt;- tolower(gsub(&quot; &quot;, &quot;_&quot;, periods[1]))
+periods</code></pre>
+<pre><code>## [1] &quot;before_1000&quot;  &quot;1000–1499&quot;    &quot;1500–1799&quot;    &quot;1800–99&quot;     
+## [5] &quot;1900–44&quot;      &quot;1945–89&quot;      &quot;1990–2002&quot;    &quot;2003–10&quot;     
+## [9] &quot;2011–present&quot;</code></pre>
+<p>I explained the basics of <code>rvest</code> in my <a href="https://www.gokhanciflikli.com/post/game-of-thrones/">Game of Thrones</a> post, so I won’t go over it again. The periods vector looks good, but not really: the timeframes themselves are lists; e.g. 1800-99 actually consists of ten tables. If we run a loop, we will only get the first table of each timeframe. I would know, that’s what I got in my first attempt. <em>Jesus, so many missing years, Wikipedia</em>.</p>
+<p>We need to construct an indicator to guide the loop at each timeframe. I didn’t do this programmatically, and I would be happy to know how, but I just entered the number of tables per timeframe manually in a sequence:</p>
+<pre class="r"><code>tables &lt;- c(3, 1:6, 1:3, 1:10, 1:3, 1:5, rep(1, 3))
+sequences &lt;- c(periods[1],
+               rep(periods[2], 6),
+               rep(periods[3], 3),
+               rep(periods[4], 10),
+               rep(periods[5], 3),
+               rep(periods[6], 5),
+               periods[7:9])
+tables</code></pre>
+<pre><code>##  [1]  3  1  2  3  4  5  6  1  2  3  1  2  3  4  5  6  7  8  9 10  1  2  3
+## [24]  1  2  3  4  5  1  1  1</code></pre>
+<pre class="r"><code>sequences</code></pre>
+<pre><code>##  [1] &quot;before_1000&quot;  &quot;1000–1499&quot;    &quot;1000–1499&quot;    &quot;1000–1499&quot;   
+##  [5] &quot;1000–1499&quot;    &quot;1000–1499&quot;    &quot;1000–1499&quot;    &quot;1500–1799&quot;   
+##  [9] &quot;1500–1799&quot;    &quot;1500–1799&quot;    &quot;1800–99&quot;      &quot;1800–99&quot;     
+## [13] &quot;1800–99&quot;      &quot;1800–99&quot;      &quot;1800–99&quot;      &quot;1800–99&quot;     
+## [17] &quot;1800–99&quot;      &quot;1800–99&quot;      &quot;1800–99&quot;      &quot;1800–99&quot;     
+## [21] &quot;1900–44&quot;      &quot;1900–44&quot;      &quot;1900–44&quot;      &quot;1945–89&quot;     
+## [25] &quot;1945–89&quot;      &quot;1945–89&quot;      &quot;1945–89&quot;      &quot;1945–89&quot;     
+## [29] &quot;1990–2002&quot;    &quot;2003–10&quot;      &quot;2011–present&quot;</code></pre>
+<p>Now, we can pass the base url in a loop using the above:</p>
+<pre class="r"><code>#Create a loop for extracting all wars since 1AD
+baseurl &lt;- &quot;https://en.wikipedia.org/wiki/List_of_wars_&quot;
+all.wars &lt;- NULL
+
+for (i in 1:length(sequences)) {
+  url &lt;- paste0(baseurl, sequences[i])
+  webpage &lt;- read_html(url)
+  wars &lt;- webpage %&gt;%
+    html_nodes(xpath = paste0(&#39;//*[@id=&quot;mw-content-text&quot;]/div/table[&#39;, tables[i], &#39;]&#39;)) %&gt;%
+    html_table(fill = TRUE)
+  all.wars[i] &lt;- list(wars)
+}
+
+#All wars as a dataset
+df &lt;- ldply(all.wars, data.frame)
+df &lt;- df %&gt;% arrange(Start)</code></pre>
+</div>
+<div id="data-clean-up-and-feature-engineering" class="section level3">
+<h3>Data Clean-Up and Feature Engineering</h3>
+<p>Welcome to the world of uncurated data, so let’s clean it up. First, there are some internal Wikipedia inconsistencies, so we will move columns around. Then, we will extract the first set of digits to get rid of the likes of ‘c1660, 1922(armistice), 1860s’ etc. Finally, we will drop the <code>NA</code>s and recode ongoing wars to 2018:</p>
+<pre class="r"><code>#Clean up Wikipedia inconsistencies
+df$Name.of.Conflict &lt;- ifelse(is.na(df$Name.of.Conflict),
+                              df$Name.of.conflict, df$Name.of.Conflict)
+df$Finish &lt;- ifelse(is.na(df$Finish), df$Finished, df$Finish)
+
+#Extract first set of digits as dates
+df$Start &lt;- stri_extract_first(df$Start, regex = &quot;\\d+&quot;)
+df$Finish &lt;- stri_extract_first(df$Finish, regex = &quot;\\d+&quot;)
+
+#Drop NAs and correct starting dates
+df &lt;- df[, 1:5]
+df &lt;- df %&gt;% arrange(Start)
+
+#Correct finish dates
+df$Start &lt;- as.numeric(df$Start)
+df$Finish &lt;- as.numeric(df$Finish)
+df &lt;- df[!is.na(df$Start), ]
+
+#Change ongoing to 2018 finish
+df$Finish &lt;- ifelse(is.na(df$Finish), 2018, df$Finish)
+glimpse(df)</code></pre>
+<pre><code>## Observations: 2,117
+## Variables: 5
+## $ Start            &lt;dbl&gt; 1008, 101, 1010, 1014, 1015, 1018, 1018, 1019...
+## $ Finish           &lt;dbl&gt; 1008, 102, 1011, 1014, 1016, 1018, 1019, 1019...
+## $ Name.of.Conflict &lt;chr&gt; &quot;Hungarian–Ahtum War&quot;, &quot;First Dacian War&quot;, &quot;S...
+## $ Belligerents     &lt;chr&gt; &quot;Kingdom of Hungary&quot;, &quot;&quot;, &quot;Liao Dynasty&quot;, &quot;Mu...
+## $ Belligerents.1   &lt;chr&gt; &quot;Voivodship of Ahtum&quot;, &quot;&quot;, &quot;Goryeo&quot;, &quot;Leinste...</code></pre>
+<p>Better. Still, we don’t have that many interesting variables in there. Most of my research focuses on the distinction between interstate and civil wars, especially how they differ in their average duration over time. We can programatically identify civil wars using an arbitrary criteria with text analysis. Below, I use <code>quanteda</code> to accomplish the task:</p>
+<pre class="r"><code>#Programmatically identify civil wars using text analysis
+#Define arbitrary civil war words
+intrastate &lt;- c(&quot;Revolt&quot;, &quot;Rebellion&quot;, &quot;Civil&quot;, &quot;Insurgency&quot;, &quot;Interregnum&quot;, &quot;Uprising&quot;) 
+df.corpus &lt;- corpus(df[, 3])
+df.tokens &lt;- tokens(df.corpus, what = &quot;word&quot;)
+
+#Identify rows that include civil war words in title
+civil.wars &lt;- tokens_select(df.tokens, pattern = intrastate, selection = &quot;keep&quot;)
+indicator &lt;- as.data.frame(unlist(civil.wars))
+
+#Extract row numbers as digits and only keep the first four
+indicator$row &lt;- substr(gsub(&quot;[^0-9]&quot;, &quot;&quot;, rownames(indicator)), 1, 4)
+
+#Drop duplicates
+indicator &lt;- distinct(indicator) 
+rownames(df) &lt;- 1:nrow(df)
+df$Civil.War &lt;- ifelse(rownames(df) %in% indicator$row, 1, 0)
+df$Civil.War &lt;- as.factor(df$Civil)
+df$`War Type` &lt;- ifelse(df$Civil.War == 0, &quot;Interstate&quot;, &quot;Civil War&quot;)</code></pre>
+<p>Now that we are here, might as well include duration:</p>
+<pre class="r"><code>#Create a duration variable (years)
+df$Duration &lt;- (df$Finish - df$Start) + 1
+
+#Create century indicator based on start year
+df$Century &lt;- as.integer(df$Start / 100) + 1
+df$Century &lt;- paste0(df$Century, ifelse(df$Century == 2, &quot;nd Century&quot;,
+                                        ifelse(df$Century == 3, &quot;rd Century&quot;,
+                                               ifelse(df$Century == 1 | df$Century == 21,
+                                                      &quot;st Century&quot;, &quot;th Century&quot;))))
+df$Century &lt;- as.factor(df$Century)
+#Reorder levels from 1st to 21st
+df$Century &lt;- factor(df$Century, levels(df$Century)[c(11, 14:21, 1:10, 12:13)])
+#Need this for later
+df$Quarter &lt;- ceiling(df$Start / 25)</code></pre>
+<p>Okay, so far we have collected information on conflict name, belligerents, start and end years, duration, century, and quarter. We can still create more from our existing data. Wikipedia, where applicable, (for the lack of a better word) <em>codes</em> belligerents as victorious and defeated. Meaning, if we extract the names of Side A and Side B over time, we might be able to capture the patterns of who ‘won’ and ‘lost’ in the last two thousand years. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> I only include the code for the winners below and do the same for the defeated parties under the hood:</p>
+<pre class="r"><code>#Commonalities of belligerents by century
+#Pool text for winners
+victors &lt;- df$Belligerents
+victors &lt;- gsub(&quot;\n&quot;, &quot; &quot;, victors)
+
+#Group by century and identify most frequent words
+dfm.vic &lt;- dfm(corpus(victors, docvars = data.frame(Century = df$Century)),
+               remove = stopwords(&quot;SMART&quot;), remove_numbers = TRUE,
+               remove_punct = TRUE, groups = &quot;Century&quot;)
+vic.top.words &lt;- topfeatures(dfm.vic, n = 5, groups = docnames(dfm.vic))
+
+#Transform list to dataframe
+vic &lt;- as.data.frame(unlist(vic.top.words))
+vic$Century &lt;- sub(&#39;\\..*&#39;, &#39;&#39;, rownames(vic))
+vic$Word &lt;- sub(&#39;.*\\.&#39;, &#39;&#39;, rownames(vic))
+vic$Side &lt;- &quot;Victorious&quot;
+colnames(vic)[1] &lt;- &quot;Count&quot;</code></pre>
+<p>Now we combine them together and create our second dataset:</p>
+<pre class="r"><code>#Combine and clean up
+sides &lt;- rbind(vic, def)
+rownames(sides) &lt;- 1:nrow(sides)
+sides$Count &lt;- log2(sides$Count) + .1
+sides$Count &lt;- ifelse(sides$Side == &quot;Victorious&quot;, -sides$Count, sides$Count)
+sides$Century &lt;- as.factor(sides$Century)
+sides$Century &lt;- factor(sides$Century, levels(sides$Century)[c(11, 14:21, 1:10, 12:13)])</code></pre>
+<p>I convert the count value for the victorious side to negative after taking its log for plotting purposes.</p>
+</div>
+<div id="visualise-actor-characteristics" class="section level3">
+<h3>Visualise Actor Characteristics</h3>
+<p>Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my <a href="https://www.gokhanciflikli.com/post/weinstein-effect/">Weinstein effect</a> post. In my head-cannon, I call it the ‘tidytext difference chart’, but I’m sure there’s a proper name for it. One thing I couldn’t figure out was the sorting; I believe that’s caused by having the same term in both sides (e.g. ‘empire’ in both victorious and defeated). We can perhaps differentiate them by pasting (vic.) and (def.) after repeating terms, but in the interest of time I left them as they are.</p>
+<pre class="r"><code>ggplot(sides, aes(reorder(Word, Count), Count, fill = Side)) +
+  geom_col() +
+  coord_flip() +
+  geom_hline(yintercept = 0, alpha = .4) +
+  facet_wrap(~Century, scales = &quot;free&quot;) +
+  scale_y_continuous(labels = c(&quot;12X&quot;, &quot;&quot;, &quot;8X&quot;, &quot;&quot;, &quot;4X&quot;, &quot;&quot;, &quot;&quot;,
+                                &quot;&quot;, &quot;4X&quot;, &quot;&quot;, &quot;8X&quot;, &quot;&quot;, &quot;12X&quot;),
+                     breaks = seq(-6, 6)) +
+  theme(legend.position = c(.5, .05)) +
+  labs(title = &quot;Who Participates in Organised Violence: Change in Actor Characteristics 1 AD-2018 AD&quot;,
+       subtitle = &quot;Five Most Common Descriptors based on Wikipedia Conflict Names | Stratified by Belligerent Type | Clustered by Century&quot;,
+       caption = &quot;@gokhan_ciflikli | Source: Wikipedia&quot;,
+       x = &quot;Most Frequent Words&quot;,
+       y = &quot;Logarithmic Scale&quot;) +
+  guides(fill = guide_legend(reverse = TRUE))</code></pre>
+<div class="figure">
+<img src="/img/actors.png" />
+
+</div>
+<p>It’s not low-resolution friendly so click <a href="/img/actors.png">here</a>. Even though Wikipedia is not an academic source and the findings should be taken with a grain of salt, the visualisation captures what we would expect to see in terms of the evolution of armed conflict over the last two millennia in terms of actors and outcome. Romans and Chinese dynasties dominate the first five centuries, followed by the Germanic tribes and Muslim empires in the following 500 years. From the 11th century onwards, we begin to see major European powers and parties associated with the Crusades. In the next five centuries (16th-20th), we witness the fall of the Ottoman Empire and serial defeats of the ‘rebel’ factions. Finally, the 21st century (only 17 years of data) is marked by the US ‘winning’ and Islamic movements being defeated. We also see that the data can be cleaned further, e.g. the ‘unknown’ faction in the 8th century.</p>
+</div>
+<div id="average-conflict-duration" class="section level3">
+<h3>Average Conflict Duration</h3>
+<p>Although we differentiated between interstate and civil wars using an arbitrary selection of terms, it could still be interesting to plot their average durations over centuries. A good old box-plot will do nicely. I subset the data so that it only displays conflicts that lasted less than 25 years:</p>
+<pre class="r"><code>#Average duration
+ggplot(df[df$Duration &lt; 25, ], aes(Century, Duration)) + 
+  geom_boxplot(aes(fill = `War Type`)) +
+  labs(title = &quot;Average Armed Conflict Duration, 1 AD-2018 AD&quot;, 
+       subtitle = &quot;Based on Wikipedia Start/End Dates | Subset of Duration &lt; 25 years | n = 1965&quot;,
+       caption = &quot;@gokhan_ciflikli | Source: Wikipedia&quot;,
+       x = &quot;Timeframe&quot;,
+       y = &quot;Duration (years)&quot;) +
+  theme(legend.position = c(.125, .9),
+        axis.text.x = element_text(angle = 45, vjust = .6))</code></pre>
+<div class="figure">
+<img src="/img/duration.png" />
+
+</div>
+<p>Larger resolution <a href="/img/duration.png">here</a>. With the exception of the 2nd century, which could very well be data-quality related, we <em>kind</em> of observe similar patterns for both types of war but sometimes with different intervals. The outliers become more prominent in the last five centuries or so as well. However, note that we transformed ongoing conflicts to an end date of 2018, so we could be picking up those towards the tail.</p>
+</div>
+<div id="temporal-variation-by-century" class="section level3">
+<h3>Temporal Variation by Century</h3>
+<p>Finally, as a part of my self-issued non-viridis challenge (i.e. have a visualisation post without using viridis), I want to revisit <code>ggridges</code> again. We already show the important descriptives with the box-plot, so for this one I want to show, grouped by onset century, how long those conflicts lasted. I cluster the conflicts of the same type by quarter so that we have enough density in each century (otherwise some of the earlier centuries would be empty). Here it goes:</p>
+<pre class="r"><code>#Variation
+ggplot(df, aes(y = fct_rev(Century))) +
+  geom_density_ridges(aes(x = Duration, fill = paste(Quarter, `War Type`)),
+           alpha = .9, color = &quot;white&quot;, from = 0, to = 100) +
+  labs(x = &quot;Years Lasted&quot;,
+       y = &quot;Conflict Onset&quot;,
+       title = &quot;Variation in Conflict Duration by Century and War Type, 1 AD-2018 AD&quot;,
+       subtitle = &quot;War Duration based on Wikipedia Start Year | &lt;100 Years Long Conflicts Subset | n = 2093&quot;,
+       caption = &quot;@gokhan_ciflikli | Source: Wikipedia&quot;) +
+  scale_y_discrete(expand = c(.01, 0)) +
+  scale_x_continuous(expand = c(.01, 0)) +
+  scale_fill_cyclical(values = c(&quot;#ed7875&quot;, &quot;#48bdc0&quot;),
+                      labels = c(&quot;Civil War&quot;, &quot;Interstate&quot;),
+                      name = &quot;War Type&quot;, guide = &quot;legend&quot;) +
+  theme_ridges(grid = FALSE, font_family = &quot;Roboto Condensed&quot;) +
+  theme(legend.position = c(.9, .9))</code></pre>
+<div class="figure">
+<img src="/img/variation.png" />
+
+</div>
+<p><a href="/img/variation.png">Enlarge!</a>, a confused Picard might say in an alternate universe. On a more serious note, we find that conflicts we classify as civil wars based on their Wikipedia title have been regularly lasting more than 10+, 25+, 50+ years etc. since the 6th century. Then again, we don’t know the exact criteria for establishing the start and end dates, or even who decides what counts as conflict termination in a Wikipedia entry. With that said, feel free to experiment; code on <a href="https://github.com/ciflikli/website/blob/master/content/post/2018-01-30-scraping-wikipedia.Rmd">GitHub</a> as usual.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I quoted the terms as it is Wikipedia after all.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
