@@ -205,13 +205,15 @@ sides$Count <- log2(sides$Count) + .1
 sides$Count <- ifelse(sides$Side == "Victorious", -sides$Count, sides$Count)
 sides$Century <- as.factor(sides$Century)
 sides$Century <- factor(sides$Century, levels(sides$Century)[c(11, 14:21, 1:10, 12:13)])
+sides <- sides %>% group_by(Century, Word) %>% mutate(Duplicate = n() - 1)
+sides$Word <- ifelse(sides$Duplicate == 0, sides$Word, paste0(sides$Word, "(", tolower(substr(sides$Side, 1, 3)), ")"))
 ```
 
 I convert the count value for the victorious side to negative after taking its log for plotting purposes.
 
 ### Visualise Actor Characteristics
 
-Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my [Weinstein effect](https://www.gokhanciflikli.com/post/weinstein-effect/) post. In my head-cannon, I call it the 'tidytext difference chart', but I'm sure there's a proper name for it. One thing I couldn't figure out was the sorting; I believe that's caused by having the same term in both sides (e.g. 'empire' in both victorious and defeated). We can perhaps differentiate them by pasting (vic.) and (def.) after repeating terms, but in the interest of time I left them as they are.
+Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my [Weinstein effect](https://www.gokhanciflikli.com/post/weinstein-effect/) post. In my head-cannon, I call it the 'tidytext difference chart', but I'm sure there's a proper name for it. One thing I couldn't figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).
 
 ```{r eval = FALSE}
 ggplot(sides, aes(reorder(Word, Count), Count, fill = Side)) +

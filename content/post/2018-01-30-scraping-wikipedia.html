@@ -165,12 +165,14 @@ rownames(sides) &lt;- 1:nrow(sides)
 sides$Count &lt;- log2(sides$Count) + .1
 sides$Count &lt;- ifelse(sides$Side == &quot;Victorious&quot;, -sides$Count, sides$Count)
 sides$Century &lt;- as.factor(sides$Century)
-sides$Century &lt;- factor(sides$Century, levels(sides$Century)[c(11, 14:21, 1:10, 12:13)])</code></pre>
+sides$Century &lt;- factor(sides$Century, levels(sides$Century)[c(11, 14:21, 1:10, 12:13)])
+sides &lt;- sides %&gt;% group_by(Century, Word) %&gt;% mutate(Duplicate = n() - 1)
+sides$Word &lt;- ifelse(sides$Duplicate == 0, sides$Word, paste0(sides$Word, &quot;(&quot;, tolower(substr(sides$Side, 1, 3)), &quot;)&quot;))</code></pre>
 <p>I convert the count value for the victorious side to negative after taking its log for plotting purposes.</p>
 </div>
 <div id="visualise-actor-characteristics" class="section level3">
 <h3>Visualise Actor Characteristics</h3>
-<p>Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my <a href="https://www.gokhanciflikli.com/post/weinstein-effect/">Weinstein effect</a> post. In my head-cannon, I call it the ‘tidytext difference chart’, but I’m sure there’s a proper name for it. One thing I couldn’t figure out was the sorting; I believe that’s caused by having the same term in both sides (e.g. ‘empire’ in both victorious and defeated). We can perhaps differentiate them by pasting (vic.) and (def.) after repeating terms, but in the interest of time I left them as they are.</p>
+<p>Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my <a href="https://www.gokhanciflikli.com/post/weinstein-effect/">Weinstein effect</a> post. In my head-cannon, I call it the ‘tidytext difference chart’, but I’m sure there’s a proper name for it. One thing I couldn’t figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).</p>
 <pre class="r"><code>ggplot(sides, aes(reorder(Word, Count), Count, fill = Side)) +
   geom_col() +
   coord_flip() +
