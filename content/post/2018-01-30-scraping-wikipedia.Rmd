@@ -24,6 +24,7 @@ library(stringi)
 library(quanteda)
 library(ggplot2)
 library(ggridges)
+library(drlib)
 library(hrbrthemes)
 theme_set(theme_ipsum_rc(plot_title_size = 18, axis_title_size = 14))
 ```
@@ -213,17 +214,19 @@ I convert the count value for the victorious side to negative after taking its l
 
 ### Visualise Actor Characteristics
 
-Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my [Weinstein effect](https://www.gokhanciflikli.com/post/weinstein-effect/) post. In my head-cannon, I call it the 'tidytext difference chart', but I'm sure there's a proper name for it. One thing I couldn't figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).
+Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my [Weinstein effect](https://www.gokhanciflikli.com/post/weinstein-effect/) post. In my head-cannon, I call it the 'tidytext difference chart', but I'm sure there's a proper name for it. ~~One thing I couldn't figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).~~ [Twitter](https://twitter.com/gokhan_ciflikli/status/958772947531059206) solved it!
 
 ```{r eval = FALSE}
-ggplot(sides, aes(reorder(Word, Count), Count, fill = Side)) +
+#Requires devtools::install_github("dgrtwo/drlib")
+ggplot(sides, aes(reorder_within(x = Word, by = Count, within = Century), Count, fill = Side)) +
+  scale_x_reordered() +
+  facet_wrap(~Century, scales = "free_y") +
   geom_col() +
   coord_flip() +
-  geom_hline(yintercept = 0, alpha = .4) +
-  facet_wrap(~Century, scales = "free") +
   scale_y_continuous(labels = c("12X", "", "8X", "", "4X", "", "",
                                 "", "4X", "", "8X", "", "12X"),
                      breaks = seq(-6, 6)) +
+  geom_hline(yintercept = 0, alpha = .4) +
   theme(legend.position = c(.5, .05)) +
   labs(title = "Who Participates in Organised Violence: Change in Actor Characteristics 1 AD-2018 AD",
        subtitle = "Five Most Common Descriptors based on Wikipedia Conflict Names | Stratified by Belligerent Type | Clustered by Century",

@@ -172,15 +172,17 @@ sides$Word &lt;- ifelse(sides$Duplicate == 0, sides$Word, paste0(sides$Word, &qu
 </div>
 <div id="visualise-actor-characteristics" class="section level3">
 <h3>Visualise Actor Characteristics</h3>
-<p>Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my <a href="https://www.gokhanciflikli.com/post/weinstein-effect/">Weinstein effect</a> post. In my head-cannon, I call it the ‘tidytext difference chart’, but I’m sure there’s a proper name for it. One thing I couldn’t figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).</p>
-<pre class="r"><code>ggplot(sides, aes(reorder(Word, Count), Count, fill = Side)) +
+<p>Okay, fun part. Also, note that we need all that code to get the data and clean it up while the visualisations are maybe one little chunk of code. Anyway, the first visualisation I had in mind is the one I used for my <a href="https://www.gokhanciflikli.com/post/weinstein-effect/">Weinstein effect</a> post. In my head-cannon, I call it the ‘tidytext difference chart’, but I’m sure there’s a proper name for it. <del>One thing I couldn’t figure out was achieving perfect sorting; not sure what causes that (e.g. Byzantine in the 9th Century, Khaganate in the 10th century etc.).</del> <a href="https://twitter.com/gokhan_ciflikli/status/958772947531059206">Twitter</a> solved it!</p>
+<pre class="r"><code>#Requires devtools::install_github(&quot;dgrtwo/drlib&quot;)
+ggplot(sides, aes(reorder_within(x = Word, by = Count, within = Century), Count, fill = Side)) +
+  scale_x_reordered() +
+  facet_wrap(~Century, scales = &quot;free_y&quot;) +
   geom_col() +
   coord_flip() +
-  geom_hline(yintercept = 0, alpha = .4) +
-  facet_wrap(~Century, scales = &quot;free&quot;) +
   scale_y_continuous(labels = c(&quot;12X&quot;, &quot;&quot;, &quot;8X&quot;, &quot;&quot;, &quot;4X&quot;, &quot;&quot;, &quot;&quot;,
                                 &quot;&quot;, &quot;4X&quot;, &quot;&quot;, &quot;8X&quot;, &quot;&quot;, &quot;12X&quot;),
                      breaks = seq(-6, 6)) +
+  geom_hline(yintercept = 0, alpha = .4) +
   theme(legend.position = c(.5, .05)) +
   labs(title = &quot;Who Participates in Organised Violence: Change in Actor Characteristics 1 AD-2018 AD&quot;,
        subtitle = &quot;Five Most Common Descriptors based on Wikipedia Conflict Names | Stratified by Belligerent Type | Clustered by Century&quot;,
