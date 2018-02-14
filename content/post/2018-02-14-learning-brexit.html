@@ -1,0 +1,272 @@
+---
+title: 'Supervised vs. Unsupervised Learning: Exploring Brexit with PLS and PCA'
+author: Gokhan Ciflikli
+date: '2018-02-14'
+slug: learning-brexit
+categories:
+  - R
+  - Prediction
+  - Visualization
+tags:
+  - R
+  - caret
+  - plot
+  - pls
+  - tmap
+description: "Exploring the linkages between UK General Election and EU Referendum voting patterns"
+---
+
+
+
+<div id="outcome-supervision" class="section level3">
+<h3>Outcome Supervision</h3>
+<p>Yesterday I was part of an introductory session on machine learning and unsurprisingly, the issue of supervised vs. unsupervised learning came up. In social sciences, there is a definite tendency for the former; there is more or less always a target outcome or measure that we want to optimise the performance of our models for. This reminded me of a draft that I had written the code a couple of months ago but for some reason never converted into a blog post until now. This will also allow me to take a break from conflict forecasting for a bit and go back to my usual topic of UK. My frequent usage of all things UK is at such a level that my Google Search Console insights lists <a href="https://www.reddit.com/r/CasualUK/">r/CasualUK</a> as the top referrer. Cheers, mates!</p>
+</div>
+<div id="uk-general-elections-and-brexit" class="section level3">
+<h3>UK General Elections and Brexit</h3>
+<p>I think I have exploited <code>rvest</code> enough recently, so I will rely on a couple of good old csv’s this time. <a href="https://www.electoralcommission.org.uk/find-information-by-subject/elections-and-referendums/past-elections-and-referendums/eu-referendum/electorate-and-count-information">The Electoral Commission website</a> provides the EU referendum voting totals by region. I want to combine electoral data with other socio-economic indicators so I will subset the data to London only (this is how privilege perpetuates itself). Within that subset, I will only keep the area code (for matching purposes later), and the raw number of votes for each option in the referendum. I will also create a variable indicating ‘the outcome’ based on which side got more votes:</p>
+<pre class="r"><code>##EU Referendum data for London
+eu &lt;- read_csv(&quot;eu_ref.csv&quot;)
+eu &lt;- eu[eu$Region == &quot;London&quot;, c(&quot;Area_Code&quot;, &quot;Remain&quot;, &quot;Leave&quot;)]
+eu$Outcome &lt;- ifelse(eu$Leave &gt; eu$Remain, &quot;Leave&quot;, &quot;Remain&quot;)</code></pre>
+<p>I supplement the referendum outcomes using data supplied by the <a href="https://data.london.gov.uk/dataset/london-borough-profiles">London Datastore</a>. The data structure is quite hostile to R (i.e. death by government-issue free-form Excel), so I cleaned it up manually a bit first. Let’s read in that version:</p>
+<pre class="r"><code>#London Borough data
+london &lt;- read_csv(&quot;london.csv&quot;)
+london &lt;- london[2:33, ]</code></pre>
+<p>According to the website,</p>
+<blockquote>
+<p>“…The London Borough Profiles help paint a general picture of an area by presenting a range of headline indicator data in both spreadsheet and map form to help show statistics covering demographic, economic, social and environmental datasets for each borough, alongside relevant comparator areas.”</p>
+</blockquote>
+<p>Excellent. Now, one of the downsides of resurrecting months-old code is that sometimes, you don’t remember why you did something the way you did…</p>
+<pre class="r"><code>#Checking which columns have missing values
+have.na &lt;- NULL
+for (i in 1:length(london)) {
+  counter &lt;- ifelse(sum(is.na(london[, i])) &gt; 0, 1, 0)
+  have.na &lt;- c(have.na, counter)
+}
+colnames(london)[which(have.na == 1)]</code></pre>
+<pre><code>## [1] &quot;GAP&quot;      &quot;Male_GAP&quot; &quot;Fem_GAP&quot;</code></pre>
+<pre class="r"><code>#Remove columns with NAs
+london &lt;- london[, -which(have.na == 1)]</code></pre>
+<p>At least I do add comments even for trivial things. A bit convoluted for the task at hand, perhaps. Anyway, I will leave it in for posterity. Moving on, we can now combine the two datasets and name it accordingly:</p>
+<pre class="r"><code>#Merge the datasets by region code
+colnames(eu)[1] &lt;- &quot;Code&quot;
+eu$Code &lt;- as.character(eu$Code)
+irony &lt;- inner_join(eu, london, by = &quot;Code&quot;)</code></pre>
+<p>Rumour has it that the above code chunk is my current Facebook cover image. Where’s my <em>biscuit</em>?</p>
+<p>Most of the variables are actually percentages rather than counts. We can write up a basic helper function to identify which ones have values bounded by 0-100. Naturally, we will misidentify some along the way so we’ll just remove them manually afterwards: <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<pre class="r"><code>#Function to check whether a column is in the 0-100 range
+in_range &lt;- function(x) {
+  holder &lt;- range(x)
+  if (holder[1] &gt;= 0 &amp; holder[2] &lt;= 100) TRUE else FALSE
+}
+
+#Only select such columns
+percentage &lt;- colnames(select_if(irony, in_range))
+percentage</code></pre>
+<pre><code>##  [1] &quot;Mean_Age&quot;                &quot;Population_0_15&quot;        
+##  [3] &quot;Working_Age_Population&quot;  &quot;Population_65&quot;          
+##  [5] &quot;Born_Abroad&quot;             &quot;Largest_Mig_Pop&quot;        
+##  [7] &quot;Second_Largest_Mig_Pop&quot;  &quot;Third_Largest_Mig_Pop&quot;  
+##  [9] &quot;BAME_Population&quot;         &quot;English_Not_First_Lang&quot; 
+## [11] &quot;Employment_Rate&quot;         &quot;Male_Employment&quot;        
+## [13] &quot;Female_Employment&quot;       &quot;Unemployment&quot;           
+## [15] &quot;Youth_Unemployment&quot;      &quot;Youth_NEET&quot;             
+## [17] &quot;Working_Age_Benefits&quot;    &quot;Working_Age_Disability&quot; 
+## [19] &quot;No_Qualifications&quot;       &quot;Degree&quot;                 
+## [21] &quot;Volunteer&quot;               &quot;Employed_Public_Sector&quot; 
+## [23] &quot;Job_Density&quot;             &quot;Business_Survival&quot;      
+## [25] &quot;Fires_Per_Thousand&quot;      &quot;Ambulance_Per_Hundred&quot;  
+## [27] &quot;House_Owned&quot;             &quot;House_Bought&quot;           
+## [29] &quot;House_Council&quot;           &quot;House_Landlord&quot;         
+## [31] &quot;Greenspace&quot;              &quot;Recycling&quot;              
+## [33] &quot;Cars_Per_Household&quot;      &quot;Cycle&quot;                  
+## [35] &quot;Public_Trans_Access&quot;     &quot;High_Grades&quot;            
+## [37] &quot;Child_Care&quot;              &quot;Pupil_English_Not_First&quot;
+## [39] &quot;Male_Life_Expectancy&quot;    &quot;Female_Life_Expectancy&quot; 
+## [41] &quot;Teenage_Conception&quot;      &quot;Life_Satisfaction&quot;      
+## [43] &quot;Worthwhileness&quot;          &quot;Happiness&quot;              
+## [45] &quot;Anxiety&quot;                 &quot;Childhood_Obesity&quot;      
+## [47] &quot;Diabetes&quot;                &quot;Tories&quot;                 
+## [49] &quot;Labour&quot;                  &quot;Lib_Dems&quot;               
+## [51] &quot;Turnout&quot;</code></pre>
+<pre class="r"><code>#Remove age and other non-% variables from the list
+percentage &lt;- percentage[-c(1, 25:26, 33, 37, 42:45)] 
+#Update names
+names(irony) &lt;- ifelse(names(irony) %in% percentage, 
+                       paste0(names(irony), &quot;_%&quot;), names(irony))
+head(colnames(select(irony, ends_with(&quot;%&quot;))))</code></pre>
+<pre><code>## [1] &quot;Population_0_15_%&quot;        &quot;Working_Age_Population_%&quot;
+## [3] &quot;Population_65_%&quot;          &quot;Born_Abroad_%&quot;           
+## [5] &quot;Largest_Mig_Pop_%&quot;        &quot;Second_Largest_Mig_Pop_%&quot;</code></pre>
+<p>Before moving on, let’s also check which variables are correlated with each other. Also, everyone loves correlation plots. To me, they are akin to Apple products—they always look cool, but their utility is situational. They also get increasingly difficult to interpret when <em>n</em> &gt; 15ish. However, they have another useful function: you can specify the number ‘blocks’ that you want to divide the correlation plot if you opt for hierarchical clustering. Say, we want to identify three such blocks in the data:</p>
+<pre class="r"><code>#Plot correlation matrix
+M &lt;- cor(select_if(irony, is.numeric))
+london.matrix &lt;- corrplot::corrplot(M, order = &quot;hclust&quot;, tl.cex = .4,
+                                    method = &quot;square&quot;, type = &quot;full&quot;,
+                                    tl.pos = &quot;dt&quot;, addrect = 3,
+                                    tl.col = &quot;black&quot;, tl.srt = 60)</code></pre>
+<p><img src="/post/2018-02-14-learning-brexit_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Larger version <a href="/img/corrplot.pdf">here</a>. The first rectangle (top left), let’s call it the Tory block as the first row/column is Tory voting percentage. We see that it is positively correlated with indicators such as voting Leave, high income/employment, old age, happiness/worthwhileness (?) etc. In other words, it passes the eye test for potential conservative party leanings. Conversely, the middle block is the ‘Labour’ counterpart. The correlated indicators revolve around issues such as voting Remain, young immigrant population, English not being the first language, benefits, unemployment. Again, passes the sanity check (hold your horses Tories, reverse causality and all). Finally, we have a smaller block (bottom right), which I’ll call the ‘Non-Aligned’. This cluster is curious: Basically, it represents the people living in the City—as indicated by high population/job density, median income, and police/ambulance/fire emergencies per thousand. Note that not everything in a block is necessarily (positively) correlated with each other; only the blue shades are.</p>
+<p>We can also just rely on numbers to identify correlations above a specified threshold (albeit without clustering so less useful):</p>
+<pre class="r"><code>#Numerical version
+correlated &lt;- sort(findCorrelation(M, cutoff = .8, exact = TRUE))
+colnames(M[, correlated])</code></pre>
+<pre><code>##  [1] &quot;Household_Estimate&quot;       &quot;Inland_Area&quot;             
+##  [3] &quot;Population_Density&quot;       &quot;Mean_Age&quot;                
+##  [5] &quot;Working_Age_Population_%&quot; &quot;Population_65_%&quot;         
+##  [7] &quot;International_Migration&quot;  &quot;English_Not_First_Lang_%&quot;
+##  [9] &quot;Overseas_National&quot;        &quot;New_Migrant_Rate&quot;        
+## [11] &quot;Employment_Rate_%&quot;        &quot;Job_Density_%&quot;           
+## [13] &quot;Active_Businesses&quot;        &quot;Crime_Per_Thousand&quot;      
+## [15] &quot;Ambulance_Per_Hundred&quot;    &quot;House_Owned_%&quot;           
+## [17] &quot;House_Bought_%&quot;           &quot;House_Council_%&quot;         
+## [19] &quot;Carbon_Emissions&quot;         &quot;Cars&quot;                    
+## [21] &quot;Cars_Per_Household&quot;       &quot;Public_Trans_Access_%&quot;   
+## [23] &quot;Male_Life_Expectancy_%&quot;   &quot;Preventable_Deaths&quot;      
+## [25] &quot;Labour_%&quot;</code></pre>
+</div>
+<div id="principal-component-analysis-pca" class="section level3">
+<h3>Principal Component Analysis (PCA)</h3>
+<p>Probably the most commonly-used unsupervised learning technique alongside k-means clustering is the Principal Component Analysis. It’s so common that it’s probably your best bet for de-mystifying unsupervised learning; many have utilised the technique using commercial software such as SPSS/STATA. PCA is well-liked because it is pretty efficient at reducing dimension and creating uncorrelated variables (components), which helps with model stability. On the other hand, it is susceptible (or drawn) to high-variance variables; if you measure the same phenomenon in days and in months, the former will be picked up in the earlier components. The downside is that the model might focus on <em>sorting</em> variance rather than identifying the underlying data structure. Second, as the technique is unsupervised, the components maximise capturing variance without regard to an outcome. Meaning, your uncorrelated components only work in supervised settings if the captured variance <em>is</em> correlated with the outcome. Let’s unpack that a bit. First, we will allocate the columns from our aforementioned blocks and apply some diagnostics:</p>
+<pre class="r"><code>#Get colnames for splitting PCs
+tories &lt;- colnames(london.matrix[, 1:26])
+labour &lt;- colnames(london.matrix[, 27:55])
+non.aligned &lt;- colnames(london.matrix[, 56:72])
+
+#Checking for possible data transformations
+skew.values &lt;- apply(select_if(irony, is.numeric), 2, skewness)
+#Display top ten most skewed variables
+head(sort(abs(skew.values), decreasing = TRUE), 10)</code></pre>
+<pre><code>##              Lib_Dems_%           Job_Density_%                    Jobs 
+##                3.358732                3.250213                3.043243 
+##       Active_Businesses      Crime_Per_Thousand             House_Price 
+##                2.862152                2.140319                2.057096 
+##   Ambulance_Per_Hundred        Carbon_Emissions Third_Largest_Mig_Pop_% 
+##                2.005706                1.606982                1.592895 
+##             Council_Tax 
+##                1.465253</code></pre>
+<pre class="r"><code>#Look for non-zero variance predictors
+nearZeroVar(irony)</code></pre>
+<pre><code>## integer(0)</code></pre>
+<p>Looking good. Now we can actually create the PCs. For this exercise I will not split the data into train/test as we won’t be forecasting. I will rely on <code>caret</code> to do the transformation; however there are many other packages that you can use. We will center and scale the variables and perform PCA capturing at least 95% of the variance:</p>
+<pre class="r"><code>#Create PCs based on correlated blocks
+tory.trans &lt;- preProcess(x = irony[, tories],
+                         method = c(&quot;center&quot;, &quot;scale&quot;, &quot;pca&quot;),
+                         thresh = 95)
+pca.data &lt;- predict(tory.trans, irony)
+#Look into PC1 loadings
+head(sort(tory.trans$rotation[, 1], decreasing = TRUE))</code></pre>
+<pre><code>##    Population_65_%      House_Owned_% Cars_Per_Household 
+##          0.2764259          0.2763916          0.2714639 
+##           Mean_Age       Greenspace_%               Cars 
+##          0.2581242          0.2363438          0.2349750</code></pre>
+<p>Let’s quickly do the same for Labour and the non-aligned block:</p>
+<pre class="r"><code>#Repeat for other parties
+labour.trans &lt;- preProcess(x = pca.data[, labour],
+                           method = c(&quot;center&quot;, &quot;scale&quot;, &quot;pca&quot;),
+                           thresh = 95)
+pca.data &lt;- predict(labour.trans, pca.data)
+head(sort(labour.trans$rotation[, 1])) #All loadings are negative</code></pre>
+<pre><code>##   Overseas_National   BAME_Population_%     Net_Immigration 
+##          -0.2721566          -0.2675754          -0.2600342 
+## Childhood_Obesity_%    New_Migrant_Rate            Labour_% 
+##          -0.2552952          -0.2504425          -0.2461091</code></pre>
+<pre class="r"><code>non.trans &lt;- preProcess(x = pca.data[, non.aligned],
+                        method = c(&quot;center&quot;, &quot;scale&quot;, &quot;pca&quot;),
+                        thresh = 95)
+pca.data &lt;- predict(non.trans, pca.data)</code></pre>
+<p>Finally, we can now subset the PCs themselves and merge it with the main dataset:</p>
+<pre class="r"><code>#Get rid of unnecessary columns and rename PCs
+pca.data &lt;- pca.data[, c(1, 6:11)]
+colnames(pca.data) &lt;- c(&quot;Code&quot;, &quot;Tory_PC1&quot;, &quot;Tory_PC2&quot;,
+                        &quot;Labour_PC1&quot;,&quot;Labour_PC2&quot;,
+                        &quot;NonAligned_PC1&quot;, &quot;NonAligned_PC2&quot;)
+
+brexit &lt;- inner_join(irony, pca.data, by = &quot;Code&quot;)</code></pre>
+</div>
+<div id="partial-least-squares-pls" class="section level3">
+<h3>Partial Least Squares (PLS)</h3>
+<p>In contrast, Partial Least Squares is a PCA that is told the outcome so it has something to calibrate to. If you also happen to have a printed copy of <a href="http://appliedpredictivemodeling.com/">Applied Predictive Modeling</a>, Kuhn and Johnson touch upon this on page 37. Paragraph three, towards the end. Done reading? Good. On that note, Max is on <a href="https://twitter.com/topepos">Twitter</a> now:</p>
+<p><img src="/img/max.png" /> Talk about an impossible task.</p>
+<p>PLS is a supervised technique as we are supplying an outcome found in the data; in our case, whether the borough voted Leave/Remain. Let’s set up a standard <code>caret</code> operation using a repeated 5-k fold, and specify we want upsampling (to offset the class imbalance as most London boroughs voted Remain) and follow the one-standard-error rule for model selection:</p>
+<pre class="r"><code>#Partial Least Squares
+folds &lt;- createMultiFolds(brexit$Outcome, k = 5,  times = 10)
+tr.ctrl &lt;- trainControl(&quot;repeatedcv&quot;, index = folds,
+                        selectionFunction = &quot;oneSE&quot;, sampling = &quot;up&quot;)</code></pre>
+<p>Let’s set the tune length to 20 and use Kappa as the accuracy metric. Don’t forget to remove the outcome from the right-hand side and apply the standard pre-processing procedures (remove zero-variance indicators, center and scale):</p>
+<pre class="r"><code>#Train Tory model
+set.seed(1895)
+tory.fit &lt;- train(y = brexit$Outcome, x = brexit[, tories[-13]],
+                  method = &quot;pls&quot;,
+                  metric = &quot;Kappa&quot;,
+                  tuneLength = 20,
+                  trControl = tr.ctrl,
+                  preProc = c(&quot;zv&quot;, &quot;center&quot;, &quot;scale&quot;))
+
+plot(tory.fit)</code></pre>
+<p><img src="/post/2018-02-14-learning-brexit_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><code>caret</code> also makes it easy to extract and visualise the top <em>n</em> variables (in terms of their predictive accuracy):</p>
+<pre class="r"><code>plot(varImp(tory.fit), 10)</code></pre>
+<p><img src="/post/2018-02-14-learning-brexit_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Lib Dems incursion into Tory territory! Let’s repeat the same for the Labour side:</p>
+<pre class="r"><code>#Train Labour model
+set.seed(1895) #Let&#39;s not take chances
+labour.fit &lt;- train(y = brexit$Outcome, x = brexit[, labour[-17]],
+                    method = &quot;pls&quot;,
+                    metric = &quot;Kappa&quot;,
+                    tuneLength = 20,
+                    trControl = tr.ctrl,
+                    preProc = c(&quot;zv&quot;, &quot;center&quot;, &quot;scale&quot;))
+
+plot(labour.fit)</code></pre>
+<p><img src="/post/2018-02-14-learning-brexit_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code>plot(varImp(labour.fit), 10)</code></pre>
+<p><img src="/post/2018-02-14-learning-brexit_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p>So in our case, the issue of supervision does not seem to radically change the findings. Both the PCA and PLS seem to agree: if we simplify greatly, older, happier, richer people vote Tory and Leave; whereas young, diverse, less financially-able people vote Labour/Remain. Both of which are admittedly not ground-breaking insights. But for our purposes, we show that in this case, maximising variance in the data actually lends itself well to predicting our outcome of interest.</p>
+</div>
+<div id="mapping-the-loadings" class="section level3">
+<h3>Mapping the Loadings</h3>
+<p>Keeping up with the data visualisation focus of this blog, let’s create a map of London boroughs highlighting the above findings. Similar to the setup of <a href="https://www.gokhanciflikli.com/post/game-of-thrones/">mapping Westeros in R</a>, you need to have all the shape files in your current directory for the <code>&quot;.&quot;</code> argument to work. We can then match the borough by their area code:</p>
+<pre class="r"><code>#London Boroughs Shapefile
+boroughs &lt;- readOGR(&quot;.&quot;, &quot;London_Borough_Excluding_MHW&quot;)
+#Remove City of London as it has no voting data
+boroughs &lt;- boroughs[boroughs@data$NAME != &quot;City of London&quot;, ]
+
+#Merge spatial and non-spatial data
+geo.data &lt;- merge(boroughs, brexit, by.x = &quot;GSS_CODE&quot;, by.y = &quot;Code&quot;)</code></pre>
+<p>We have several options for visualisation here. We can have the loadings for each PC by party colouring the boroughs, which would help us see the variation between them. We can also add a basic histogram showing the distribution of the top variables (in each component) and overlay coloured indicators within each borough to see whether we can find something interesting there:</p>
+<pre class="r"><code>#Visualisation
+tm_shape(geo.data) +
+#PC loadings data
+tm_fill(c(&quot;Tory_PC1&quot;, &quot;Tory_PC2&quot;, &quot;Labour_PC1&quot;, &quot;Labour_PC2&quot;),
+        palette = list(&quot;-Blues&quot;, &quot;-Blues&quot;, &quot;-Reds&quot;, &quot;-Reds&quot;),
+        style = &quot;order&quot;, auto.palette.mapping = TRUE, contrast = .8,
+        legend.is.portrait = FALSE, legend.show = FALSE) +
+#Titles
+tm_layout(main.title = &quot;Principal Components &amp; Their Top Variables  |  London Boroughs&quot;, legend.position = c(0, 0), 
+          title = list(&quot;% Population over 65&quot;,
+                       &quot;% House Owned Outright&quot;,
+                       &quot;Overseas Nationals (NINo)&quot;,
+                       &quot;Children Looked After per 10K&quot;),
+          panel.show = TRUE, panel.label.size = 1.4,
+          panel.labels = c(&quot;Tory PC1 values in blue, darker shades are negative&quot;,
+                           &quot;Tory PC2 values in blue, darker shades are negative&quot;,
+                           &quot;Labour PC1 values in red, darker shades are negative&quot;,
+                           &quot;Labour PC2 values in red, darker shades are negative&quot;), 
+          fontfamily = &quot;Roboto Condensed&quot;, between.margin = 0, asp = 1.78, scale = .6) +
+#Overlay data options
+tm_symbols(col = c(&quot;Population_65_%&quot;, &quot;House_Bought_%&quot;, &quot;Overseas_National&quot;, &quot;Child_Care&quot;),
+           title.col = &quot;&quot;, n = 4,
+           scale = 1, shape = 24, border.col = &quot;black&quot;, border.lwd = .6, border.alpha = .5,
+           legend.hist = TRUE, legend.hist.title = &quot;Distribution&quot;) +
+#Border transperancy
+tm_borders(alpha = .4)</code></pre>
+<p><img src="/img/boroughs.png" /> Click <a href="/img/boroughs.pdf">here</a> for a larger pdf version. Let’s analyse what we see in the top left panel, which visualises the first Tory PC loadings and the highest ranked variable within that component; the percentage of population over the age of 65. The blues represent the loading values; darker shades are negative whereas lighter shades are positive. One way to look at this is that ‘inner’ London is different than ‘outer’ London for this PC (remember, PCA maximises variance for its own sake). In this case, we find that this overlaps well with increasing share of senior citizens, who mostly live on the periphery (darker red triangles) and going by the histogram, constitute the smallest segment in the population. As usual, the code is available on <a href="https://github.com/ciflikli/website/blob/master/content/post/2018-02-14-learning-brexit.Rmd">GitHub</a>, so good luck replicating comrade!</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Curious though, no one in the dataset (well, London) is older than 100 years old? Hmm.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
