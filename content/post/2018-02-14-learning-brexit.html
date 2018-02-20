@@ -25,7 +25,18 @@ description: "Exploring the linkages between UK General Election and EU Referend
 <div id="uk-general-elections-and-brexit" class="section level3">
 <h3>UK General Elections and Brexit</h3>
 <p>I think I have exploited <code>rvest</code> enough recently, so I will rely on a couple of good old csv’s this time. <a href="https://www.electoralcommission.org.uk/find-information-by-subject/elections-and-referendums/past-elections-and-referendums/eu-referendum/electorate-and-count-information">The Electoral Commission website</a> provides the EU referendum voting totals by region. I want to combine electoral data with other socio-economic indicators so I will subset the data to London only (this is how privilege perpetuates itself). Within that subset, I will only keep the area code (for matching purposes later), and the raw number of votes for each option in the referendum. I will also create a variable indicating ‘the outcome’ based on which side got more votes:</p>
-<pre class="r"><code>##EU Referendum data for London
+<pre class="r"><code>#Load the required libraries
+library(tidyverse)
+library(caret)
+library(pls)
+library(e1071)
+library(corrplot)
+library(rgdal)
+library(tmap)
+library(plyr)
+library(gridExtra)
+
+#EU Referendum data for London
 eu &lt;- read_csv(&quot;eu_ref.csv&quot;)
 eu &lt;- eu[eu$Region == &quot;London&quot;, c(&quot;Area_Code&quot;, &quot;Remain&quot;, &quot;Leave&quot;)]
 eu$Outcome &lt;- ifelse(eu$Leave &gt; eu$Remain, &quot;Leave&quot;, &quot;Remain&quot;)</code></pre>

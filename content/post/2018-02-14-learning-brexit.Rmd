@@ -25,7 +25,6 @@ library(e1071)
 library(corrplot)
 library(rgdal)
 library(tmap)
-library(viridis)
 library(plyr)
 library(gridExtra)
 ```
@@ -39,7 +38,18 @@ Yesterday I was part of an introductory session on machine learning and unsurpri
 I think I have exploited ```rvest``` enough recently, so I will rely on a couple of good old csv's this time. [The Electoral Commission website](https://www.electoralcommission.org.uk/find-information-by-subject/elections-and-referendums/past-elections-and-referendums/eu-referendum/electorate-and-count-information) provides the EU referendum voting totals by region. I want to combine electoral data with other socio-economic indicators so I will subset the data to London only (this is how privilege perpetuates itself). Within that subset, I will only keep the area code (for matching purposes later), and the raw number of votes for each option in the referendum. I will also create a variable indicating 'the outcome' based on which side got more votes:
 
 ```{r}
-##EU Referendum data for London
+#Load the required libraries
+library(tidyverse)
+library(caret)
+library(pls)
+library(e1071)
+library(corrplot)
+library(rgdal)
+library(tmap)
+library(plyr)
+library(gridExtra)
+
+#EU Referendum data for London
 eu <- read_csv("eu_ref.csv")
 eu <- eu[eu$Region == "London", c("Area_Code", "Remain", "Leave")]
 eu$Outcome <- ifelse(eu$Leave > eu$Remain, "Leave", "Remain")
