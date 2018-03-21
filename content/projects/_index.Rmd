@@ -1,14 +1,13 @@
 ---
-title: "Projects"
+title: "Portfolio"
 output: html_document
 ---
 
 Here are some of the data projects I am currently working on. Links to Shiny apps and code on GitHub will be made public when a project is published.
 
-
-###Individual Projects
-
 ***
+
+###Data Visualisation
 
 `adavis` Visual exploration of nearly 36,000 US legislator voting scores as recorded by the Americans for Democratic Action (ADA) from 1948 to 2015. The data is grouped by year, state, chamber, and party. [App Link](https://gokhan.shinyapps.io/adavis/) |  [GitHub](https://github.com/ciflikli/adavis)
 
@@ -18,16 +17,12 @@ Here are some of the data projects I am currently working on. Links to Shiny app
 
 ![](/img/sunburstR.png)
 
-`duRation` Ensemble ML app that takes survival analysis as input, transforms it to logistic regression, and runs a series of classification models using `caret` to increase predictive accuracy. Currently under development.
-
-###Collaborations
-
 ***
+
+###Predictive Modelling
 
 `rebelCast` `rebelTrack` Two open-source R packages to predict global conflict escalation patterns. With Nils Metternich, UCL. [Project summary](http://www.ucl.ac.uk/political-science/research/projects/predicting-escalation-conflict).
 
 `usuof` Using NLP to scrape the NYT digital archives (1851-2006) to quantify how security rich/poor the international environment is, in order to predict presidential inclination to choose use of force over diplomacy. With Peter Trubowitz and Kohei Watanabe, LSE.
-
-`RussiaGIS` Spatial visualisation of the effect of Tsarist Russia socio-demographic variables on contemporary levels of democracy in Russia. With Tomila Lankina, LSE.
 
 `entropy` ML prediction model using the maximum entropy generation framework to forecast conflict duration. With Karsten Donnay, University of Konstanz.

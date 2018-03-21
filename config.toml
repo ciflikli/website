@@ -6,7 +6,7 @@ title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
-#paginate = 3
+paginate = 20
 
 [outputFormats.MyEnrichedFormat]
 protocol = "https://"
