@@ -32,7 +32,7 @@ Whew! Less than a month left and I still haven't publicised this on my blog. Peo
 
 We aim to have four distinct computational social science challenges. Currently, we have three challenge-issuers confirmed: LSE Social and Economic Data Science (SEDS), GitHub, and Facebook Research. We are still reaching out for the fourth, so if you happen to know a suitable institution/company/NGO/start-up, send them our way! We will publicise the challenges a week before the event.
 
-The first day of our event is actually a pre-event. That is, no hacking will take place. Instead, this evening (6-8pm) is for watching videos of the challenges (sponsors themselves won't be there for the pre-event) and team-forming. You should definitely not skip this day! You will be able to mingle---drinks are on us.
+The first day of our event (that is, 17 April), is actually a pre-event. That is, no hacking will take place. Instead, that evening (6-8pm) is for getting your badges, watching videos of the challenges (sponsors themselves won't be there for the pre-event), and team-forming. You should definitely __not__ skip this day, even though the poster makes it look like you can! Do mingle with the others---drinks are on us.
 
 ### Workshops
 
