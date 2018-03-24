@@ -2,7 +2,6 @@
 baseurl = "https://www.gokhanciflikli.com/"
 canonifyurls = true
 languageCode = "en"
-enableEmoji = true
 title = "Computational Social Science"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
