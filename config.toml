@@ -15,7 +15,7 @@ protocol = "https://"
 	name = "Gokhan Ciflikli"
 	job = "Computational Social Science"
 	description = "Data Science, Visualization, Machine Learning, R"
-	bio = "[R](https://gokhanciflikli.com/categories/r) | [Data Visualization](https://gokhanciflikli.com/categories/visualization) | [Predictive Modeling](https://gokhanciflikli.com/categories/prediction)"
+	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
 	github = "ciflikli"
 	enableRSS = true
