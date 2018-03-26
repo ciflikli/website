@@ -1,3 +1,4 @@
 /gokhanciflikli.com           https://www.gokhanciflikli.com
+/gokhan.io           https://www.gokhan.io
 http://www.gokhanciflikli.com/* https://www.gokhan.io/:splat 301!
 https://www.gokhanciflikli.com/* https://www.gokhan.io/:splat 301!
