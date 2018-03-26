@@ -3,7 +3,7 @@ title: "About"
 output: html_document
 ---
 
-Click the link for my [resume](/img/Ciflikli_Resume_170118.pdf).
+Click the link for my [resume](/img/Ciflikli_Resume_260318.pdf).
 
 I'm a political scientist by training (PhD candidate@[LSE](http://www.lse.ac.uk/international-relations/research/phd-students)) who likes to visualize empirical problems and to offer data-driven explanations for social phenomena. Although my academic interests revolve around exploring violent conflict dynamics, identifying the determinants of foreign policy decision-making, and quantifying gender issues in academia, I broadly consider myself a social scientist: I'm primarily interested in answering the question _why people do the things they do,_ one bit at a time.
 
