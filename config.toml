@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "https://www.gokhanciflikli.com/"
+baseurl = "https://www.gokhan.io/"
 canonifyurls = true
 languageCode = "en"
 title = "Computational Social Science"
