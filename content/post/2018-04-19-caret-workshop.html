@@ -1,0 +1,427 @@
+---
+title: Yet Another Caret Workshop
+author: Gokhan Ciflikli
+date: '2018-04-19'
+slug: caret-workshop
+categories:
+  - R
+  - Prediction
+tags:
+  - caret
+  - caretEnsemble
+  - skimr
+  - xray
+description: 'Building predictive modeling pipelines in R'
+---
+
+
+
+<div id="intro" class="section level3">
+<h3>Intro</h3>
+<p>Yesterday I gave a workshop on applied predictive modelling<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> with <code>caret</code> at the <a href="https://www.cssatlse.com">1st LSE Computational Social Science hackathon</a>. <em>Organiser privileges</em>. I put together some introductory code and started a simple <a href="https://github.com/ciflikli/caret-workshop">GitHub repo</a> for the participants, so I thought I’d share it here as well. This is not supposed to cover all aspects of <code>caret</code> (plus there is already <a href="https://topepo.github.io/caret/index.html">this</a>), but more of a starter-pack for those who might be migrating from Python or another machine learning library like <code>mlr</code>. I have also saved the environment as <code>caret.rdata</code>, so that the participants can load it up during the workshop (insert harrowing experience about live coding) and follow through—that’s included in the repo too if you rather have a test run first.</p>
+</div>
+<div id="the-data" class="section level3">
+<h3>The Data</h3>
+<p>Let’s start by creating some synthetic data using <code>caret</code>. The <code>twoClassSim</code> generates a dataset suitable for binary-outcomes:</p>
+<pre class="r"><code>dat &lt;- twoClassSim(n = 1000, #number of rows
+                   linearVars = 2, #linearly important variables
+                   noiseVars = 5, #uncorrelated irrelevant variables
+                   corrVars = 2, #correlated irrelevant variables
+                   mislabel = .01) #percentage possibly mislabeled
+colnames(dat)</code></pre>
+<pre><code>##  [1] &quot;TwoFactor1&quot; &quot;TwoFactor2&quot; &quot;Linear1&quot;    &quot;Linear2&quot;    &quot;Nonlinear1&quot;
+##  [6] &quot;Nonlinear2&quot; &quot;Nonlinear3&quot; &quot;Noise1&quot;     &quot;Noise2&quot;     &quot;Noise3&quot;    
+## [11] &quot;Noise4&quot;     &quot;Noise5&quot;     &quot;Corr1&quot;      &quot;Corr2&quot;      &quot;Class&quot;</code></pre>
+<p>The above chunk simulates a dataframe with 1000 rows containing 15 variables:</p>
+<ul>
+<li>Class: Binary outcome (Class)</li>
+<li>TwoFactor: Correlated multivariate normal predictors (TwoFactor1, TwoFactor2)</li>
+<li>Nonlinear: Uncorrelated random uniform predictors (NonLinear1, …, Nonlinear3)</li>
+<li>Linear: (Optional) uncorrelated standard normal predictors (Linear1, Linear2)</li>
+<li>Noise: (Optional) uncorrelated standard normal predictors (Noise1, … , Noise5)</li>
+<li>Correlated: (Optional) correlated multivariate normal predictors (Corr1, Corr2)</li>
+</ul>
+<p>We can take a closer look at the variables using two packages: <code>skimr</code> and <code>xray</code>. Both have functions that provide a snapshot of your covariates in an easy-to-understand output:</p>
+<pre class="r"><code>skim(dat) #unintended</code></pre>
+<pre><code>## Skim summary statistics
+##  n obs: 1000 
+##  n variables: 15 
+## 
+## Variable type: factor 
+##  variable missing complete    n n_unique                top_counts ordered
+##     Class       0     1000 1000        2 Cla: 567, Cla: 433, NA: 0   FALSE
+## 
+## Variable type: numeric 
+##    variable missing complete    n    mean   sd          p0   p25  median
+##       Corr1       0     1000 1000 -0.078  1       -3.19    -0.76 -0.11  
+##       Corr2       0     1000 1000 -0.016  1       -2.91    -0.71 -0.014 
+##     Linear1       0     1000 1000  0.016  1       -3.29    -0.68  0.054 
+##     Linear2       0     1000 1000  0.023  1.02    -3.31    -0.66  0.053 
+##      Noise1       0     1000 1000 -0.022  1       -3.46    -0.71 -0.023 
+##      Noise2       0     1000 1000 -0.048  0.99    -3.52    -0.74 -0.042 
+##      Noise3       0     1000 1000  0.016  0.97    -3.11    -0.64  0.014 
+##      Noise4       0     1000 1000 -0.015  1.02    -3.48    -0.71 -0.028 
+##      Noise5       0     1000 1000  0.036  0.94    -3.03    -0.59  0.072 
+##  Nonlinear1       0     1000 1000  0.0086 0.58    -1       -0.49  0.038 
+##  Nonlinear2       0     1000 1000  0.49   0.29     7.8e-05  0.25  0.5   
+##  Nonlinear3       0     1000 1000  0.51   0.29 5e-04        0.26  0.52  
+##  TwoFactor1       0     1000 1000 -0.086  1.36    -4.28    -0.96 -0.085 
+##  TwoFactor2       0     1000 1000 -0.042  1.39    -4.63    -1.03  0.0095
+##   p75 p100     hist
+##  0.58 3.58 ▁▂▆▇▇▂▁▁
+##  0.67 3.57 ▁▂▅▇▆▂▁▁
+##  0.71 3.02 ▁▁▃▇▇▅▂▁
+##  0.69 3.88 ▁▂▅▇▇▂▁▁
+##  0.64 3.22 ▁▁▃▇▇▅▁▁
+##  0.61 3.39 ▁▁▅▇▇▅▁▁
+##  0.64 3.77 ▁▁▅▇▅▂▁▁
+##  0.67 3.17 ▁▁▃▇▇▅▁▁
+##  0.71 3.1  ▁▁▅▇▇▅▁▁
+##  0.5  1    ▇▇▇▇▇▇▇▇
+##  0.73 1    ▇▇▇▇▇▇▇▆
+##  0.76 1    ▇▇▇▆▇▇▇▇
+##  0.81 3.83 ▁▂▃▇▇▅▂▁
+##  0.89 4.79 ▁▁▅▇▇▃▁▁</code></pre>
+<p>You should also try out <code>xray::anomalies(dat)</code> and see which output you prefer. Because our data is synthetic, we have these nice bell curves and normal distributions that are harder to locate in the wild.</p>
+<p>Let’s split the data into train/test using an index of row numbers:</p>
+<pre class="r"><code>index &lt;- createDataPartition(y = dat$Class, p = .7, list = FALSE)
+training &lt;- dat[index, ]
+test &lt;- dat[-index, ]</code></pre>
+<p>First, we supply the outcome variable <em>y</em> so that <code>caret</code> can take it into account when creating the split (in terms of class-balance). We use 70% of the data for training and hold out the remaining 30% for testing later. We want a vector instead of a list so we convey this to R by overriding the default behaviour. The actual splitting happens when we subset using the index we just created; the selected row numbers generate the training data whereas the rest goes to the test (using negative indexing).</p>
+</div>
+<div id="traincontrol" class="section level3">
+<h3>trainControl</h3>
+<p>The magic of <code>caret</code> happens in the control arguments. Default arguments tend to cater to regression problems; given our focus on classification, I only briefly mention the former here:</p>
+<pre class="r"><code>reg.ctrl &lt;- trainControl(method = &quot;repeatedcv&quot;, number = 10, repeats = 5, allowParallel = TRUE)</code></pre>
+<p>We now have a trainControl object that will signal a ten-k fold (repeated 5 times; so 50 resamples in total) to the <code>train</code> function. Classification controls require several more arguments:</p>
+<pre class="r"><code>cls.ctrl &lt;- trainControl(method = &quot;repeatedcv&quot;, #boot, cv, LOOCV, timeslice OR adaptive etc.
+                         number = 10, repeats = 5,
+                         classProbs = TRUE, summaryFunction = twoClassSummary,
+                         savePredictions = &quot;final&quot;, allowParallel = TRUE)</code></pre>
+<p>There is a good variety of cross-validation methods you can choose in <code>caret</code>, which I will not cover here. <code>classProbs</code> computes class probabilities for each resample. We need to set the summary function to <code>twoClassSummary</code> for binary classification. Finally, we set save predictions to <code>TRUE</code>—note that this is not a classification-specific argument; we didn’t have it in the regression controls because we won’t be covering them here in detail.</p>
+<p>For future reference, there are several other useful arguments that you can call within <code>trainControl</code>. For example, you can evoke subsampling using <code>sampling</code> if you have class-imbalance. You can set <code>seeds</code> for each resample for perfect reproducibility. You can also define your own indices (<code>index</code>) for resampling purposes.</p>
+</div>
+<div id="model-fitting" class="section level3">
+<h3>Model Fitting</h3>
+<p>We’ll start with a place-holder regression example for completeness. You should always set the seed before calling <code>train</code>. <code>caret</code> accepts the formula interface if you supply the data later. Below, we arbitrarily select one of the linear variables as the outcome, and fit the rest of the variables as predictors using the dot indicator:</p>
+<pre class="r"><code>set.seed(1895)
+lm.fit &lt;- train(Linear1 ~ ., data = training, trControl = reg.ctrl, method = &quot;lm&quot;)
+lm.fit</code></pre>
+<pre><code>## Linear Regression 
+## 
+## 701 samples
+##  14 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (10 fold, repeated 5 times) 
+## Summary of sample sizes: 630, 632, 632, 630, 631, 630, ... 
+## Resampling results:
+## 
+##   RMSE       Rsquared    MAE      
+##   0.9995116  0.01280926  0.8039185
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</code></pre>
+<p>Probably not the most amazing <span class="math inline">\(R^2\)</span> value you have ever seen, but that’s alright. Note that calling the model fit displays the most crucial information in a succinct way.</p>
+<p>Let’s move on to a classification algorithm. It’s good practice to start with a logistic regression and take it from there. In R, logistic regression is in the <code>glm</code> framework and can be specified by calling <code>family = &quot;binomial&quot;</code>. We set the performance metric to ROC as the default metric is accuracy. Accuracy tends to be unreliable when you have class-imbalance. A classic example is having one positive outcome and 99 negative outcomes; any lazy algorithm predicting all zeros would be 99% accurate (but it would be uninformative as a result). The Receiver Operating Characteristic—a proud member of the good ol’ WWII school of naming things—provides a better performance metric by taking into account the rate of true positives and true negatives. Finally, we apply some pre-processing to our data by passing a set of strings: we drop near-zero variance variables, as well as centring and scaling all covariates:</p>
+<pre class="r"><code>set.seed(1895)
+glm.fit &lt;- train(Class ~ ., data = training, trControl = cls.ctrl,
+                 method = &quot;glm&quot;, family = &quot;binomial&quot;, metric = &quot;ROC&quot;,
+                 preProcess = c(&quot;nzv&quot;, &quot;center&quot;, &quot;scale&quot;))</code></pre>
+<p>For reference, you can also vectorise your <em>x</em> and <em>y</em> if you find it easier to read:</p>
+<pre class="r"><code>y &lt;- training$Class
+predictors &lt;- training[,which(colnames(training) != &quot;Class&quot;)]
+
+#Same logit fit
+set.seed(1895)
+glm.fit &lt;- train(x = predictors, y = y, trControl = cls.ctrl,
+                 method = &quot;glm&quot;, family = &quot;binomial&quot;, metric = &quot;ROC&quot;,
+                 preProcess = c(&quot;nzv&quot;, &quot;center&quot;, &quot;scale&quot;))
+glm.fit</code></pre>
+<pre><code>## Generalized Linear Model 
+## 
+## 701 samples
+##  14 predictor
+##   2 classes: &#39;Class1&#39;, &#39;Class2&#39; 
+## 
+## Pre-processing: centered (14), scaled (14) 
+## Resampling: Cross-Validated (10 fold, repeated 5 times) 
+## Summary of sample sizes: 630, 630, 630, 631, 631, 631, ... 
+## Resampling results:
+## 
+##   ROC        Sens       Spec     
+##   0.8639053  0.8565385  0.7206237</code></pre>
+<p>You can quickly find out which variables contribute to predictive accuracy:</p>
+<pre class="r"><code>varImp(glm.fit)</code></pre>
+<pre><code>## glm variable importance
+## 
+##            Overall
+## TwoFactor1 100.000
+## TwoFactor2  97.267
+## Linear2     73.712
+## Nonlinear1  25.964
+## Linear1     12.900
+## Nonlinear2  12.261
+## Corr1        8.758
+## Noise2       7.424
+## Corr2        6.116
+## Nonlinear3   5.798
+## Noise1       5.371
+## Noise3       4.306
+## Noise5       2.668
+## Noise4       0.000</code></pre>
+<pre class="r"><code>plot(varImp(glm.fit))</code></pre>
+<p><img src="/post/2018-04-19-caret-workshop_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Let’s fit a couple of other models before moving on. One common choice would be the elastic net. Elastic net relies on L1 and L2 regularisations and it’s basically a mix of both: the former shrinks some variable coefficients to zero (so that they are dropped out; i.e. feature selection/dimensionality reduction), whereas the latter penalises coefficient size. In R, it has two hyper-parameters that can be tuned: alpha and lambda. Alpha controls the type of regression; 0 representing Ridge and 1 denoting LASSO (Least Absolute Shrinkage and Selector Operator)<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. Lambda, on the other hand, determines the penalty amount. Note that the <code>expand.grid</code> function actually just creates a dataset with two columns called alpha and lambda, which are then used for the model fit based on the value-pairs in each row.</p>
+<pre class="r"><code>set.seed(1895)
+glmnet.fit &lt;- train(x = predictors, y = y, trControl = cls.ctrl,
+                    method = &quot;glmnet&quot;, metric = &quot;ROC&quot;,
+                    preProcess = c(&quot;nzv&quot;, &quot;center&quot;, &quot;scale&quot;),
+                    tuneGrid = expand.grid(alpha = 0:1,
+                                           lambda = seq(0.0001, 1, length = 20)))</code></pre>
+<p>Because it has tune-able parameters, we can visualise their performance by calling plot on the model fit:</p>
+<pre class="r"><code>plot(glmnet.fit)</code></pre>
+<p><img src="/post/2018-04-19-caret-workshop_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>where the two colours denote the alpha level and the dots are the specified lambda values.</p>
+<p>Finally, let’s fit a Random Forest using the <code>ranger</code> package, which is a fast C++ implementation of the original algorithm in R:</p>
+<pre class="r"><code>set.seed(1895)
+rf.fit &lt;- train(Class ~ ., data = training, trControl = cls.ctrl,
+                method = &quot;ranger&quot;, metric = &quot;ROC&quot;,
+                preProcess = c(&quot;nzv&quot;, &quot;center&quot;, &quot;scale&quot;))
+confusionMatrix(rf.fit)</code></pre>
+<pre><code>## Cross-Validated (10 fold, repeated 5 times) Confusion Matrix 
+## 
+## (entries are percentual average cell counts across resamples)
+##  
+##           Reference
+## Prediction Class1 Class2
+##     Class1   51.2    7.2
+##     Class2    5.4   36.1
+##                             
+##  Accuracy (average) : 0.8739</code></pre>
+<p>This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. <code>caretList</code> provides this functionality:</p>
+<pre class="r"><code>set.seed(1895)
+models &lt;- caretList(Class ~ ., data = training, trControl = cls.ctrl, metric = &quot;ROC&quot;,
+                    tuneList = list(logit = caretModelSpec(method = &quot;glm&quot;, family = &quot;binomial&quot;),
+                                    elasticnet = caretModelSpec(method = &quot;glmnet&quot;,
+                                                                tuneGrid = expand.grid(alpha = 0:1,
+                                                                                       lambda = seq(0.0001, 1, length = 20))),
+                                    rf = caretModelSpec(method = &quot;ranger&quot;)),
+                    preProcess = c(&quot;nzv&quot;, &quot;center&quot;, &quot;scale&quot;))</code></pre>
+<p>We basically just merged the first three model fits into a single call using <code>tuneList</code>, which requires a list of model specifications. If we want to predict using unseen data, we can now get predictions from all three models:</p>
+<pre class="r"><code>models.preds &lt;- lapply(models, predict, newdata = test) #add type = &quot;prob&quot; for class probabilities
+models.preds &lt;- data.frame(models.preds)
+head(models.preds, 10)</code></pre>
+<pre><code>##     logit elasticnet     rf
+## 1  Class1     Class1 Class1
+## 2  Class2     Class2 Class2
+## 3  Class1     Class1 Class2
+## 4  Class2     Class2 Class1
+## 5  Class1     Class1 Class2
+## 6  Class2     Class2 Class2
+## 7  Class2     Class2 Class2
+## 8  Class1     Class1 Class2
+## 9  Class1     Class1 Class1
+## 10 Class1     Class1 Class1</code></pre>
+<p>The <code>resamples</code> function collects all the resampling data from all models and allows you to easily assess in-sample performance metrics:</p>
+<pre class="r"><code>bwplot(resamples(models)) #try dotplot as well</code></pre>
+<p><img src="/post/2018-04-19-caret-workshop_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Averaged over all resamples, the Random Forest algorithm has the highest ROC value, however the whiskers overlap in all three categories—perhaps a larger number of resamples are needed for significant separation. It also outperforms other two algorithms when it comes to detecting true positives and true negatives. Note that often the results will not be this clear; it’s common for an algorithm to do really well in one area and perform terribly in the other.</p>
+<p>We could also create a simple linear ensemble using the three model fits. You can check whether the model predictions are linearly correlated:</p>
+<pre class="r"><code>modelCor(resamples(models))</code></pre>
+<pre><code>##                logit elasticnet        rf
+## logit      1.0000000  0.9996123 0.1135033
+## elasticnet 0.9996123  1.0000000 0.1141322
+## rf         0.1135033  0.1141322 1.0000000</code></pre>
+<p>Seems like logit and elastic net predictions are more or less identical, meaning one of them is redundant:</p>
+<pre class="r"><code>xyplot(resamples(models))</code></pre>
+<p><img src="/post/2018-04-19-caret-workshop_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>And now for the ensemble:</p>
+<pre class="r"><code>set.seed(1895)
+greedy_ensemble &lt;- caretEnsemble(models, metric = &quot;ROC&quot;, trControl = cls.ctrl)
+summary(greedy_ensemble)</code></pre>
+<pre><code>## The following models were ensembled: logit, elasticnet, rf 
+## They were weighted: 
+## -4.9237 44.2633 -42.2176 8.0329
+## The resulting ROC is: 0.9517
+## The fit for each individual model on the ROC is: 
+##      method       ROC      ROCSD
+##       logit 0.8618236 0.03919733
+##  elasticnet 0.8614454 0.03923875
+##          rf 0.9469568 0.02237265</code></pre>
+<p>The ROC of the ensemble (0.9517) is higher than any individual model, however the Random Forest algorithm by itself provides similar levels of accuracy (0.9469).</p>
+</div>
+<div id="feature-selection" class="section level3">
+<h3>Feature Selection</h3>
+<p>As an extra, I’ll briefly cover several feature selection wrapper functions that are available in <code>caret</code>.</p>
+<div id="recursive-feature-elimination" class="section level4">
+<h4>Recursive Feature Elimination</h4>
+<p>RFE works by passing a vector of subsets consisting of different number of variables to be used in model fitting. For example, because we only have 14 variables in our dataset (excluding the outcome), we can try all numbers from one to 14. With all three feature selection algorithms, we will need to change the summary function to <code>twoClassSummary</code> for classification purposes.</p>
+<pre class="r"><code>subsets &lt;- c(1:length(training))
+
+lrFuncs$summary &lt;- twoClassSummary</code></pre>
+<p>We need to pass an additional control function specifically for the RFE. We select the linear regression wrapper (<code>lrFuncs</code>),<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> and choose bootstrapped cross-validation (25). After that, we call the <code>rfe</code> function:</p>
+<pre class="r"><code>rfe.ctrl = rfeControl(functions = lrFuncs,
+                      method = &quot;boot&quot;,
+                      number = 25,
+                      allowParallel = TRUE, verbose = TRUE)
+
+set.seed(1895)
+rfe &lt;- rfe(x = predictors, y = y, sizes = subsets,
+           metric = &quot;ROC&quot;, rfeControl = rfe.ctrl)
+rfe</code></pre>
+<pre><code>## 
+## Recursive feature selection
+## 
+## Outer resampling method: Bootstrapped (25 reps) 
+## 
+## Resampling performance over subset size:
+## 
+##  Variables    ROC   Sens   Spec   ROCSD  SensSD  SpecSD Selected
+##          1 0.6383 0.8529 0.4462 0.03546 0.03912 0.05763         
+##          2 0.8123 0.8351 0.6355 0.03603 0.04063 0.04609         
+##          3 0.8606 0.8723 0.6905 0.01693 0.03575 0.04339         
+##          4 0.8610 0.8634 0.6958 0.01955 0.03571 0.04740        *
+##          5 0.8596 0.8595 0.7011 0.01893 0.03560 0.04360         
+##          6 0.8582 0.8574 0.7010 0.01925 0.03567 0.04386         
+##          7 0.8565 0.8565 0.6983 0.01996 0.03595 0.04805         
+##          8 0.8565 0.8557 0.7017 0.01907 0.03565 0.04726         
+##          9 0.8561 0.8590 0.6993 0.01988 0.03484 0.04806         
+##         10 0.8560 0.8569 0.7052 0.02019 0.03384 0.04739         
+##         11 0.8560 0.8592 0.7048 0.02003 0.03353 0.04939         
+##         12 0.8561 0.8558 0.7047 0.02014 0.03430 0.04612         
+##         13 0.8561 0.8561 0.7051 0.02015 0.03413 0.04721         
+##         14 0.8562 0.8555 0.7047 0.01999 0.03407 0.04688         
+## 
+## The top 4 variables (out of 4):
+##    TwoFactor1, TwoFactor2, Linear2, Nonlinear1</code></pre>
+<p>We see that the model with four variables (indicated with an asterisk) resulted in the highest ROC value and thus selected as the best model. The top variables are also displayed at the end. One approach would be fitting a model on the test data using these four variables only.</p>
+</div>
+<div id="simulated-annealing" class="section level4">
+<h4>Simulated Annealing</h4>
+<p>SA works by starting with a certain number of variables and introducing small changes to them along the way. If the change results in an `upgrade’ (i.e. higher predictive accuracy), the initial candidate is abandoned in favour of the new solution. Unlike RFE, which is greedy—meaning, it only assesses the subset sizes once and moves on forever—SA can be programmed to go back and try again if it doesn’t find an improvement within a certain number of iterations (below we set this limit to 5). We can also pass which performance metrics to be used for both the internal and external processes, as well as defining the amount that will be held out (20%):</p>
+<pre class="r"><code>caretSA$fitness_extern &lt;- twoClassSummary
+
+safs.ctrl = safsControl(functions = caretSA, method = &quot;boot&quot;, number = 10,
+                        metric = c(internal = &quot;ROC&quot;, external = &quot;ROC&quot;),
+                        maximize = c(internal = TRUE, external = TRUE),
+                        holdout = .2, improve = 5,
+                        allowParallel = TRUE, verbose = TRUE)</code></pre>
+<p>We can then fit the algorithm by calling <code>safs</code>:</p>
+<pre class="r"><code>sa &lt;- safs(x = predictors, y = y,
+           iters = 10, method = &quot;glm&quot;, family = &quot;binomial&quot;, metric = &quot;ROC&quot;,
+           trControl = cls.ctrl,
+           safsControl = safs.ctrl)</code></pre>
+<pre><code>## + final SA
+##   1 0.4597138 (3)
+##   2 0.4597138-&gt;0.4663124 (3+1, 75.0%) *
+##   3 0.4663124-&gt;0.4626936 (4-1, 75.0%)  0.9769874  A
+##   4 0.4663124-&gt;0.6563141 (4+0, 60.0%) *
+##   5 0.6563141-&gt;0.657809 (4-1, 75.0%) *
+##   6 0.657809-&gt;0.7425797 (3+1, 75.0%) *
+##   7 0.7425797-&gt;0.7398033 (4+1, 80.0%)  0.9741674  A
+##   8 0.7425797-&gt;0.7417647 (4+0, 60.0%)  0.991258  A
+##   9 0.7425797-&gt;0.7407108 (4+1, 50.0%)  0.9776039  A
+##  10 0.7425797-&gt;0.7427323 (4+0, 60.0%) *
+## + final model</code></pre>
+<p>Calling the object returns an informative summary of the whole process:</p>
+<pre class="r"><code>sa</code></pre>
+<pre><code>## 
+## Simulated Annealing Feature Selection
+## 
+## 701 samples
+## 14 predictors
+## 2 classes: &#39;Class1&#39;, &#39;Class2&#39; 
+## 
+## Maximum search iterations: 10 
+## Restart after 5 iterations without improvement (0.3 restarts on average)
+## 
+## Internal performance values: ROC, Sens, Spec
+## Subset selection driven to maximize internal ROC 
+## 
+## External performance values: ROC, Sens, Spec
+## Best iteration chose by maximizing external ROC 
+## External resampling method: Bootstrapped (10 reps) 
+## Subsampling for internal fitness calculation: 20%
+## 
+## During resampling:
+##   * the top 5 selected variables (out of a possible 14):
+##     Linear2 (70%), TwoFactor1 (70%), TwoFactor2 (70%), Nonlinear1 (60%), Corr1 (40%)
+##   * on average, 5.6 variables were selected (min = 3, max = 8)
+## 
+## In the final search using the entire training set:
+##    * 4 features selected at iteration 10 including:
+##      TwoFactor1, Linear2, Noise3, Noise4  
+##    * external performance at this iteration is
+## 
+##         ROC        Sens        Spec 
+##      0.7539      0.8022      0.5891</code></pre>
+</div>
+<div id="genetic-algorithm" class="section level4">
+<h4>Genetic Algorithm</h4>
+<p>Last but not least, we will cover genetic algorithms. Here, variables are put through pressures similar to that of natural selection. We keep the iteration and population sizes really, <em>really</em> low as the code chunks are only supposed to give you a working example of the process. These algorithms fit <em>a lot</em> of models, so always start with a small value and gradually increase the number of iterations/generations.</p>
+<pre class="r"><code>caretGA$fitness_extern &lt;- twoClassSummary
+
+gafs.ctrl = gafsControl(functions = caretGA, method = &quot;boot&quot;, number = 10,
+                        metric = c(internal = &quot;ROC&quot;, external = &quot;ROC&quot;),
+                        maximize = c(internal = TRUE, external = TRUE),
+                        holdout = .2,
+                        allowParallel = TRUE, genParallel = TRUE, verbose = TRUE)
+
+set.seed(1895)
+ga &lt;- gafs(x = predictors, y = y, iters = 5, popSize = 2, elite = 0,
+           differences = TRUE, method = &quot;glm&quot;, family = &quot;binomial&quot;, metric = &quot;ROC&quot;,
+           trControl = cls.ctrl,
+           gafsControl = gafs.ctrl)</code></pre>
+<pre><code>## + final GA
+##  1 0.8197197 (12)
+##  2 0.8197197-&gt;0.820586 (12-&gt;12, 100.0%) *
+##  3 0.820586-&gt;0.8211813 (12-&gt;12, 100.0%) *
+##  4 0.8211813-&gt;0.8218709 (12-&gt;12, 100.0%) *
+##  5 0.8218709-&gt;0.8215376 (12-&gt;12, 100.0%)
+## + final model</code></pre>
+<p>Similar to the previous algorithms, calling the final object provides a summary:</p>
+<pre class="r"><code>ga</code></pre>
+<pre><code>## 
+## Genetic Algorithm Feature Selection
+## 
+## 701 samples
+## 14 predictors
+## 2 classes: &#39;Class1&#39;, &#39;Class2&#39; 
+## 
+## Maximum generations: 5 
+## Population per generation: 2 
+## Crossover probability: 0.8 
+## Mutation probability: 0.1 
+## Elitism: 0 
+## 
+## Internal performance values: ROC, Sens, Spec
+## Subset selection driven to maximize internal ROC 
+## 
+## External performance values: ROC, Sens, Spec
+## Best iteration chose by maximizing external ROC 
+## External resampling method: Bootstrapped (10 reps) 
+## Subsampling for internal fitness calculation: 20%
+## 
+## During resampling:
+##   * the top 5 selected variables (out of a possible 14):
+##     Linear2 (100%), Noise3 (100%), Nonlinear3 (100%), TwoFactor2 (100%), Corr2 (90%)
+##   * on average, 12.4 variables were selected (min = 10, max = 14)
+## 
+## In the final search using the entire training set:
+##    * 12 features selected at iteration 1 including:
+##      TwoFactor1, TwoFactor2, Linear1, Nonlinear1, Nonlinear2 ... 
+##    * external performance at this iteration is
+## 
+##         ROC        Sens        Spec 
+##      0.8475      0.8481      0.7055</code></pre>
+<p>Given the small number of iterations used for SA and GA, we can’t really judge the quality of their results. However, running the algorithms for hundreds or thousands of iterations is not necessarily the best option either. As these algorithms focus on maximising in-sample ROC, given enough iterations, they will perfectly learn the specific noise of your dataset and will not generalise to unseen data (i.e. over-fitting). As always, aim to leverage your domain knowledge and gradually increase the number of iterations until you see a divergence between training and test validation results.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Big fan of coming up with <a href="http://appliedpredictivemodeling.com/">original names.</a><a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Seriously, who names these things? <a href="https://en.wikipedia.org/wiki/Backronym">Backronyms</a> everywhere.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Read more <a href="https://topepo.github.io/caret/recursive-feature-elimination.html#recursive-feature-elimination-via-caret">here.</a><a href="#fnref3">↩</a></p></li>
+</ol>
+</div>

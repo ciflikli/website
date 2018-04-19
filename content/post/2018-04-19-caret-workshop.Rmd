@@ -1,0 +1,300 @@
+---
+title: Yet Another Caret Workshop
+author: Gokhan Ciflikli
+date: '2018-04-19'
+slug: caret-workshop
+categories:
+  - R
+  - Prediction
+tags:
+  - caret
+  - caretEnsemble
+  - skimr
+  - xray
+description: 'Building predictive modeling pipelines in R'
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, cache = TRUE)
+library(caret)
+library(caretEnsemble)
+library(skimr)
+library(xray)
+library(proxy)
+library(doParallel)
+registerDoParallel(detectCores() - 1) #Yes, yes, initialise parallel processing using the terminal boo
+```
+
+### Intro
+
+Yesterday I gave a workshop on applied predictive modelling^[Big fan of coming up with [original names.](http://appliedpredictivemodeling.com/)] with ```caret``` at the [1st LSE Computational Social Science hackathon](https://www.cssatlse.com). _Organiser privileges_. I put together some introductory code and started a simple [GitHub repo](https://github.com/ciflikli/caret-workshop) for the participants, so I thought I'd share it here as well. This is not supposed to cover all aspects of ```caret``` (plus there is already [this](https://topepo.github.io/caret/index.html)), but more of a starter-pack for those who might be migrating from Python or another machine learning library like ```mlr```. I have also saved the environment as ```caret.rdata```, so that the participants can load it up during the workshop (insert harrowing experience about live coding) and follow through---that's included in the repo too if you rather have a test run first.
+
+### The Data
+
+Let's start by creating some synthetic data using ```caret```. The ```twoClassSim``` generates a dataset suitable for binary-outcomes:
+
+```{r}
+dat <- twoClassSim(n = 1000, #number of rows
+                   linearVars = 2, #linearly important variables
+                   noiseVars = 5, #uncorrelated irrelevant variables
+                   corrVars = 2, #correlated irrelevant variables
+                   mislabel = .01) #percentage possibly mislabeled
+colnames(dat)
+```
+
+The above chunk simulates a dataframe with 1000 rows containing 15 variables:
+
+- Class: Binary outcome (Class)
+- TwoFactor: Correlated multivariate normal predictors (TwoFactor1, TwoFactor2)
+- Nonlinear: Uncorrelated random uniform predictors (NonLinear1, ..., Nonlinear3)
+- Linear: (Optional) uncorrelated standard normal predictors (Linear1, Linear2)
+- Noise: (Optional) uncorrelated standard normal predictors (Noise1, ... , Noise5)
+- Correlated: (Optional) correlated multivariate normal predictors (Corr1, Corr2)
+
+We can take a closer look at the variables using two packages: ```skimr``` and ```xray```. Both have functions that provide a snapshot of your covariates in an easy-to-understand output:
+
+```{r}
+skim(dat) #unintended
+```
+
+You should also try out ```xray::anomalies(dat)``` and see which output you prefer. Because our data is synthetic, we have these nice bell curves and normal distributions that are harder to locate in the wild.
+
+Let's split the data into train/test using an index of row numbers:
+
+```{r}
+index <- createDataPartition(y = dat$Class, p = .7, list = FALSE)
+training <- dat[index, ]
+test <- dat[-index, ]
+```
+
+First, we supply the outcome variable _y_ so that ```caret``` can take it into account when creating the split (in terms of class-balance). We use 70% of the data for training and hold out the remaining 30% for testing later. We want a vector instead of a list so we convey this to R by overriding the default behaviour. The actual splitting happens when we subset using the index we just created; the selected row numbers generate the training data whereas the rest goes to the test (using negative indexing).
+
+### trainControl
+
+The magic of ```caret``` happens in the control arguments. Default arguments tend to cater to regression problems; given our focus on classification, I only briefly mention the former here:
+
+```{r}
+reg.ctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 5, allowParallel = TRUE)
+```
+
+We now have a trainControl object that will signal a ten-k fold (repeated 5 times; so 50 resamples in total) to the ```train``` function. Classification controls require several more arguments:
+
+```{r}
+cls.ctrl <- trainControl(method = "repeatedcv", #boot, cv, LOOCV, timeslice OR adaptive etc.
+                         number = 10, repeats = 5,
+                         classProbs = TRUE, summaryFunction = twoClassSummary,
+                         savePredictions = "final", allowParallel = TRUE)
+```
+
+There is a good variety of cross-validation methods you can choose in ```caret```, which I will not cover here. ```classProbs``` computes class probabilities for each resample. We need to set the summary function to ```twoClassSummary``` for binary classification. Finally, we set save predictions to ```TRUE```---note that this is not a classification-specific argument; we didn't have it in the regression controls because we won't be covering them here in detail.
+
+For future reference, there are several other useful arguments that you can call within ```trainControl```. For example, you can evoke subsampling using ```sampling``` if you have class-imbalance. You can set ```seeds``` for each resample for perfect reproducibility. You can also define your own indices (```index```) for resampling purposes.
+
+### Model Fitting
+
+We'll start with a place-holder regression example for completeness. You should always set the seed before calling ```train```. ```caret``` accepts the formula interface if you supply the data later. Below, we arbitrarily select one of the linear variables as the outcome, and fit the rest of the variables as predictors using the dot indicator:
+
+```{r}
+set.seed(1895)
+lm.fit <- train(Linear1 ~ ., data = training, trControl = reg.ctrl, method = "lm")
+lm.fit
+```
+
+Probably not the most amazing $R^2$ value you have ever seen, but that's alright. Note that calling the model fit displays the most crucial information in a succinct way.
+
+Let's move on to a classification algorithm. It's good practice to start with a logistic regression and take it from there. In R, logistic regression is in the ```glm``` framework and can be specified by calling ```family = "binomial"```. We set the performance metric to ROC as the default metric is accuracy. Accuracy tends to be unreliable when you have class-imbalance. A classic example is having one positive outcome and 99 negative outcomes; any lazy algorithm predicting all zeros would be 99% accurate (but it would be uninformative as a result). The Receiver Operating Characteristic---a proud member of the good ol' WWII school of naming things---provides a better performance metric by taking into account the rate of true positives and true negatives. Finally, we apply some pre-processing to our data by passing a set of strings: we drop near-zero variance variables, as well as centring and scaling all covariates:
+
+```{r}
+set.seed(1895)
+glm.fit <- train(Class ~ ., data = training, trControl = cls.ctrl,
+                 method = "glm", family = "binomial", metric = "ROC",
+                 preProcess = c("nzv", "center", "scale"))
+```
+
+For reference, you can also vectorise your _x_ and _y_ if you find it easier to read:
+
+```{r}
+y <- training$Class
+predictors <- training[,which(colnames(training) != "Class")]
+
+#Same logit fit
+set.seed(1895)
+glm.fit <- train(x = predictors, y = y, trControl = cls.ctrl,
+                 method = "glm", family = "binomial", metric = "ROC",
+                 preProcess = c("nzv", "center", "scale"))
+glm.fit
+```
+
+You can quickly find out which variables contribute to predictive accuracy:
+
+```{r}
+varImp(glm.fit)
+plot(varImp(glm.fit))
+```
+
+Let's fit a couple of other models before moving on. One common choice would be the elastic net. Elastic net relies on L1 and L2 regularisations and it's basically a mix of both: the former shrinks some variable coefficients to zero (so that they are dropped out; i.e. feature selection/dimensionality reduction), whereas the latter penalises coefficient size. In R, it has two hyper-parameters that can be tuned: alpha and lambda. Alpha controls the type of regression; 0 representing Ridge and 1 denoting LASSO (Least Absolute Shrinkage and Selector Operator)^[Seriously, who names these things? [Backronyms](https://en.wikipedia.org/wiki/Backronym) everywhere.]. Lambda, on the other hand, determines the penalty amount. Note that the ```expand.grid``` function actually just creates a dataset with two columns called alpha and lambda, which are then used for the model fit based on the value-pairs in each row.
+
+```{r}
+set.seed(1895)
+glmnet.fit <- train(x = predictors, y = y, trControl = cls.ctrl,
+                    method = "glmnet", metric = "ROC",
+                    preProcess = c("nzv", "center", "scale"),
+                    tuneGrid = expand.grid(alpha = 0:1,
+                                           lambda = seq(0.0001, 1, length = 20)))
+```
+
+Because it has tune-able parameters, we can visualise their performance by calling plot on the model fit:
+
+```{r}
+plot(glmnet.fit)
+```
+
+where the two colours denote the alpha level and the dots are the specified lambda values.
+
+Finally, let's fit a Random Forest using the ```ranger``` package, which is a fast C++ implementation of the original algorithm in R:
+
+```{r}
+set.seed(1895)
+rf.fit <- train(Class ~ ., data = training, trControl = cls.ctrl,
+                method = "ranger", metric = "ROC",
+                preProcess = c("nzv", "center", "scale"))
+confusionMatrix(rf.fit)
+```
+
+This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. ```caretList``` provides this functionality:
+
+```{r}
+set.seed(1895)
+models <- caretList(Class ~ ., data = training, trControl = cls.ctrl, metric = "ROC",
+                    tuneList = list(logit = caretModelSpec(method = "glm", family = "binomial"),
+                                    elasticnet = caretModelSpec(method = "glmnet",
+                                                                tuneGrid = expand.grid(alpha = 0:1,
+                                                                                       lambda = seq(0.0001, 1, length = 20))),
+                                    rf = caretModelSpec(method = "ranger")),
+                    preProcess = c("nzv", "center", "scale"))
+```
+
+We basically just merged the first three model fits into a single call using ```tuneList```, which requires a list of model specifications. If we want to predict using unseen data, we can now get predictions from all three models:
+
+```{r}
+models.preds <- lapply(models, predict, newdata = test) #add type = "prob" for class probabilities
+models.preds <- data.frame(models.preds)
+head(models.preds, 10)
+```
+
+The ```resamples``` function collects all the resampling data from all models and allows you to easily assess in-sample performance metrics:
+
+```{r}
+bwplot(resamples(models)) #try dotplot as well
+```
+
+Averaged over all resamples, the Random Forest algorithm has the highest ROC value, however the whiskers overlap in all three categories---perhaps a larger number of resamples are needed for significant separation. It also outperforms other two algorithms when it comes to detecting true positives and true negatives. Note that often the results will not be this clear; it's common for an algorithm to do really well in one area and perform terribly in the other.
+
+We could also create a simple linear ensemble using the three model fits. You can check whether the model predictions are linearly correlated:
+
+```{r}
+modelCor(resamples(models))
+```
+
+Seems like logit and elastic net predictions are more or less identical, meaning one of them is redundant:
+
+```{r}
+xyplot(resamples(models))
+```
+
+And now for the ensemble:
+
+```{r}
+set.seed(1895)
+greedy_ensemble <- caretEnsemble(models, metric = "ROC", trControl = cls.ctrl)
+summary(greedy_ensemble)
+```
+
+The ROC of the ensemble (0.9517) is higher than any individual model, however the Random Forest algorithm by itself provides similar levels of accuracy (0.9469).
+
+### Feature Selection
+
+As an extra, I'll briefly cover several feature selection wrapper functions that are available in ```caret```.
+
+#### Recursive Feature Elimination
+
+RFE works by passing a vector of subsets consisting of different number of variables to be used in model fitting. For example, because we only have 14 variables in our dataset (excluding the outcome), we can try all numbers from one to 14. With all three feature selection algorithms, we will need to change the summary function to ```twoClassSummary``` for classification purposes.
+
+```{r}
+subsets <- c(1:length(training))
+
+lrFuncs$summary <- twoClassSummary
+```
+
+We need to pass an additional control function specifically for the RFE. We select the linear regression wrapper (```lrFuncs```),^[Read more [here.](https://topepo.github.io/caret/recursive-feature-elimination.html#recursive-feature-elimination-via-caret)] and choose bootstrapped cross-validation (25). After that, we call the ```rfe``` function:
+
+```{r}
+rfe.ctrl = rfeControl(functions = lrFuncs,
+                      method = "boot",
+                      number = 25,
+                      allowParallel = TRUE, verbose = TRUE)
+
+set.seed(1895)
+rfe <- rfe(x = predictors, y = y, sizes = subsets,
+           metric = "ROC", rfeControl = rfe.ctrl)
+rfe
+```
+
+We see that the model with four variables (indicated with an asterisk) resulted in the highest ROC value and thus selected as the best model. The top variables are also displayed at the end. One approach would be fitting a model on the test data using these four variables only.
+
+#### Simulated Annealing
+
+SA works by starting with a certain number of variables and introducing small changes to them along the way. If the change results in an `upgrade' (i.e. higher predictive accuracy), the initial candidate is abandoned in favour of the new solution. Unlike RFE, which is greedy---meaning, it only assesses the subset sizes once and moves on forever---SA can be programmed to go back and try again if it doesn't find an improvement within a certain number of iterations (below we set this limit to 5). We can also pass which performance metrics to be used for both the internal and external processes, as well as defining the amount that will be held out (20%):
+
+```{r}
+caretSA$fitness_extern <- twoClassSummary
+
+safs.ctrl = safsControl(functions = caretSA, method = "boot", number = 10,
+                        metric = c(internal = "ROC", external = "ROC"),
+                        maximize = c(internal = TRUE, external = TRUE),
+                        holdout = .2, improve = 5,
+                        allowParallel = TRUE, verbose = TRUE)
+```
+
+We can then fit the algorithm by calling ```safs```:
+
+```{r}
+sa <- safs(x = predictors, y = y,
+           iters = 10, method = "glm", family = "binomial", metric = "ROC",
+           trControl = cls.ctrl,
+           safsControl = safs.ctrl)
+```
+
+Calling the object returns an informative summary of the whole process:
+
+```{r}
+sa
+```
+
+#### Genetic Algorithm
+
+Last but not least, we will cover genetic algorithms. Here, variables are put through pressures similar to that of natural selection. We keep the iteration and population sizes really, _really_ low as the code chunks are only supposed to give you a working example of the process. These algorithms fit _a lot_ of models, so always start with a small value and gradually increase the number of iterations/generations.
+
+```{r}
+caretGA$fitness_extern <- twoClassSummary
+
+gafs.ctrl = gafsControl(functions = caretGA, method = "boot", number = 10,
+                        metric = c(internal = "ROC", external = "ROC"),
+                        maximize = c(internal = TRUE, external = TRUE),
+                        holdout = .2,
+                        allowParallel = TRUE, genParallel = TRUE, verbose = TRUE)
+
+set.seed(1895)
+ga <- gafs(x = predictors, y = y, iters = 5, popSize = 2, elite = 0,
+           differences = TRUE, method = "glm", family = "binomial", metric = "ROC",
+           trControl = cls.ctrl,
+           gafsControl = gafs.ctrl)
+```
+
+Similar to the previous algorithms, calling the final object provides a summary:
+
+```{r}
+ga
+```
+
+Given the small number of iterations used for SA and GA, we can't really judge the quality of their results. However, running the algorithms for hundreds or thousands of iterations is not necessarily the best option either. As these algorithms focus on maximising in-sample ROC, given enough iterations, they will perfectly learn the specific noise of your dataset and will not generalise to unseen data (i.e. over-fitting). As always, aim to leverage your domain knowledge and gradually increase the number of iterations until you see a divergence between training and test validation results.
