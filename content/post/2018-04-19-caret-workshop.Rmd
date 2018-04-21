@@ -161,7 +161,7 @@ rf.fit <- train(Class ~ ., data = training, trControl = cls.ctrl,
 confusionMatrix(rf.fit)
 ```
 
-This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. ```caretList``` provides this functionality:
+This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. The ```caretEnsemble``` package provides this functionality via ```caretList```:
 
 ```{r}
 set.seed(1895)

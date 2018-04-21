@@ -198,7 +198,7 @@ confusionMatrix(rf.fit)</code></pre>
 ##     Class2    5.4   36.1
 ##                             
 ##  Accuracy (average) : 0.8739</code></pre>
-<p>This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. <code>caretList</code> provides this functionality:</p>
+<p>This is all good, as we are fitting different algorithms using a simple interface without needing to memorise the idiosyncrasies of each package. However, we are still writing lots of redundant code. The <code>caretEnsemble</code> package provides this functionality via <code>caretList</code>:</p>
 <pre class="r"><code>set.seed(1895)
 models &lt;- caretList(Class ~ ., data = training, trControl = cls.ctrl, metric = &quot;ROC&quot;,
                     tuneList = list(logit = caretModelSpec(method = &quot;glm&quot;, family = &quot;binomial&quot;),
