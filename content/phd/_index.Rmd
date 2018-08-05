@@ -15,4 +15,3 @@ My empirical strategy is as follows. First, I replicate 16 studies on conflict d
 
 Although ensemble learning is a machine learning concept---a committee of weak learners aggregating into a strong learner---I utilize it in two ways in my dissertation. First, I use a diverse set of algorithms, which have their own strengths and weaknesses, to maximize predictive accuracy. But the whole enterprise can be seen as ensemble learning as well---by combining traditional large-*n* research, machine learning, and a shadow case study, I aim to make a strong empirical case for conceptualizing conflict duration in an unified way.
 
-The dissertation is set to be submitted by July 2018.
