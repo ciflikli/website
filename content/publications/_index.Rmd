@@ -1,0 +1,13 @@
+---
+title: "Publications"
+output: html_document
+---
+
+# Journal Articles
+
+Kiran Phull, Gokhan Ciflikli, and Gustav Meibauer. __Gender and bias in the International Relations curriculum: Insights from reading lists.__ _European Journal of International Relations,_ First Published August 20, 2018. [Link](https://doi.org/10.1177%2F1354066118791690)
+
+# Book Reviews
+
+Gokhan Ciflikli. __R Michael Alvarez (ed.), Computational Social Science: Discovery and Prediction.__ _Political Studies Review,_ 
+Vol 15, Issue 4, pp. 649 - 650. [Link](https://doi.org/10.1177%2F1478929917712143)
