@@ -513,11 +513,15 @@ thead th, th {
     white-space: nowrap;
 }
 
-.profile-details-wrapper { display: table-row; }
+.profile-details-wrapper { display: table-row;}
 .profile-picture {
   display: table-cell;
 }
-.profile-details { display: table-cell; vertical-align: top; }
+.profile-details { display: table-cell; vertical-align: top; padding-left: 10px;}
+
+.altmetric-embed {
+  padding-top: 10px;
+}
 
 img {
     max-width: 100%;
