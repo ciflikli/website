@@ -17,6 +17,10 @@ Here are some of the data projects I am currently working on. Links to Shiny app
 
 ![](/img/sunburstR.png)
 
+__State of the States__ An interactive map with aggregated commentary from U.S. county, state and regional bloggers on political issues across each of the 50 U.S. states in the lead-up to the 2018 midterm elections. Scheduled to launch in early fall. [Project summary.](http://www.lse.ac.uk/united-states/research/state-of-the-states)
+
+__The Hybrid Justice Project__ A research project established to evaluate the impacts of hybrid courts and tribunals on states and societies in transition. [Project website.](https://hybridjustice.com/)
+
 ***
 
 ###Predictive Modelling
@@ -25,4 +29,4 @@ Here are some of the data projects I am currently working on. Links to Shiny app
 
 `usuof` Using NLP to scrape the NYT digital archives (1851-2006) to quantify how security rich/poor the international environment is, in order to predict presidential inclination to choose use of force over diplomacy. With Peter Trubowitz and Kohei Watanabe, LSE.
 
-`entropy` ML prediction model using the maximum entropy generation framework to forecast conflict duration. With Karsten Donnay, University of Konstanz.
+`entropy` ML prediction model using the maximum entropy generation framework to forecast conflict duration. With Karsten Donnay, University of Konstanz and Nils Metternich, UCL.

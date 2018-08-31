@@ -3,7 +3,7 @@ title: "About"
 output: html_document
 ---
 
-Click the link for my [resume](/img/Ciflikli_CV_050818.pdf).
+Click the link for my [resume](/img/Ciflikli_CV_310818.pdf).
 
 I'm an analytic software developer at the Department of Methodology, London School of Economics. A computational social scientist by training and a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/), I like to visualize empirical problems and to offer data-driven explanations for social phenomena. Although my academic interests revolve around exploring violent conflict dynamics, identifying the determinants of strategic decision-making, and quantifying gender and diversity issues in academia, I broadly consider myself a social scientist: I'm primarily interested in answering the question _why people do the things they do,_ one bit at a time.
 
