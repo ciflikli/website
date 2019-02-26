@@ -38,7 +38,7 @@ Nils Metternich, Gokhan Ciflikli, Ali Altaf, and Tatjana Stankovic. __Predicting
 
 <div class="profile-details-wrapper">
 <div class="profile-details">
-Gokhan Ciflikli. __Unpacking the black box: Local interpretations of model-agnostic explanations.__ _This paper advocates for the need to make machine learning findings more interpretable (i.e. directional) to improve their utility to social scientists. Using the open source Local interpretations of model-agnostic explanations (LIME) framework, I replicate several studies of interest using advanced machine learning techniques and compare the behaviour of the covariates to the baseline logistic regression coefficients._
+Gokhan Ciflikli. __Unpacking the black box: Local interpretations of model-agnostic explanations.__ _This paper advocates for the need to make machine learning findings more interpretable (i.e. directional) to improve their utility to social scientists. Using the open source Local interpretations of model-agnostic explanations (LIME) framework, I replicate several studies of interest using machine learning techniques and compare the behaviour of the covariates to the baseline logistic regression coefficients._
   </div>
 </div>
 
