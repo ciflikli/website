@@ -16,3 +16,30 @@ Kiran Phull, Gokhan Ciflikli, and Gustav Meibauer. __Gender and bias in the Inte
 
 \
 
+# Works in Progress
+
+\
+
+<div class="profile-details-wrapper">
+<div class="profile-details">
+Gokhan Ciflikli and Nils Metternich. __Improving civil war duration prediction with ensemble learning.__ _This paper introduces statistical learning techniques to the study of conflict duration and presents a framework to predict ethnic conflict durations from actor and group configurations. Using EPR data to identify which ethnic groups are part of the government and rebel organizations, we build an ensemble model for ethnic conflict duration prediction._
+  </div>
+</div>
+
+\
+
+<div class="profile-details-wrapper">
+<div class="profile-details">
+Nils Metternich, Gokhan Ciflikli, Ali Altaf, and Tatjana Stankovic. __Predicting the severity of civil Wars: An actor-centric approach.__ _This paper presents an actor-centric approach to predict the severity of armed conflict. We argue that the prediction of conflict severity needs to focus on the actors that are responsible for conducting armed violence. Our statistical learning approach relies on random forests to predict the severity of conflict. Further, we introduce two open source packages for conflict scholars: rebelTrack, a utility tool for UCDP GED Event dataset; and rebelCast, an intutitive random forest fitter for time-series-cross-sectional data._
+  </div>
+</div>
+
+\
+
+<div class="profile-details-wrapper">
+<div class="profile-details">
+Gokhan Ciflikli. __Unpacking the black box: Local interpretations of model-agnostic explanations.__ _This paper advocates for the need to make machine learning findings more interpretable (i.e. directional) to improve their utility to social scientists. Using the open source Local interpretations of model-agnostic explanations (LIME) framework, I replicate several studies of interest using advanced machine learning techniques and compare the behaviour of the covariates to the baseline logistic regression coefficients._
+  </div>
+</div>
+
+\
