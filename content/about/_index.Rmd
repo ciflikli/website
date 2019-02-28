@@ -3,13 +3,13 @@ title: "About"
 output: html_document
 ---
 
-Click [here](/img/Ciflikli_CV_270219.pdf) for my resume.
+Click [here](/img/Ciflikli_CV_280219.pdf) for my resume.
 
-I'm a computational social scientist and a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/). Currently, I am a postdoctoral researcher at the [Methodology Department](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) of the London School of Economics as a part of the [Quanteda Initiative](https://quanteda.org/people/).
+I'm a computational social scientist and a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/). Currently, I am a postdoctoral researcher at the [Methodology Department](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) of the London School of Economics. As a member of the [Quanteda Initiative](https://quanteda.org/people/), I am responsible for developing a GUI for the [`quanteda`](https://quanteda.io/) package in R.
 
-I am also a [research scientist](http://katalog.uu.se/profile/?id=N19-495) working on an automated newspaper reporting extraction project using natural language processing (NLP) at Uppsala University (Sweden), in conjunction 
-with [Research Institutes of Sweden (RISE)](https://www.ri.se/en).
+In addition, I am a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University (in conjunction 
+with the [Research Institutes of Sweden--RISE](https://www.ri.se/en)) on an automated newspaper report extraction project using natural language processing.
 
-My ongoing research primarily focuses on predictive models of armed conflict dynamics; exploring the tensions between explanatory vs. predictive research; textual analysis of political violence event data; and the circulation and dissemination of social science research.
+My ongoing research primarily focuses on predictive models of armed conflict dynamics, structural tensions between explanatory versus predictive research, textual analysis of political violence event data; as well as the issues of representation and bias in social science research.
 
 I take inspiration from physics, biology, and complex systems theory, which allow me to employ various [mainstream statistical](http://blogs.lse.ac.uk/impactofsocialsciences/2014/09/23/data-science-statistics-communication/) and [machine learning](https://xkcd.com/1838/) tools to solve various social science problems at hand. Most of my work is on [GitHub](https://github.com/ciflikli). I happily contribute my posts to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/). Check out [R-Users](https://www.r-users.com/) as well, a job posting platform for R enthusiasts.
