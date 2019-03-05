@@ -3,7 +3,7 @@ title: "About"
 output: html_document
 ---
 
-Click [here](/img/Ciflikli_CV_280219.pdf) for my resume.
+Click [here](/img/Ciflikli_CV_050319.pdf) for my resume.
 
 I'm a computational social scientist and a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/). Currently, I am a postdoctoral researcher at the [Methodology Department](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) of the London School of Economics. As a member of the [Quanteda Initiative](https://quanteda.org/people/), I am responsible for developing a GUI for the [`quanteda`](https://quanteda.io/) package in R.
 
