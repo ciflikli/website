@@ -12,8 +12,8 @@ paginate = 20
 protocol = "https://"
 
 [params]
-	name = "Gokhan Ciflikli"
-	job = "Computational Social Science"
+	name = "Gökhan Çiflikli"
+	job = "Postdoctoral Fellow at the Department of Methodology, London School of Economics"
 	description = "Data Science, Visualization, Machine Learning, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
