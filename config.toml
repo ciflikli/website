@@ -13,7 +13,7 @@ protocol = "https://"
 
 [params]
 	name = "Gökhan Çiflikli"
-	job = "Postdoctoral Fellow at the Department of Methodology, London School of Economics"
+	job = "Postdoctoral Fellow | Department of Methodology | LSE"
 	description = "Data Science, Visualization, Machine Learning, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
