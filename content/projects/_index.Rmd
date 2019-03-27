@@ -1,32 +1,45 @@
 ---
-title: "Portfolio"
+title: "Research"
 output: html_document
 ---
 
-Here are some of the data projects I am currently working on. Links to Shiny apps and code on GitHub will be made public when a project is published.
+# Predictive Models of Conflict
+
+> _Prediction is very difficult, especially if it's about the future._^[Commonly attributed to the Danish physicist [Niels Bohr.](https://en.wikiquote.org/wiki/Niels_Bohr)]
+
+### Unitary Model of Conflict Duration
+
+Traditionally, conflict scholars study interstate and civil wars separately. This bifurcation has led to the development of separate and rarely-complementary data collection efforts and variable operationalisations. Building on my Ph.D. dissertation, I develop a unitary model of conflict duration to predicts the duration of both types of war. Succinctly put, the model can be conceptualised as
+
+$$ \gamma \cdot \alpha \cdot \beta  $$
+where $\gamma$ is absolute material capability, and $\alpha$ and $\beta$ representing the non-physical (e.g. political) and physical (i.e. geographical) constraints acting on it. Finally, I test the proposed model using a combined dataset featuring more than 30 variables using algorithms such as random forest and gradient boosting. Empirical findings show that most of the covariates have the same effect in terms of directionality and predictive importance in both types of war.
+
+### RebelTrack and RebelCast packages in R
+
+We develop two packages for conducting conflict research in R: `RebelTrack` and `RebelCast`. `RebelTrack` is a wrapper and a utility tool for interfacing the latest Uppsala Conflict Data Program (UCDP) [Geo-Referenced Event](https://ucdp.uu.se/downloads/) and [PRIO GRID](https://www.prio.org/Data/PRIO-GRID/) data. In addition to accessing the regular contents of the datasets, the package also allows for extended manipulation by offering grouping, subsetting, and lagging (both temporal and spatial) functionality for selected variables of interest. `RebelCast` is an intuitive random forest fitter that can be seamlessly used on the resulting data frame to predict the escalation and duration of civil wars.
+
+### Early Warning System for UN Peacekeepers in CAR
+
+Using a rich event dataset recording incidents of social and political interest in the Central African Republic (CAR), we develop a predictive GIS model that models the likelihood of potential violence against [UN Peacekeepers](https://peacekeeping.un.org/en/mission/minusca) in the next seven days. We provide both country-wide (ADM3 level) and capital-only (ADM4 level, Bangui) forecasts.
 
 ***
 
-###Data Visualisation
+# Political Methodology
 
-`adavis` Visual exploration of nearly 36,000 US legislator voting scores as recorded by the Americans for Democratic Action (ADA) from 1948 to 2015. The data is grouped by year, state, chamber, and party. [App Link](https://gokhan.shinyapps.io/adavis/) |  [GitHub](https://github.com/ciflikli/adavis)
+### Assessing the Accuracy of Binary Classification Algorithms
 
-![](/img/statebins.png)
+We identify three methodological problems pertaining to predictive models using binary-time-series-cross-section (BTSCS) data: temporal residuals, global thresholds, and modifiable temporal units. In order to address these issues, we introduce a new BTSCS diagnostic metric---Residual based, Local Assessment of Predictive Performance (RLC). Furthermore, the proposed metric can also be used to calibrate predictive models to locate their optimal forecasting window by offering accuracy scores for various temporal units of analysis.
 
-`gendeR` Thorough author-gender analysis of nearly 13,000 publications included in reading lists constituting the International Relations programme---Undergraduate, Masters, and PhD levels---at the London School of Economics during the 2015-16 academic year. Accompanies a co-authored manuscript. [App Link](https://gokhan.shinyapps.io/gender/) |  [GitHub](https://github.com/ciflikli/gender)
+### Ensemble Trees for Duration Analysis
 
-![](/img/sunburstR.png)
-
-__State of the States__ An interactive map with aggregated commentary from U.S. county, state and regional bloggers on political issues across each of the 50 U.S. states in the lead-up to the 2018 midterm elections. Scheduled to launch in early fall. [Project summary.](http://www.lse.ac.uk/united-states/research/state-of-the-states)
-
-__The Hybrid Justice Project__ A research project established to evaluate the impacts of hybrid courts and tribunals on states and societies in transition. [Project website.](https://hybridjustice.com/)
+Even though almost all linear and logistic models stemming from traditional statistics can be effortlessly adapted for machine learning applications, duration analysis---especially those featuring time-varying covariates---severely lags behind in development. Multi-state duration models, in which the actors can enter and exit various states throughout their existence, are similarly underdeveloped. To fill this gap, we fit random forest models of actor configurations and ensemble them using Bayesian model averaging. Our findings show an improvement of at least 3\% (and up to 26\%) in predictive accuracy compared to the baseline Cox Proportional-Hazards specification.
 
 ***
 
-###Predictive Modelling
+# Fieldwork
 
-`rebelCast` `rebelTrack` Two open-source R packages to predict global conflict escalation patterns. With Nils Metternich, UCL. [Project summary](http://www.ucl.ac.uk/political-science/research/projects/predicting-escalation-conflict).
+### Sierra Leone (January-March 2017)
 
-`usuof` Using NLP to scrape the NYT digital archives (1851-2006) to quantify how security rich/poor the international environment is, in order to predict presidential inclination to choose use of force over diplomacy. With Peter Trubowitz and Kohei Watanabe, LSE.
+To better understand how shifts in material capabilities of the actors affect conflict duration, I conducted 21 semi-structured interviews in Sierra Leone between January-March 2017. I investigated the influence of such shifts on two levels---actual and perceived. For the former, I interviewed officers from the Sierra Leone Army (SLA), ex-combatants belonging to the Revolutionary United Front (RUF), and security advisers who had seen fighting during the civil war. For the latter, I interviewed academics, human rights lawyers, journalists, and UN personnel to gauge the local perceptions of the various belligerents throughout the war.
 
-`entropy` ML prediction model using the maximum entropy generation framework to forecast conflict duration. With Karsten Donnay, University of Konstanz and Nils Metternich, UCL.
+\

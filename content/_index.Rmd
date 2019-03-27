@@ -1,0 +1,18 @@
+---
+title: "About"
+output: html_document
+---
+
+Click [here](/img/Ciflikli_CV_160319.pdf) for my resume.
+
+I'm a __computational social scientist__ specialising in __conflict studies.__
+
+My core research focuses on __predictive models__ of armed conflict dynamics; __problematising__ the tensions between explanatory versus predictive research; __textual analysis__ of political violence event data; and the __quantification__ of issues of representation and bias in social science research.
+
+My methodological work revolves around making black box machine learning findings more human-friendly, introducing new procedures for cross-validating models using binary-time-series-cross-section data, and developing a random forest algorithm that can deal with time-varying covariates.
+
+Currently, I am a postdoctoral researcher at the [Methodology Department](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) of the London School of Economics. As a member of the [Quanteda Initiative](https://quanteda.org/people/), I am responsible for developing a GUI for the [`quanteda`](https://quanteda.io/) package in R. I am also a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/). In addition, I am a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University working on (in conjunction with the [Research Institutes of Sweden--RISE](https://www.ri.se/en)) the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing.
+
+I take inspiration from statistical mechanics and complex systems theory, which allow me to employ various [mainstream statistical](http://blogs.lse.ac.uk/impactofsocialsciences/2014/09/23/data-science-statistics-communication/) and [advanced machine learning](/img/algo.jpg) tools to solve various social science problems at the intersection of conflict studies, political science, and international relations.
+
+Most of my work is on [GitHub](https://github.com/ciflikli). I am happy to contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/).

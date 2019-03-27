@@ -1,31 +1,55 @@
 ---
-title: "Portfolio"
+title: "Research"
 output: html_document
 ---
 
 
 
-<p>Here are some of the data projects I am currently working on. Links to Shiny apps and code on GitHub will be made public when a project is published.</p>
+<div id="predictive-models-of-conflict" class="section level1">
+<h1>Predictive Models of Conflict</h1>
+<blockquote>
+<p><em>Prediction is very difficult, especially if it’s about the future.</em><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+</blockquote>
+<div id="unitary-model-of-conflict-duration" class="section level3">
+<h3>Unitary Model of Conflict Duration</h3>
+<p>Traditionally, conflict scholars study interstate and civil wars separately. This bifurcation has led to the development of separate and rarely-complementary data collection efforts and variable operationalisations. Building on my Ph.D. dissertation, I develop a unitary model of conflict duration to predicts the duration of both types of war. Succinctly put, the model can be conceptualised as</p>
+<p><span class="math display">\[ \gamma \cdot \alpha \cdot \beta  \]</span>
+where <span class="math inline">\(\gamma\)</span> is absolute material capability, and <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> representing the non-physical (e.g. political) and physical (i.e. geographical) constraints acting on it. Finally, I test the proposed model using a combined dataset featuring more than 30 variables using algorithms such as random forest and gradient boosting. Empirical findings show that most of the covariates have the same effect in terms of directionality and predictive importance in both types of war.</p>
+</div>
+<div id="rebeltrack-and-rebelcast-packages-in-r" class="section level3">
+<h3>RebelTrack and RebelCast packages in R</h3>
+<p>We develop two packages for conducting conflict research in R: <code>RebelTrack</code> and <code>RebelCast</code>. <code>RebelTrack</code> is a wrapper and a utility tool for interfacing the latest Uppsala Conflict Data Program (UCDP) <a href="https://ucdp.uu.se/downloads/">Geo-Referenced Event</a> and <a href="https://www.prio.org/Data/PRIO-GRID/">PRIO GRID</a> data. In addition to accessing the regular contents of the datasets, the package also allows for extended manipulation by offering grouping, subsetting, and lagging (both temporal and spatial) functionality for selected variables of interest. <code>RebelCast</code> is an intuitive random forest fitter that can be seamlessly used on the resulting data frame to predict the escalation and duration of civil wars.</p>
+</div>
+<div id="early-warning-system-for-un-peacekeepers-in-car" class="section level3">
+<h3>Early Warning System for UN Peacekeepers in CAR</h3>
+<p>Using a rich event dataset recording incidents of social and political interest in the Central African Republic (CAR), we develop a predictive GIS model that models the likelihood of potential violence against <a href="https://peacekeeping.un.org/en/mission/minusca">UN Peacekeepers</a> in the next seven days. We provide both country-wide (ADM3 level) and capital-only (ADM4 level, Bangui) forecasts.</p>
 <hr />
-<div id="data-visualisation" class="section level3">
-<h3>Data Visualisation</h3>
-<p><code>adavis</code> Visual exploration of nearly 36,000 US legislator voting scores as recorded by the Americans for Democratic Action (ADA) from 1948 to 2015. The data is grouped by year, state, chamber, and party. <a href="https://gokhan.shinyapps.io/adavis/">App Link</a> | <a href="https://github.com/ciflikli/adavis">GitHub</a></p>
-<div class="figure">
-<img src="/img/statebins.png" />
-
 </div>
-<p><code>gendeR</code> Thorough author-gender analysis of nearly 13,000 publications included in reading lists constituting the International Relations programme—Undergraduate, Masters, and PhD levels—at the London School of Economics during the 2015-16 academic year. Accompanies a co-authored manuscript. <a href="https://gokhan.shinyapps.io/gender/">App Link</a> | <a href="https://github.com/ciflikli/gender">GitHub</a></p>
-<div class="figure">
-<img src="/img/sunburstR.png" />
-
 </div>
-<p><strong>State of the States</strong> An interactive map with aggregated commentary from U.S. county, state and regional bloggers on political issues across each of the 50 U.S. states in the lead-up to the 2018 midterm elections. Scheduled to launch in early fall. <a href="http://www.lse.ac.uk/united-states/research/state-of-the-states">Project summary.</a></p>
-<p><strong>The Hybrid Justice Project</strong> A research project established to evaluate the impacts of hybrid courts and tribunals on states and societies in transition. <a href="https://hybridjustice.com/">Project website.</a></p>
+<div id="political-methodology" class="section level1">
+<h1>Political Methodology</h1>
+<div id="assessing-the-accuracy-of-binary-classification-algorithms" class="section level3">
+<h3>Assessing the Accuracy of Binary Classification Algorithms</h3>
+<p>We identify three methodological problems pertaining to predictive models using binary-time-series-cross-section (BTSCS) data: temporal residuals, global thresholds, and modifiable temporal units. In order to address these issues, we introduce a new BTSCS diagnostic metric—Residual based, Local Assessment of Predictive Performance (RLC). Furthermore, the proposed metric can also be used to calibrate predictive models to locate their optimal forecasting window by offering accuracy scores for various temporal units of analysis.</p>
+</div>
+<div id="ensemble-trees-for-duration-analysis" class="section level3">
+<h3>Ensemble Trees for Duration Analysis</h3>
+<p>Even though almost all linear and logistic models stemming from traditional statistics can be effortlessly adapted for machine learning applications, duration analysis—especially those featuring time-varying covariates—severely lags behind in development. Multi-state duration models, in which the actors can enter and exit various states throughout their existence, are similarly underdeveloped. To fill this gap, we fit random forest models of actor configurations and ensemble them using Bayesian model averaging. Our findings show an improvement of at least 3% (and up to 26%) in predictive accuracy compared to the baseline Cox Proportional-Hazards specification.</p>
 <hr />
 </div>
-<div id="predictive-modelling" class="section level3">
-<h3>Predictive Modelling</h3>
-<p><code>rebelCast</code> <code>rebelTrack</code> Two open-source R packages to predict global conflict escalation patterns. With Nils Metternich, UCL. <a href="http://www.ucl.ac.uk/political-science/research/projects/predicting-escalation-conflict">Project summary</a>.</p>
-<p><code>usuof</code> Using NLP to scrape the NYT digital archives (1851-2006) to quantify how security rich/poor the international environment is, in order to predict presidential inclination to choose use of force over diplomacy. With Peter Trubowitz and Kohei Watanabe, LSE.</p>
-<p><code>entropy</code> ML prediction model using the maximum entropy generation framework to forecast conflict duration. With Karsten Donnay, University of Konstanz and Nils Metternich, UCL.</p>
+</div>
+<div id="fieldwork" class="section level1">
+<h1>Fieldwork</h1>
+<div id="sierra-leone-january-march-2017" class="section level3">
+<h3>Sierra Leone (January-March 2017)</h3>
+<p>To better understand how shifts in material capabilities of the actors affect conflict duration, I conducted 21 semi-structured interviews in Sierra Leone between January-March 2017. I investigated the influence of such shifts on two levels—actual and perceived. For the former, I interviewed officers from the Sierra Leone Army (SLA), ex-combatants belonging to the Revolutionary United Front (RUF), and security advisers who had seen fighting during the civil war. For the latter, I interviewed academics, human rights lawyers, journalists, and UN personnel to gauge the local perceptions of the various belligerents throughout the war.</p>
+<p><br />
+</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Commonly attributed to the Danish physicist <a href="https://en.wikiquote.org/wiki/Niels_Bohr">Niels Bohr.</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
