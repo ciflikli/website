@@ -3,7 +3,7 @@ title: "About"
 output: html_document
 ---
 
-Click [here](/img/Ciflikli_CV_160319.pdf) for my resume.
+Click [here](/img/Ciflikli_CV_280319.pdf) for my resume.
 
 I'm a __computational social scientist__ specialising in __conflict forecasting.__
 
