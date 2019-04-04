@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "Gokhan Ciflikli, Ph.D."
 output: html_document
 ---
 
