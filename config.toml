@@ -2,7 +2,7 @@
 baseurl = "https://www.gokhan.io/"
 canonifyurls = true
 languageCode = "en"
-title = "Computational Social Science"
+title = "Gokhan Ciflikli, Ph.D."
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
