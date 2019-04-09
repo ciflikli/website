@@ -3,16 +3,16 @@ title: "Gokhan Ciflikli, Ph.D."
 output: html_document
 ---
 
-Click [here](/img/Gokhan_Ciflikli_Resume_090419.pdf) for my resume.
+Click [here](/img/Gokhan_Ciflikli_Resume_090419.pdf) for my resume. I'm on the market!
 
-I'm a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__
+I'm a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__ I am proficient in R, Python, and SQL (Postgres).
 
-My core research focuses on __predictive models__ of armed conflict dynamics; __problematising__ the tensions between explanatory versus predictive research; __textual analysis__ of political violence event-data; and the __quantification__ of issues of representation and bias in social science research.
+My core expertise lies in
 
-My methodological work revolves around making black box machine learning findings more human-friendly, introducing new procedures for cross-validating models using binary-time-series-cross-section data, and developing a random forest algorithm that can deal with time-varying covariates.
+- Time-Series Forecasting: using supervised machine learning algorithms (Random Forest, XGBoost) to solve binary- and multi-classification problems
+- Natural Language Processing (NLP): making sense of unstructured text using web-scraping and industrial solutions (i.e. SpaCy, quanteda)
+- Data Visualisation: producing interactive presentations (R-Shiny, reveal.js, D3) to gain insights from data.
 
-Currently, I am a postdoctoral researcher at the [Department of Methodology](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) at the London School of Economics. As a member of the [Quanteda Initiative](https://quanteda.org/people/), I am responsible for developing a GUI for the [`quanteda`](https://quanteda.io/) package in R. I am also a member of the [CSS London initiative](http://www.csslondoninitiative.co.uk/people/). In addition, I am a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University working on (in conjunction with the [Research Institutes of Sweden--RISE](https://www.ri.se/en)) the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP).
+Currently, I am a software developer at the [Department of Methodology](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) at the London School of Economics. As a member of the [Quanteda Initiative](https://quanteda.org/people/), I am responsible for developing a GUI for the [`quanteda`](https://quanteda.io/) package in R. In addition, I am a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University working on (in conjunction with the [Research Institutes of Sweden--RISE](https://www.ri.se/en)) the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
 
-I take inspiration from statistical mechanics and complex systems theory, which allow me to employ various [mainstream statistical](http://blogs.lse.ac.uk/impactofsocialsciences/2014/09/23/data-science-statistics-communication/) and [advanced machine learning](/img/algo.jpg) tools to solve various social science problems at the intersection of conflict studies, political science, and international relations.
-
-Most of my work is on [GitHub](https://github.com/ciflikli). I am happy to contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/).
+Most of my work is on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/).
