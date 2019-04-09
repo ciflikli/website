@@ -20,11 +20,11 @@ Kiran Phull, Gokhan Ciflikli, and Gustav Meibauer. __Gender and bias in the Inte
 
 Gokhan Ciflikli. __Unpacking Classification Algorithms: Local and Global Explanations.__
 
-Machine learning approaches to conflict studies predominantly rely on global metrics such as predictive accuracy and variable importance to establish validity. However, previous research shows that they are prone to bias in the presence of varying scales and collinearity. I compare local and global explanations of black box classification algorithms and offer a set of guidelines for political scientists.
+Machine learning approaches to conflict studies predominantly rely on global metrics such as predictive accuracy and variable importance to establish validity. However, previous research shows that they are prone to bias in the presence of varying scales and collinearity. I compare local and global explanations of black box classification algorithms and offer a set of guidelines for social scientists.
 
-Gokhan Ciflikli. __Predicting Civil and Interstate War Duration.__
+<!-- Gokhan Ciflikli. __Predicting Civil and Interstate War Duration.__ -->
 
-Expanding on the [Cunningham and Lemke (2013)](https://www.journals.cambridge.org/abstract_S0020818313000167) study on combining civil and interstate wars, I employ random forest to demonstrate that the majority of predictive covariates of war duration are indeed common to both civil and interstate wars. Further, in most cases, the direction of the effect holds across types, suggesting that the underlying mechanism operates in a similar fashion.
+<!-- Expanding on the [Cunningham and Lemke (2013)](https://www.journals.cambridge.org/abstract_S0020818313000167) study on combining civil and interstate wars, I employ random forest to demonstrate that the majority of predictive covariates of war duration are indeed common to both civil and interstate wars. Further, in most cases, the direction of the effect holds across types, suggesting that the underlying mechanism operates in a similar fashion. -->
 
 Gokhan Ciflikli and Nils Metternich. __Taking time seriously when evaluating predictions in Binary-Time-Series-Cross-Section-Data.__ [[Pre-Print]](https://osf.io/preprints/socarxiv/tvshu/)
 
