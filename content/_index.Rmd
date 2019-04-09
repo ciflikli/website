@@ -5,7 +5,7 @@ output: html_document
 
 Click [here](/img/Gokhan_Ciflikli_Resume_090419.pdf) for my resume.
 
-I'm a __computational social scientist__ specialising in __conflict forecasting.__
+I'm a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__
 
 My core research focuses on __predictive models__ of armed conflict dynamics; __problematising__ the tensions between explanatory versus predictive research; __textual analysis__ of political violence event-data; and the __quantification__ of issues of representation and bias in social science research.
 
