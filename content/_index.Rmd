@@ -3,7 +3,7 @@ title: "Gokhan Ciflikli, Ph.D."
 output: html_document
 ---
 
-Click [here](/img/Gokhan_Ciflikli_Resume_090419.pdf) for my resume. I am on the market!
+Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume. I am on the market!
 
 I am a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__ I am proficient in R, Python, and SQL (Postgres).
 
