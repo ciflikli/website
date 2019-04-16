@@ -3,9 +3,9 @@ title: "Gokhan Ciflikli, Ph.D."
 output: html_document
 ---
 
-Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume. I am on the market!
+Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume. I am on the market! Contact me for permanent, London-based opportunities with visa sponsorship 🇬🇧
 
-I am a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__ I am proficient in R, Python, and SQL (Postgres).
+I am a __data scientist__ specialising in __machine learning, time-series forecasting, and natural language processing.__ I am proficient in R, Python, and SQL.
 
 My core expertise lies in
 
