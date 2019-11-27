@@ -13,9 +13,9 @@ protocol = "https://"
 
 [params]
 	name = "Gökhan Çiflikli, Ph.D."
-	job = "Senior Data Scientist | Attest"
-	description = "Data Science, Visualization, Machine Learning, R"
-	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
+	job = "Senior Data Scientist @ [Attest](https://www.askattest.com/)"
+	description = "Data Science, Visualization, Machine Learning, Python, R"
+	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
 	github = "ciflikli"
 	enableRSS = true
@@ -31,7 +31,7 @@ protocol = "https://"
 	custom_css = []
 	customJS  = []
 
-	aboutAuthor = "Data Scientist and R Developer"
+	aboutAuthor = "Senior Data Scientist at Attest"
 
 	iconFont = "font-awesome"
   
