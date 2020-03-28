@@ -15,4 +15,4 @@ My core expertise lies in
 
 Previously, I was a postdoctoral researcher in analytic software development at the [Department of Methodology](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) at the London School of Economics. In addition, I was a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University working on (in conjunction with the [Research Institutes of Sweden--RISE](https://www.ri.se/en)) the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
 
-Most of my side projects are on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/).
+Most of my side projects are on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/). I am starting a Python data science blog in 2020---stay tuned!
