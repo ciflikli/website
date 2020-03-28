@@ -116,14 +116,14 @@ html, body {
 }
 
 body {
-    font: 300 16px/1.4em "Avenir", Helvetica, Arial, sans-serif;
+    font: 300 16px/1.4em "JetBrains Mono", Avenir, Helvetica, Arial, sans-serif;
     color: #666;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
 
 h1 {
-    font: 300 32px/1.4em "Avenir", Helvetica, Arial, sans-serif;
+    font: 300 32px/1.4em "JetBrains Mono", Avenir, Helvetica, Arial, sans-serif;
     font-size: 30px;
     letter-spacing: -1px;
     color: #222;
@@ -131,7 +131,7 @@ h1 {
 }
 
 h2 {
-    font: italic 19px/1.3em Georgia, serif;
+    font: italic 19px/1.3em "JetBrains Mono", Georgia, serif;
     color: #bbb;
 }
 
@@ -139,7 +139,7 @@ h1-1 {
     margin-top: 100px;
     margin-bottom: 50px;
     color: #222;
-    font: 300 32px/1.4em "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 300 32px/1.4em "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
   
 }
 
@@ -148,7 +148,7 @@ h3-1 {
     font-weight: 400;
     text-align: justify;
     margin-top: 50px;
-    font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 h6-1 {
@@ -200,7 +200,7 @@ i {
     color: #aaa;
     margin-top: 10px;
 	margin-bottom: 10px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     font-style: normal;
 }
 
@@ -209,7 +209,7 @@ i {
     font-weight: 300;
     color: #5caef0;
     margin-top: 10px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     font-style: normal;
 }
 
@@ -354,7 +354,7 @@ em, i {
 
 .description {
     float: right;
-    font: italic 14px/1.4em Georgia, serif;
+    font: italic 14px/1.4em "JetBrains Mono", Georgia, serif;
     color: #aaa;
 }
 
@@ -366,7 +366,7 @@ em, i {
 }
 
 .home h2 {
-    font: italic 19px/1.3em Georgia, serif;
+    font: italic 19px/1.3em "JetBrains Mono", Georgia, serif;
     color: #bbb;
 }
 
@@ -378,18 +378,18 @@ em, i {
 	margin-top: 20px;
     margin-bottom: 20px;
     color: #222;
-    font: 300 32px/1.4em "Avenir", Helvetica, Arial, sans-serif;
+    font: 300 32px/1.4em "JetBrains Mono", Avenir, Helvetica, Arial, sans-serif;
     font-weight: bold;
 }
 
 .post h2 {
     margin-bottom: 40px;
-    font: 300 24px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: 300 24px/1.5 "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     color: #111;
 }
 
 .post h2.headline {
-    font: normal 13px/1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 13px/1.5em "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     margin: -5px 0 0 0;
     color: #b2b9be;
     font-size: 13px;
@@ -398,7 +398,7 @@ em, i {
 }
 
 .post h2.headline .tags {
-    font: normal 13px/1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 13px/1.5em "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     margin: -5px 0 40px 0;
     color: #b2b9be;
     font-size: 13px;
@@ -409,7 +409,7 @@ em, i {
 }
 
 #post-list h2 {
-    font: normal 17px/1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font: normal 17px/1.5em "JetBrains Mono", Helvetica Neue, Helvetica, Arial, sans-serif;
     color: #aaa;
     max-width: 400px;
     margin-top: 2px;
@@ -467,7 +467,7 @@ hr {
 }
 
 span.code, code.highlighter-rouge { 
-	font-family: Inconsolata, Menlo, Monaco, Courier; 
+	font-family: "JetBrains Mono", Inconsolata, Menlo, Monaco, Courier; 
 	background-color:#EEE; 
 	font-size:14px; 
 }
@@ -563,14 +563,14 @@ Post List
 #post-list a {
     color: #333;
     display: block;
-    font: 18px/1.4 "Avenir", helvetica, Arial, sans-serif;
+    font: 18px/1.4 "JetBrains Mono", Avenir, helvetica, Arial, sans-serif;
 }
 
 #post-list .dates {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.8 "Avenir", helvetica, Arial, sans-serif;
+    font: 300 17px/1.8 "JetBrains Mono", Avenir, helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -726,7 +726,7 @@ h1.archive {
 
 h2.month {
     width: 100%;
-    font: bold 13px/1 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: bold 13px/1 "JetBrains Mono", Helvetica Neue, helvetica, Arial, sans-serif;
     text-transform: uppercase;
     margin-top: 40px;
     margin-bottom: 10px;
@@ -740,7 +740,7 @@ h2.month {
 
 #archive-list a {
     display: block;
-    font: bold 17px/1.7 "Avenir", helvetica, Arial, sans-serif;
+    font: bold 17px/1.7 "JetBrains Mono", Avenir, helvetica, Arial, sans-serif;
     color: #333;
 }
 
@@ -748,7 +748,7 @@ h2.month {
     float: right;
     position: relative;
     top: 1px;
-    font: 300 17px/1.7 "Avenir", helvetica, Arial, sans-serif;
+    font: 300 17px/1.7 "JetBrains Mono", Avenir, helvetica, Arial, sans-serif;
     color: #bbb;
 }
 
@@ -771,12 +771,12 @@ h2.month {
 }
 
 #post-list.archive.readmore h3 {
-    font: 400 20px "Avenir", Helvetica, Arial, sans-serif;
+    font: 400 20px "JetBrains Mono", Avenir, Helvetica, Arial, sans-serif;
     margin-bottom: 30px;
 }
 
 #post-list.archive.readmore a {
-    font: 400 16px/1.6 "Avenir", helvetica, Arial, sans-serif;
+    font: 400 16px/1.6 "JetBrains Mono", Avenir, helvetica, Arial, sans-serif;
     color: #5694f1;
 }
 
@@ -785,7 +785,7 @@ h2.month {
 }
 
 #post-list.archive.readmore .dates {
-    font: 300 16px/1.6 "Helvetica Neue", helvetica, Arial, sans-serif;
+    font: 300 16px/1.6 "JetBrains Mono", Helvetica Neue, helvetica, Arial, sans-serif;
 }
 
 #disqus_thread, #ds-thread {
@@ -956,7 +956,7 @@ a.symbol:hover {
   box-shadow: inset 0 0 0 1px #E4EBF2;
   border-radius: 4px;
   overflow: hidden;
-  font-family: 'Menlo', 'Monaco', Courier, monospace;
+  font-family: "JetBrains Mono", Menlo, Monaco, Courier, monospace;
   /*font: normal 13px/1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 }
 #TableOfContents {
@@ -982,7 +982,7 @@ a.symbol:hover {
   padding: 0;
 }
 #TableOfContents a code{
-  font-family: Menlo, Monaco, Courier;
+  font-family: "JetBrains Mono", Menlo, Monaco, Courier;
   background-color: #fff;
   font-size: 11px;
   padding: 2px 3px;
@@ -1002,7 +1002,7 @@ a.symbol:hover {
 }
 
 .page-tags .tags {
-    font: "Avenir", Helvetica, Arial, sans-serif;
+    font: "JetBrains Mono", Avenir, Helvetica, Arial, sans-serif;
     margin: 10px 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
