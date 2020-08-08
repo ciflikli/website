@@ -7,6 +7,8 @@ output: html_document
 
 - 18/11/2019 Future Careers Panel @[London School of Economics](https://faculty.ai/events/london-school-of-economics-future-careers-panel/)
 
+- 26/06/2020 Data Science for Executives Roundtable @[London School of Economics](https://www.lse.ac.uk/study-at-lse/executive-education/short-courses/courses/secure/business-and-management/data-science-for-executives)
+
 - 12/08/2020 The Insider’s Guide to Getting into Data Science @[Faculty](https://faculty.ai/events/the-insiders-guide-to-getting-into-data-science/)
 
 ---
