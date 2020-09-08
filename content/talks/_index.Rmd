@@ -19,4 +19,4 @@ output: html_document
 
 - 17/09/2020 Data Annotation at Scale: Active and Semi-Supervised Learning in Python @[ODSC](https://odsc.com/speakers/data-annotation-at-scale-active-and-semi-supervised-learning-in-python/)
 
-- 18/04/2018 Applied Predictive Modelling with `caret` @[LSE](https://www.cssatlse.com/#workshops)
+- 18/04/2018 Applied Predictive Modelling with `caret` @[London School of Economics](https://www.cssatlse.com/#workshops)
