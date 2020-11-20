@@ -5,7 +5,7 @@ output: html_document
 
 <!-- Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume. -->
 
-I am a __senior data scientist__ at [Attest](https://www.askattest.com/). I am also a member of the [Quanteda Initiative](https://quanteda.org/people/) and a __guest lecturer__ for the LSE summer school course [Introduction to Data Science and Machine Learning](https://www.lse.ac.uk/study-at-lse/Summer-Schools/Summer-School/Courses/Secure/Research-Methods-Data-Science-and-Mathematics/ME314).
+I am a __senior data scientist__ at [Attest](https://www.askattest.com/). I am also a member of the [Quanteda Initiative](https://quanteda.org/people/) and a mentor under the [Research-to-Business Mentorship Scheme](https://info.lse.ac.uk/current-students/phd-academy/research-to-business/mentors/gokhan-ciflikli) for LSE PhD candidates and post-docs looking to transition into data science.
 
 As a computational social scientist, my core expertise lies in
 
@@ -15,6 +15,6 @@ As a computational social scientist, my core expertise lies in
 
 - Causal inference: conducting experiments utilising various types of interventions and computing counterfactuals to understand the _why_
 
-Previously, I was a postdoctoral researcher in analytic software development at the [Department of Methodology](http://www.lse.ac.uk/Methodology/People/Researchers/Gokhan-Ciflikli) at the London School of Economics. In addition, I was a [research scientist](http://katalog.uu.se/profile/?id=N19-495) at Uppsala University working on the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
+Previously, I was a postdoctoral researcher in analytic software development at the London School of Economics. In addition, I was a research scientist at Uppsala University working on the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
 
-Most of my side projects are on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/). I am starting a Python data science blog in 2020---stay tuned!
+Most of my side projects are on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/). I am starting a Python data science blog in 2021---stay tuned!

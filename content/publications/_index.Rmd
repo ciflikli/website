@@ -18,10 +18,6 @@ Kiran Phull, Gokhan Ciflikli, and Gustav Meibauer. __Gender and bias in the Inte
 
 # Works in Progress
 
-<!-- Gokhan Ciflikli. __Predicting Civil and Interstate War Duration.__ -->
-
-<!-- Expanding on the [Cunningham and Lemke (2013)](https://www.journals.cambridge.org/abstract_S0020818313000167) study on combining civil and interstate wars, I employ random forest to demonstrate that the majority of predictive covariates of war duration are indeed common to both civil and interstate wars. Further, in most cases, the direction of the effect holds across types, suggesting that the underlying mechanism operates in a similar fashion. -->
-
 Gokhan Ciflikli and Nils Metternich. __Taking time seriously when evaluating predictions in Binary-Time-Series-Cross-Section-Data.__ [[Pre-Print]](https://osf.io/preprints/socarxiv/tvshu/)
 
 We demonstrate that standard classification metrics for binary outcome data are prone to underestimate model performance in a binary-time-series-cross-section context. We argue for temporal residual based metrics to evaluate cross-validation efforts in binary-time-series-cross-section and test these in Monte Carlo experiments and existing empirical studies.
