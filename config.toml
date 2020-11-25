@@ -5,7 +5,7 @@ languageCode = "en"
 title = "Gokhan Ciflikli, Ph.D."
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
-ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
 paginate = 20
 
 [outputFormats.MyEnrichedFormat]

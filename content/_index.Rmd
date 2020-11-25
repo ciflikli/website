@@ -7,14 +7,8 @@ output: html_document
 
 I am a __senior data scientist__ at [Attest](https://www.askattest.com/). I am also a member of the [Quanteda Initiative](https://quanteda.org/people/) and a mentor under the [Research-to-Business Mentorship Scheme](https://info.lse.ac.uk/current-students/phd-academy/research-to-business/mentors/gokhan-ciflikli) for LSE PhD candidates and post-docs looking to transition into data science.
 
-As a computational social scientist, my core expertise lies in
+As a computational social scientist, my core expertise lies in statistical analysis and predictive modelling. At Attest, I build algorithmic models for fraud detection to screen out high-risk respondents in surveys. In addition, I am developing a novel sampling framework to mitigate bias when multiple panels are blended in a single survey.
 
-- Latent variable analysis: using psychometric tools in R, modelling latent traits of individuals to obtain _measurements_
-
-- Predictive modelling: developing machine learning pipelines in Python with an emphasis on robust design and methodology to identify _associations_
-
-- Causal inference: conducting experiments utilising various types of interventions and computing counterfactuals to understand the _why_
-
-Previously, I was a postdoctoral researcher in analytic software development at the London School of Economics. In addition, I was a research scientist at Uppsala University working on the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
+Previously, I was a postdoctoral researcher in analytic software development at the London School of Economics. At the same time, I was a research scientist at Uppsala University working on the automation of the [Uppsala Conflict Data Program (UCDP)](https://ucdp.uu.se/) using natural language processing (NLP) and active learning.
 
 Most of my side projects are on [GitHub](https://github.com/ciflikli). I contribute my blog to [R-Bloggers](https://www.r-bloggers.com/), a hub for all things R that I have learned a lot from, and [RWeekly](https://rweekly.org/). I am starting a Python data science blog in 2021---stay tuned!
