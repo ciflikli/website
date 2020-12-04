@@ -233,7 +233,7 @@ nav.main-nav {
 nav.main-nav a {
     top: 8px;
     right: 6px;
-    padding: 8px 12px;
+    padding: 4px 8px;
     color: #5badf0;
     font-size: 13px;
     /*font-weight: bold;*/
@@ -258,7 +258,7 @@ nav.main-nav a.cta {
   nav.main-nav a {
       top: 8px;
       right: 6px;
-      padding: 8px 8px;
+      padding: 4px 4px;
       color: #5badf0;
       font-size: 13px;
       line-height: 1.35;
