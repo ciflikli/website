@@ -22,6 +22,6 @@ Gokhan Ciflikli. 2018. __Learning Conflict Duration: Insights from Predictive Mo
 
 # SocArXiv Pre-Prints
 
-Gokhan Ciflikli and Nils Metternich. __Taking time seriously when evaluating predictions in Binary-Time-Series-Cross-Section-Data.__ [[PDF]](https://osf.io/preprints/socarxiv/tvshu/)
+Gokhan Ciflikli, Nils Metternich, Sigrid Weber, and Kit Rickard. __Taking time seriously when evaluating predictions in Binary-Time-Series-Cross-Section-Data.__ [[PDF]](https://osf.io/preprints/socarxiv/tvshu/)
 
-Nils Metternich, Gokhan Ciflikli, and Ali Altaf. __Predicting the severity of civil wars: An actor-centric approach.__ [[PDF]](https://osf.io/preprints/socarxiv/92y58/)
+Nils Metternich, Gokhan Ciflikli, Ali Altaf, Sigrid Weber, Kit Rickard, and Gareth Lomax. __Predicting the severity of civil wars: An actor-centric approach.__ [[PDF]](https://osf.io/preprints/socarxiv/92y58/)
