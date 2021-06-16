@@ -9,6 +9,6 @@ I am currently working on problems in the following domains:
 
 - Non-probabilistic sampling methodology
 - Algorithmic bias and structural exclusion in survey data
-- Behavioural nudges to promote truthfulness
+- Behavioural nudges to promote attention and truthfulness
 
 Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume.
