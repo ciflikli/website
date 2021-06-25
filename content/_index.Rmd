@@ -12,6 +12,8 @@ I am currently working on problems in the following domains:
 - Behavioural nudges to promote attention and truthfulness
 - Continuous validation of ML models in production
 
+![](/conjure_data.JPG)
+
 >_It is the chief characteristic of the religion of science that it works. ---Asimov_
 
 <!--Click [here](/Gokhan_Ciflikli_Resume.pdf) for my resume.--->
