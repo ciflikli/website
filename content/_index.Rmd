@@ -5,14 +5,12 @@ output: html_document
 
 A computational social scientist by training, my core expertise lies in robust statistical analysis and explainable predictive modelling. Previously, I held research positions at LSE, UCL, and Uppsala University.
 
-I am currently working on problems in the following domains:
+Currently, I am working on problems in the following domains:
 
 - Non-probabilistic sampling methodology
 - Algorithmic bias and structural exclusion in survey data
 - Behavioural nudges to promote attention and truthfulness
 - Continuous validation of ML models in production
-
-![](/conjure_data.JPG)
 
 >_It is the chief characteristic of the religion of science that it works. ---Asimov_
 
