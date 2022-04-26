@@ -13,7 +13,7 @@ protocol = "https://"
 
 [params]
 	name = "Gökhan Çiflikli, Ph.D."
-	job = "Data Science Lead @ [Attest](https://www.askattest.com/)"
+	job = "Head of Data Science @ [Attest](https://www.askattest.com/)"
 	description = "Data Science, Visualization, Machine Learning, Python, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
