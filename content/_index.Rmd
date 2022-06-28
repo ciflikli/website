@@ -3,17 +3,9 @@ title: "Gokhan Ciflikli, Ph.D."
 output: html_document
 ---
 
-A computational social scientist by training, my core expertise lies in robust statistical analysis and explainable predictive modelling. Previously, I held research positions at LSE, UCL, and Uppsala University.
+I focus on building high-performing Data Science teams that provide technical solutions to business problems. I have experience in leading data scientists both in embedded cross-functional teams and in Centre of Excellence organisational structures.
 
-At __Attest__, I focus on building performant Data Science teams that provide technical solutions to business problems. Embedded in cross-functional squads, data scientists at Attest learn how to:
-
-- achieve alignment with Product,
-- communicate effectively with Engineering, and
-- proactively collaborate with Design.
-
-As a manager, my primary responsibility towards all my team members is to enable and empower them by investing in their growth and providing a safe space for them to be the best version of themselves. I strive to adhere to the points outlined in this Twitter thread👇
-
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">11 Promises from a Manager: a 🧵<br><br>1. We’ll have a weekly 1:1. I’ll never cancel this meeting, but you can cancel it whenever you like. It’s your time.</p>&mdash; Matthew Rechs (@MrEchs) <a href="https://twitter.com/MrEchs/status/1516024322409832450?ref_src=twsrc%5Etfw">April 18, 2022</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+Regardless of structure, I believe DS can only maximise its potential when it is aligned with Product, closely collaborating with Engineering, and working proactively with Design. I also believe DS/ML is located at the top of the pyramid when it comes to the hierarchy of needs, meaning without robust data governance and infrastructure in place, its value cannot be maximised. Thus, as a data leader, I champion investing heavily in stakeholder management, cross-functional communications, and data engineering.
 
 >_It is the chief characteristic of the religion of science that it works. ---Asimov_
 
