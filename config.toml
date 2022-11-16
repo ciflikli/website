@@ -2,7 +2,7 @@
 baseurl = "https://www.gokhan.io/"
 canonifyurls = true
 languageCode = "en"
-title = "Gokhan Ciflikli, Ph.D."
+title = "Gokhan Ciflikli"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "UA-90951528-1"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
@@ -12,8 +12,8 @@ paginate = 20
 protocol = "https://"
 
 [params]
-	name = "Gökhan Çiflikli, Ph.D."
-	job = "Head of Data Science @ [Attest](https://www.askattest.com/)"
+	name = "Gökhan Çiflikli"
+	job = "Head of Data @ [Attest](https://www.askattest.com/)"
 	description = "Data Science, Visualization, Machine Learning, Python, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
 
@@ -31,7 +31,7 @@ protocol = "https://"
 	custom_css = []
 	customJS  = []
 
-	aboutAuthor = "Data Science Lead at Attest"
+	aboutAuthor = "Head of Data at Attest"
 
 	iconFont = "font-awesome"
   
