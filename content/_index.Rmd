@@ -3,7 +3,7 @@ title: "Gokhan Ciflikli"
 output: html_document
 ---
 
-I focus on building high-performing Data teams that provide technical solutions to business problems. I have experience in leading data scientists and data engineers, both in embedded cross-functional teams and in Centre of Excellence organisational structures.
+I focus on building high-performing Data teams that provide technical solutions to business problems. I have experience in leading data scientists, data engineers, and BI analysts--both in embedded cross-functional teams and in Centre of Excellence organisational structures.
 
 Regardless of structure, I believe DS/ML is located at the top of the pyramid when it comes to the hierarchy of needs, meaning without robust data governance and infrastructure in place, its value cannot be maximised. I further believe DS can only maximise its potential when it is aligned with the Product vision, closely collaborating with Engineering, and working proactively with Design & UXR.
 
