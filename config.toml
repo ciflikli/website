@@ -4,7 +4,7 @@ canonifyurls = true
 languageCode = "en"
 title = "Gokhan Ciflikli"
 theme = "hugo-theme-cactus-plus"
-googleAnalytics = "UA-90951528-1"
+googleAnalytics = "G-47S8FBKW4W"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
 paginate = 20
 
