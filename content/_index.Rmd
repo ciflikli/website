@@ -3,8 +3,12 @@ title: "Gokhan Ciflikli"
 output: html_document
 ---
 
-I focus on building high-performing Data teams that provide technical solutions to business problems. I have experience in leading data scientists, data engineers, and BI analysts--both in embedded cross-functional teams and in Centre of Excellence organisational structures.
+👋 I'm Gökhan.
 
-Regardless of structure, I believe DS/ML is located at the top of the pyramid when it comes to the hierarchy of needs, meaning without robust data governance and infrastructure in place, its value cannot be maximised. I further believe DS can only maximise its potential when it is aligned with the Product vision, closely collaborating with Engineering, and working proactively with Design & UXR.
+I have 15 years of experience working in enterprise, open-source/non-profit ([Quanteda Initiative](https://quanteda.org/)), and academic settings. I am currently the Head of Data & Analytics at a London based tech scaleup. I am also a Senior Visiting Fellow at the [Data Science Institute](https://www.lse.ac.uk/DSI), LSE.
+
+I enjoy mentoring data engineers, research scientists, and business analysts to maximise their impact. Since 2020, I have been assisting the [Tech Talent Charter](https://www.techtalentcharter.co.uk/home) to run and analyse their annual Diversity in Tech survey.
+
+I am a computational social scientist by training and [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
 >_It is the chief characteristic of the religion of science that it works. ---Asimov_
