@@ -5,9 +5,11 @@ output: html_document
 
 👋 I'm Gökhan.
 
-I have 15 years of experience working in enterprise, open-source/non-profit ([Quanteda Initiative](https://quanteda.org/)), and academic settings. I am currently the Head of Data & Analytics at a London based tech scaleup. I am also a Senior Visiting Fellow at the [Data Science Institute](https://www.lse.ac.uk/DSI), LSE.
+I have 15 years of experience working in tech, open-source software development ([Quanteda Initiative](https://quanteda.org/)), and applied research. I currently lead a Data & Analytics function at a London based tech scaleup. I am also a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI), where I work at the intersection of social policy and AI ethics.
 
-I enjoy mentoring data engineers, research scientists, and business analysts to maximise their impact. Since 2020, I have been assisting the [Tech Talent Charter](https://www.techtalentcharter.co.uk/home) to run and analyse their annual Diversity in Tech survey.
+I am passionate about aligning technical work with the needs of the business to maximise the ROI on data initiatives. I enjoy mentoring data engineers, research scientists, and business analysts to accelerate their growth. I publish a weekly newsletter on technical team management called [TeamCraft](https://teamcraft.substack.com/).
+
+I support and champion cognitive diversity. Since 2020, I have been assisting the [Tech Talent Charter](https://www.techtalentcharter.co.uk/home) to run and analyse their annual Diversity in Tech survey.
 
 I am a computational social scientist by training and [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
