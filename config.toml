@@ -24,7 +24,7 @@ protocol = "https://"
 	subtitle404 = "Perhaps your father wanted you to browse this page when you were old enough, but your uncle wouldn't allow it. He feared you might follow old Obi-Wan on some damn fool idealistic crusade like your father did..."
 
 	disqusShortname = "gokhancif"
-	enableDisqus = true
+	enableDisqus = false
 
 	enableGoogleAnalytics = true
 
