@@ -9,7 +9,7 @@ I have 15 years of experience working in tech, open-source software development 
 
 I am passionate about aligning technical work with the needs of the business to maximise the ROI on data initiatives. I enjoy mentoring data engineers, research scientists, and business analysts to accelerate their growth. I publish a weekly newsletter on technical team management called [TeamCraft](https://teamcraft.substack.com/).
 
-I support and champion cognitive diversity. Since 2020, I have been assisting the [Tech Talent Charter](https://www.techtalentcharter.co.uk/home) to run and analyse their annual Diversity in Tech survey.
+I support and champion cognitive diversity. Since 2020, I have been assisting the Tech Talent Charter to run and analyse their annual [Diversity in Tech surveys](https://report.techtalentcharter.co.uk/diversity-in-tech).
 
 I am a computational social scientist by training and [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
