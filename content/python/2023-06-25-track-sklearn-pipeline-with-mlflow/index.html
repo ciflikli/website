@@ -1,0 +1,167 @@
+---
+title: "Log Sklearn Pipelines with MLflow & Deploy 🚀"
+author: Gokhan Ciflikli
+date: "2023-06-25"
+slug: [sklearn-pipeline-mlflow]
+categories:
+  - Python
+tags:
+  - sklearn
+  - mlflow
+description: "Logging sklearn gridsearch CV data to MLflow and deploy the best model to make inferences"
+---
+
+
+
+<p>I am a simple person. I just want to neatly log all the parameters and metrics pertaining to a <code>sk-learn</code> pipeline to MLflow, including cross-validation. But I don’t want to fit and log one model at a time, and the MLflow autologger doesn’t save the results of intermediate stages when tracking meta-estimators (i.e. sklearn pipelines). I browsed 20+ tutorials, blog posts, and what-have-you. None of them does it the way I need it.</p>
+<p>So here is my solution 🤷</p>
+<p><strong>Disclaimer:</strong> <em>Remains to be seen</em> if the trouble of resurrecting a defunct R blog to post about model registry in Python after 6 years, on a website written in Hugo, using <code>reticulate</code> in R Studio, is indeed worth it.</p>
+<hr />
+<div id="setup-data" class="section level1">
+<h1>Setup &amp; Data</h1>
+<p>Let’s start with importing the required libraries and regular house-keeping</p>
+<pre class="python"><code>import mlflow
+import requests
+import warnings
+import numpy as np
+import pandas as pd
+from pathlib import Path
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import balanced_accuracy_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_classification
+
+warnings.filterwarnings(&#39;ignore&#39;) #for aesthetics
+RANDOM_STATE = 1895</code></pre>
+<p>The only step here is to create a minimalist synthetic dataset and split it into train and test sets</p>
+<pre class="python"><code>X, y = make_classification(n_features=4, random_state=RANDOM_STATE)
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=RANDOM_STATE)</code></pre>
+</div>
+<div id="modelling" class="section level1">
+<h1>Modelling</h1>
+<p>Next, a pipeline object to prevent data leakage and make our lives easier</p>
+<pre class="python"><code>estimator = Pipeline([(&#39;scaler&#39;, StandardScaler()),
+                      (&#39;lr&#39;, LogisticRegression(random_state=RANDOM_STATE))])</code></pre>
+<p>Now, I want to do a hyper-parameter grid search using cross-validation. It may not be crucial with the synthetic dataset, but sometimes I’m not sure which scaler is a better choice given the data, so I include both <code>MinMaxScaler()</code> and <code>StandardScaler()</code>, as well as the option to skipp the step altogether with <code>passthrough</code>. I also supply some options for the logistic regression as well.</p>
+<pre class="python"><code>param_grid = {
+    &#39;scaler&#39;: [MinMaxScaler(), StandardScaler(), &#39;passthrough&#39;],
+    &#39;lr__C&#39;: np.arange(0.0, 1.01, 0.25),
+    &#39;lr__penalty&#39;: [&#39;l1&#39;, &#39;l2&#39;],
+    &#39;lr__solver&#39;: [&#39;liblinear&#39;, &#39;saga&#39;]
+}</code></pre>
+<p>Setting some reasonable scoring and CV options</p>
+<pre class="python"><code>scoring = [&#39;balanced_accuracy&#39;, &#39;f1_weighted&#39;, &#39;precision&#39;, &#39;recall&#39;, &#39;roc_auc&#39;]
+cv = StratifiedKFold(n_splits=3)</code></pre>
+<p>and putting everything together inside <code>GridSearchCV()</code>. This will refit the best model
+candidate with the hyper-parameters based on the highest ROC-AUC score.</p>
+<pre class="python"><code>gs = GridSearchCV(
+    estimator=estimator,
+    param_grid=param_grid,
+    scoring=scoring,
+    n_jobs=-1,
+    refit=&#39;roc_auc&#39;,
+    cv=cv,
+    verbose=1,
+    return_train_score=True,
+)</code></pre>
+<p>Making coffee while it trains ☕ This fits about 180 models.</p>
+<pre class="python"><code>gs.fit(X_train, y_train)</code></pre>
+<p>Record out-of-sample predictions and the balanced accuracy score, although it could be any other classification scorer.</p>
+<pre class="python"><code>y_pred = gs.predict(X_test)
+round(balanced_accuracy_score(y_test, y_pred), 3)</code></pre>
+<p>The CV and the hyper-parameter search results are contained in <code>gs.cv_results_</code>.
+I only want columns that either contain the substring <code>mean</code> (all metrics) or <code>param_</code> (hyper-parameters). Also sorting the <code>df</code> column names alphabetically to make it easier downstream—i.e. when viewing them later on the MLflow UI.</p>
+<pre class="python"><code>cv_results = pd.DataFrame(gs.cv_results_).filter(
+  regex=r&#39;mean|param_&#39;
+  ).sort_index(
+    axis=1
+    )</code></pre>
+<p>This on is a bit messy, but essentially:</p>
+<ul>
+<li><code>gs_best_index_</code> contains the index number for the best model; e.g. <code>gs.cv_results_['params'][gs.best_index_]</code> provides the hyper-parameters for the best model</li>
+<li>Using that, we can also get key-value pairs of the best model (they all contain the string <code>mean</code>)</li>
+</ul>
+<pre class="python"><code>best_metrics_values = [result[1][gs.best_index_] for result in gs.cv_results_.items()]
+best_metrics_keys = [metric for metric in gs.cv_results_]
+best_metrics_dict = {k:v for k,v in zip(best_metrics_keys, best_metrics_values) if &#39;mean&#39; in k}</code></pre>
+<hr />
+</div>
+<div id="mlflow-tracking" class="section level1">
+<h1>MLflow Tracking</h1>
+<p>Let’s fire up the MLflow UI from the relevant directory using a terminal. You might be tempted to <code>!mlflow ui</code> inside a notebook, however it will halt execution as long as it serves the UI.</p>
+<pre class="bash"><code>mlflow ui</code></pre>
+<p>Alright, finally the fun part. I display the whole chunk first to give the idea. Still feeling dirty about the <code>.iterrows()</code> 😬</p>
+<pre class="python"><code>experiment_name = &#39;Sklearn Pipeline Tutorial&#39;
+registered_model_name = &#39;lr_predictor&#39;
+description = &#39;A toy logistic regression model on synthetic data&#39;
+tags = {&#39;version&#39;: &#39;v0.1&#39;, &#39;type&#39;: &#39;demo&#39;}
+
+mlflow.set_tracking_uri(&#39;http://127.0.0.1:5000&#39;)
+mlflow.create_experiment(name=experiment_name,
+                         tags=tags,
+                         artifact_location=Path.cwd().joinpath(&#39;mlruns&#39;).as_uri())
+mlflow.set_experiment(experiment_name=experiment_name)
+
+with mlflow.start_run(run_name=&#39;Parent Run&#39;, description=description) as run:
+    run_id = run.info.run_id
+    mlflow.log_params(gs.best_params_)
+    mlflow.log_metrics(best_metrics_dict)
+    mlflow.log_input(mlflow.data.from_numpy(X), context=&#39;features&#39;)
+    mlflow.log_input(mlflow.data.from_numpy(y), context=&#39;labels&#39;)
+    signature = mlflow.models.infer_signature(X_train, gs.predict(X_test))
+    mlflow.sklearn.log_model(gs, &#39;best_model&#39;,
+                             signature=signature,
+                             input_example=X_train[0],
+                             registered_model_name=registered_model_name)
+    for _, result in cv_results.iterrows():
+        with mlflow.start_run(run_name=&#39;Child Run&#39;,
+        description=&#39;CV models&#39;, nested=True):
+            mlflow.log_params(result.filter(regex=&#39;param_&#39;).to_dict())
+            mlflow.log_metrics(result.filter(regex=&#39;mean&#39;).to_dict())</code></pre>
+<p>Let’s break down what is happening.</p>
+<ol style="list-style-type: decimal">
+<li><p>We set some hopefully self-explanatory metadata about the experiment.</p></li>
+<li><p>Next, we start tracking by invoking <code>mlflow.set_tracking_uri()</code>. This step is crucial to create the linkage between your code and the backend.</p></li>
+<li><p>We create the experiment with <code>mlflow.create_experiment()</code> and set it as active with <code>mlflow.set_experiment()</code>. In both cases, we use the same experiment name.</p></li>
+<li><p>We use the context manager <code>with mlflow.start_run():</code> to start logging a series of runs. Normally, you would fit the model inside, and MLflow would capture it. Here, I only want to upload the CV results and deploy the best model online, so I fit the model outside.</p></li>
+<li><p>We save the <code>run_id</code> because we will need it to make the call for model serving.</p></li>
+<li><p>In the meanwhile, we log the bits we are interested in, including the data with <code>mlflow.log_input()</code>.</p></li>
+<li><p>We log the model using <code>mlflow.sklearn.log_model()</code>—most popular frameworks exist as flavours in MLflow. We supply the model signature, which is inferred from the training and predicted data (i.e. acceptable shape of input and output data). We also register the model by giving it a name so that we can refer to it easily during staging.</p></li>
+<li><p>Next, we loop the child runs under the parent. These have their own context manager. With <code>nested=True</code>, they will be grouped under the parent run in the MLflow UI for easier viewing.</p></li>
+</ol>
+</div>
+<div id="mlflow-deployment" class="section level1">
+<h1>MLflow Deployment</h1>
+<p>We want to verify that the model works as intended before deploying it to production, so let’s change it status to staging. Of course, we can also do this manually in the UI.</p>
+<pre class="python"><code>stage = &#39;Staging&#39;
+
+client = mlflow.MlflowClient()
+client.transition_model_version_stage(
+    name=registered_model_name,
+    version=1,
+    stage=stage)</code></pre>
+<p>We can now load the model from the registry and start making inferences. The new data point
+is reshaped to match the inferred signature for input data; that is <code>(-1, 4)</code>.</p>
+<pre class="python"><code>model = mlflow.pyfunc.load_model(model_uri=f&#39;models:/{registered_model_name}/{stage}&#39;)
+new_data = np.random.uniform(-2, 2, 4).reshape((-1,4))
+model.predict(new_data)</code></pre>
+<p>Let’s serve the best model at port 5001. Make sure to have the <code>run_id</code> ready to make the call to serve the model—this is why we saved it earlier. We need to supply the path to the model; this is where the <code>MLmodel</code> file is stored. We need a yet another terminal for this, as it will stay busy serving the model.</p>
+<pre class="bash"><code>mlflow models serve -m &lt;wd&gt;/mlruns/&lt;run_id&gt;/artifacts/best_model -h 0.0.0.0 -p 5001</code></pre>
+<p>Once the model is live, we can make inferences using the command line.</p>
+<pre class="bash"><code>curl http://127.0.0.1:5001/invocations -H &#39;Content-Type: application/json&#39; -d &#39;{&quot;dataframe_records&quot;: [{&quot;a&quot;:1, &quot;b&quot;:2, &quot;c&quot;: 3, &quot;d&quot;: 4}]}&#39;</code></pre>
+<p>which should return <code>Predictions: {"predictions": [0]}</code>. In this case, the prediction is a non-event.</p>
+<p>If you prefer to do it in Python, here’s an option using <code>requests</code>. This time I picked all negatives values for all four features, so the predicted outcome should be <code>[1]</code>.</p>
+<pre class="python"><code>host = &#39;127.0.0.1&#39;
+port = &#39;5001&#39;
+
+url = f&#39;http://{host}:{port}/invocations&#39;
+headers = {&#39;Content-Type&#39;: &#39;application/json&#39;}
+data = &#39;{&quot;dataframe_records&quot;: [{&quot;a&quot;: -1, &quot;b&quot;: -2, &quot;c&quot;: -2, &quot;d&quot;: -1}]}&#39;
+
+r = requests.post(url=url, headers=headers, data=data)
+
+print(f&#39;Predictions: {r.text}&#39;)</code></pre>
+<p>Happy deploying!</p>
+</div>
