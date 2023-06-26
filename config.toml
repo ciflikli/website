@@ -15,7 +15,7 @@ protocol = "https://"
 	name = "Gökhan Çiflikli"
 	job = "Head of Data & Analytics @ [Attest](https://www.askattest.com/)"
 	description = "Data Science, Visualization, Machine Learning, Python, R"
-	bio = "[R](https://gokhan.io/categories/r) | [Data Visualization](https://gokhan.io/categories/visualization) | [Predictive Modeling](https://gokhan.io/categories/prediction)"
+	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Predictive Modeling](https://gokhan.io/categories/prediction) | [Data Visualization](https://gokhan.io/categories/visualization)"
 
 	github = "ciflikli"
 	enableRSS = true
