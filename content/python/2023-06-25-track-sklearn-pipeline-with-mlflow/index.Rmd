@@ -8,14 +8,24 @@ categories:
 tags:
   - sklearn
   - mlflow
-description: "Logging sklearn gridsearch CV data to MLflow and deploy the best model to make inferences"
+description: "Logging sklearn gridsearch CV results to MLflow and deploy the best model to make inferences"
 ---
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
-I am a simple person. I just want to neatly log all the parameters and metrics pertaining to a `sk-learn` pipeline to MLflow, including cross-validation. But I don't want to fit and log one model at a time, and the MLflow autologger doesn't save the results of intermediate stages when tracking meta-estimators (i.e. sklearn pipelines). I browsed 20+ tutorials, blog posts, and what-have-you. None of them does it the way I need it.
+I am a simple person. I just want to neatly log all the parameters, metrics, and data pertaining to a `sk-learn` pipeline to MLflow, __including cross-validation.__ Why? Because sometimes, the metrics are quite similar, but the two candidate models are vastly different w.r.t. how their pipeline pre-processes the data. For example:
+
+- You don't know which scaler is the best option given the data---normalise or standardise?
+
+- You are not sure if you should include a dimensionality reduction technique prior to model fitting (e.g. PCA)
+
+- You want to try out a variety of estimators in a multitude of settings and record the results in one go.
+
+MLflow allows you to fit and log one model at a time (one can loop), but their automatic logger `mlflow.autolog()` doesn't save the results of the intermediate stages when tracking meta-estimators (i.e. sklearn pipelines).
+
+I browsed 20+ tutorials, blog posts, and what-have-you. None of them does it the way I need it.
 
 So here is my solution 🤷
 
@@ -54,14 +64,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_sta
 
 # Modelling
 
-Next, a pipeline object to prevent data leakage and make our lives easier
+Next, a pipeline object to prevent data leakage and make our lives generally easier
 
 ```{python}
 estimator = Pipeline([('scaler', StandardScaler()),
                       ('lr', LogisticRegression(random_state=RANDOM_STATE))])
 ```
 
-Now, I want to do a hyper-parameter grid search using cross-validation. It may not be crucial with the synthetic dataset, but sometimes I'm not sure which scaler is a better choice given the data, so I include both `MinMaxScaler()` and `StandardScaler()`, as well as the option to skipp the step altogether with `passthrough`. I also supply some options for the logistic regression as well.
+Now, I want to do a hyper-parameter grid search using cross-validation. To illustrate the point succinctly, I include both `MinMaxScaler()` and `StandardScaler()`, as well as the option to skip this step altogether with `passthrough` in the pre-processing. I also supply some options for the logistic regression as well.
 
 ```{python}
 param_grid = {
@@ -95,7 +105,7 @@ gs = GridSearchCV(
 )
 ```
 
-Making coffee while it trains ☕ This fits about 180 models.
+Sipping coffee while this trains ☕ This fits about 180 models, so should be fast.
 
 ```{python}
 gs.fit(X_train, y_train)
@@ -109,7 +119,7 @@ round(balanced_accuracy_score(y_test, y_pred), 3)
 ```
 
 The CV and the hyper-parameter search results are contained in `gs.cv_results_`.
-I only want columns that either contain the substring `mean` (all metrics) or `param_` (hyper-parameters). Also sorting the `df` column names alphabetically to make it easier downstream---i.e. when viewing them later on the MLflow UI.
+I only want the columns that either contain the substring `mean` (all metrics) or `param_` (hyper-parameters). Also sorting the `df` column names alphabetically to make it easier downstream---i.e. when viewing them later on the MLflow UI.
 
 ```{python}
 cv_results = pd.DataFrame(gs.cv_results_).filter(
@@ -119,7 +129,7 @@ cv_results = pd.DataFrame(gs.cv_results_).filter(
     )
 ```
 
-This on is a bit messy, but essentially:
+The next bit is a bit messy, but essentially:
 
 - `gs_best_index_` contains the index number for the best model; e.g. `gs.cv_results_['params'][gs.best_index_]` provides the hyper-parameters for the best model
 - Using that, we can also get key-value pairs of the best model (they all contain the string `mean`)
@@ -180,15 +190,15 @@ Let's break down what is happening.
 
 3. We create the experiment with `mlflow.create_experiment()` and set it as active with `mlflow.set_experiment()`. In both cases, we use the same experiment name.
 
-4. We use the context manager `with mlflow.start_run():` to start logging a series of runs. Normally, you would fit the model inside, and MLflow would capture it. Here, I only want to upload the CV results and deploy the best model online, so I fit the model outside.
+4. We use the context manager `with mlflow.start_run():` to start logging a series of runs, which is nice (it will close itself). Normally, you would fit the model inside, and MLflow would capture it there. Here, I only want to upload the CV results and deploy the best model online, so I'm OK with fitting the model outside.
 
 5. We save the `run_id` because we will need it to make the call for model serving.
 
-6. In the meanwhile, we log the bits we are interested in, including the data with `mlflow.log_input()`.
+6. In the meanwhile, we log the bits we are interested in, including the data---features and labels---with `mlflow.log_input()`.
 
-7. We log the model using `mlflow.sklearn.log_model()`---most popular frameworks exist as flavours in MLflow. We supply the model signature, which is inferred from the training and predicted data (i.e. acceptable shape of input and output data). We also register the model by giving it a name so that we can refer to it easily during staging.
+7. We log the model using `mlflow.sklearn.log_model()`---most popular frameworks exist as 'flavours' in MLflow. We supply the model signature, which is inferred from the training and predicted data using `mlflow.models.infer_signature()`. This enforces a contract on the shape of input and output data, so when you invoke the model, you need to adhere to them. Finally, we register the model by giving it a name so that we can refer to it easily during staging.
 
-8. Next, we loop the child runs under the parent. These have their own context manager. With `nested=True`, they will be grouped under the parent run in the MLflow UI for easier viewing.
+8. Next, we loop the child runs under the parent. Note that these have their own context manager. With `nested=True`, they will be grouped under the parent run in the MLflow UI for easier viewing.
 
 # MLflow Deployment
 

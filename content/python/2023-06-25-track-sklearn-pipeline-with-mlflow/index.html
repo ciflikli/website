@@ -8,12 +8,19 @@ categories:
 tags:
   - sklearn
   - mlflow
-description: "Logging sklearn gridsearch CV data to MLflow and deploy the best model to make inferences"
+description: "Logging sklearn gridsearch CV results to MLflow and deploy the best model to make inferences"
 ---
 
 
 
-<p>I am a simple person. I just want to neatly log all the parameters and metrics pertaining to a <code>sk-learn</code> pipeline to MLflow, including cross-validation. But I don’t want to fit and log one model at a time, and the MLflow autologger doesn’t save the results of intermediate stages when tracking meta-estimators (i.e. sklearn pipelines). I browsed 20+ tutorials, blog posts, and what-have-you. None of them does it the way I need it.</p>
+<p>I am a simple person. I just want to neatly log all the parameters, metrics, and data pertaining to a <code>sk-learn</code> pipeline to MLflow, <strong>including cross-validation.</strong> Why? Because sometimes, the metrics are quite similar, but the two candidate models are vastly different w.r.t. how their pipeline pre-processes the data. For example:</p>
+<ul>
+<li><p>You don’t know which scaler is the best option given the data—normalise or standardise?</p></li>
+<li><p>You are not sure if you should include a dimensionality reduction technique prior to model fitting (e.g. PCA)</p></li>
+<li><p>You want to try out a variety of estimators in a multitude of settings and record the results in one go.</p></li>
+</ul>
+<p>MLflow allows you to fit and log one model at a time (one can loop), but their automatic logger <code>mlflow.autolog()</code> doesn’t save the results of the intermediate stages when tracking meta-estimators (i.e. sklearn pipelines).</p>
+<p>I browsed 20+ tutorials, blog posts, and what-have-you. None of them does it the way I need it.</p>
 <p>So here is my solution 🤷</p>
 <p><strong>Disclaimer:</strong> <em>Remains to be seen</em> if the trouble of resurrecting a defunct R blog to post about model registry in Python after 6 years, on a website written in Hugo, using <code>reticulate</code> in R Studio, is indeed worth it.</p>
 <hr />
@@ -41,10 +48,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_sta
 </div>
 <div id="modelling" class="section level1">
 <h1>Modelling</h1>
-<p>Next, a pipeline object to prevent data leakage and make our lives easier</p>
+<p>Next, a pipeline object to prevent data leakage and make our lives generally easier</p>
 <pre class="python"><code>estimator = Pipeline([(&#39;scaler&#39;, StandardScaler()),
                       (&#39;lr&#39;, LogisticRegression(random_state=RANDOM_STATE))])</code></pre>
-<p>Now, I want to do a hyper-parameter grid search using cross-validation. It may not be crucial with the synthetic dataset, but sometimes I’m not sure which scaler is a better choice given the data, so I include both <code>MinMaxScaler()</code> and <code>StandardScaler()</code>, as well as the option to skipp the step altogether with <code>passthrough</code>. I also supply some options for the logistic regression as well.</p>
+<p>Now, I want to do a hyper-parameter grid search using cross-validation. To illustrate the point succinctly, I include both <code>MinMaxScaler()</code> and <code>StandardScaler()</code>, as well as the option to skip this step altogether with <code>passthrough</code> in the pre-processing. I also supply some options for the logistic regression as well.</p>
 <pre class="python"><code>param_grid = {
     &#39;scaler&#39;: [MinMaxScaler(), StandardScaler(), &#39;passthrough&#39;],
     &#39;lr__C&#39;: np.arange(0.0, 1.01, 0.25),
@@ -66,19 +73,19 @@ candidate with the hyper-parameters based on the highest ROC-AUC score.</p>
     verbose=1,
     return_train_score=True,
 )</code></pre>
-<p>Making coffee while it trains ☕ This fits about 180 models.</p>
+<p>Sipping coffee while this trains ☕ This fits about 180 models, so should be fast.</p>
 <pre class="python"><code>gs.fit(X_train, y_train)</code></pre>
 <p>Record out-of-sample predictions and the balanced accuracy score, although it could be any other classification scorer.</p>
 <pre class="python"><code>y_pred = gs.predict(X_test)
 round(balanced_accuracy_score(y_test, y_pred), 3)</code></pre>
 <p>The CV and the hyper-parameter search results are contained in <code>gs.cv_results_</code>.
-I only want columns that either contain the substring <code>mean</code> (all metrics) or <code>param_</code> (hyper-parameters). Also sorting the <code>df</code> column names alphabetically to make it easier downstream—i.e. when viewing them later on the MLflow UI.</p>
+I only want the columns that either contain the substring <code>mean</code> (all metrics) or <code>param_</code> (hyper-parameters). Also sorting the <code>df</code> column names alphabetically to make it easier downstream—i.e. when viewing them later on the MLflow UI.</p>
 <pre class="python"><code>cv_results = pd.DataFrame(gs.cv_results_).filter(
   regex=r&#39;mean|param_&#39;
   ).sort_index(
     axis=1
     )</code></pre>
-<p>This on is a bit messy, but essentially:</p>
+<p>The next bit is a bit messy, but essentially:</p>
 <ul>
 <li><code>gs_best_index_</code> contains the index number for the best model; e.g. <code>gs.cv_results_['params'][gs.best_index_]</code> provides the hyper-parameters for the best model</li>
 <li>Using that, we can also get key-value pairs of the best model (they all contain the string <code>mean</code>)</li>
@@ -125,11 +132,11 @@ with mlflow.start_run(run_name=&#39;Parent Run&#39;, description=description) as
 <li><p>We set some hopefully self-explanatory metadata about the experiment.</p></li>
 <li><p>Next, we start tracking by invoking <code>mlflow.set_tracking_uri()</code>. This step is crucial to create the linkage between your code and the backend.</p></li>
 <li><p>We create the experiment with <code>mlflow.create_experiment()</code> and set it as active with <code>mlflow.set_experiment()</code>. In both cases, we use the same experiment name.</p></li>
-<li><p>We use the context manager <code>with mlflow.start_run():</code> to start logging a series of runs. Normally, you would fit the model inside, and MLflow would capture it. Here, I only want to upload the CV results and deploy the best model online, so I fit the model outside.</p></li>
+<li><p>We use the context manager <code>with mlflow.start_run():</code> to start logging a series of runs, which is nice (it will close itself). Normally, you would fit the model inside, and MLflow would capture it there. Here, I only want to upload the CV results and deploy the best model online, so I’m OK with fitting the model outside.</p></li>
 <li><p>We save the <code>run_id</code> because we will need it to make the call for model serving.</p></li>
-<li><p>In the meanwhile, we log the bits we are interested in, including the data with <code>mlflow.log_input()</code>.</p></li>
-<li><p>We log the model using <code>mlflow.sklearn.log_model()</code>—most popular frameworks exist as flavours in MLflow. We supply the model signature, which is inferred from the training and predicted data (i.e. acceptable shape of input and output data). We also register the model by giving it a name so that we can refer to it easily during staging.</p></li>
-<li><p>Next, we loop the child runs under the parent. These have their own context manager. With <code>nested=True</code>, they will be grouped under the parent run in the MLflow UI for easier viewing.</p></li>
+<li><p>In the meanwhile, we log the bits we are interested in, including the data—features and labels—with <code>mlflow.log_input()</code>.</p></li>
+<li><p>We log the model using <code>mlflow.sklearn.log_model()</code>—most popular frameworks exist as ‘flavours’ in MLflow. We supply the model signature, which is inferred from the training and predicted data using <code>mlflow.models.infer_signature()</code>. This enforces a contract on the shape of input and output data, so when you invoke the model, you need to adhere to them. Finally, we register the model by giving it a name so that we can refer to it easily during staging.</p></li>
+<li><p>Next, we loop the child runs under the parent. Note that these have their own context manager. With <code>nested=True</code>, they will be grouped under the parent run in the MLflow UI for easier viewing.</p></li>
 </ol>
 </div>
 <div id="mlflow-deployment" class="section level1">
