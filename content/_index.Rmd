@@ -5,12 +5,18 @@ output: html_document
 
 👋 I'm Gökhan.
 
-I have 15 years of experience working in tech, open-source software development ([Quanteda Initiative](https://quanteda.org/)), and applied research. I currently lead a Data & Analytics function at a London based tech scaleup. I am also a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI), where I work at the intersection of social policy and AI ethics.
+# Who Am I?
 
-I am passionate about aligning technical work with the needs of the business to maximise the ROI on data initiatives. I enjoy mentoring data engineers, research scientists, and business analysts to accelerate their growth. I publish a weekly newsletter on technical team management called [TeamCraft](https://teamcraft.substack.com/).
+I have 15 years of experience working in tech, open-source software development ([Quanteda Initiative](https://quanteda.org/)), and applied research. I currently lead a Data & Analytics function at a London based tech scaleup. I am also a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI), where I spearhead research at the intersection of social policy and generative AI ethics.
+
+# What I Like Doing
+
+I am passionate about aligning technical work with the needs of the business to maximise the ROI on data initiatives. I enjoy mentoring data engineers, research scientists, and business analysts to accelerate their growth.
+
+I publish a weekly newsletter on technical team management aimed at middle managers called [TeamCraft](https://teamcraft.substack.com/). I also post about open-source [MLOps tools in the Python](https://gokhan.io/python) ecosystem. I used to publish case studies on data visualisation and predictive modelling in my [R blog](https://gokhan.io/post), however it lays dormant since 2018.
 
 I support and champion cognitive diversity. Since 2020, I have been assisting the Tech Talent Charter to run and analyse their annual [Diversity in Tech surveys](https://report.techtalentcharter.co.uk/diversity-in-tech).
 
-I am a computational social scientist by training and [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
+I am a computational social scientist by training and occasionally [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
 >_It is the chief characteristic of the religion of science that it works. ---Asimov_
