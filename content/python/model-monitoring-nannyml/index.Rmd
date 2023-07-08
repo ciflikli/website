@@ -1,14 +1,14 @@
 ---
-title: 'Monitor Deployed ML Models for Feature Drift with NannyML'
+title: "Monitor Deployed ML Models for Feature Drift with NannyML"
 author: Gokhan Ciflikli
-date: '2023-07-09'
+date: "2023-07-09"
 slug: [model-monitoring-nannyml]
 categories:
   - Python
 tags:
   - nannyml
   - sklearn
-description: 'Painless post-deployment model monitoring w/o labelled data'
+description: "Painless post-deployment model monitoring w/o labelled data"
 ---
 
 It is common to ~~_be a part of_~~ observe the following scenario:
