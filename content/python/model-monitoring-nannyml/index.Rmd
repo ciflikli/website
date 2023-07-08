@@ -11,10 +11,6 @@ tags:
 description: 'Painless post-deployment model monitoring w/o labelled data'
 ---
 
-```{r include=FALSE}
-knitr::opts_chunk$set(cache = TRUE)
-```
-
 It is common to ~~_be a part of_~~ observe the following scenario:
 
 - Data scientist spends several weeks in a Jupyter notebook
