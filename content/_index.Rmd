@@ -7,7 +7,9 @@ output: html_document
 
 # Who Am I?
 
-I have 15 years of experience working in tech, open-source software development ([Quanteda Initiative](https://quanteda.org/)), and applied research. I currently lead a Data & Analytics function at a London based tech scaleup. I am also a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI), where I spearhead research at the intersection of social policy and generative AI ethics.
+I have 15 years of experience working in tech, open-source software development ([Quanteda Initiative](https://quanteda.org/)), and applied research. Currently, I lead the Data & AI function at [Superside](https://www.superside.com/). Previously, I was Head of Data & Analytics at [Attest](https://www.askattest.com/).
+
+I am also a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI), where I spearhead research at the intersection of social policy and generative AI ethics.
 
 # What I Like Doing
 
