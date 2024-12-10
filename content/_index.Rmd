@@ -27,7 +27,7 @@ In the fast-paced world of business, it is extremely easy to fall into common pi
 
 Bridging the gap between academic research and real-world business applications is one of my core strengths. I specialise in translating state-of-the-art academic research into actionable insights that directly address the challenges and opportunities within your business domain.
 
----
+------------------------------------------------------------------------
 
 ### From Industry to Academia
 
@@ -35,9 +35,8 @@ Bridging the gap between academic research and real-world business applications 
 
 Drawing on my extensive network within data and tech leadership communities in the UK, I act as a liaison between your research team and the frontier companies in your domain of interest: accurate production data and realistic operational constraints contribute to increased validity of your experiments.
 
-
 **Career Transition Coaching for PhDs and Postdocs**
 
 Transitioning from academia to industry is a daunting process. I provide comprehensive career coaching, mentorship, and job placement support to help PhDs and postdocs pivot into high-impact roles in the business world.
 
->_It is the chief characteristic of the religion of science that it works. ---Asimov_
+> *It is the chief characteristic of the religion of science that it works. ---Asimov*
