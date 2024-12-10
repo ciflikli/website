@@ -12,8 +12,8 @@ paginate = 20
 protocol = "https://"
 
 [params]
-	name = "Gökhan Çiflikli"
-	job = "Tech Management | MLOps"
+	name = "Gökhan Çiflikli, PhD"
+	job = "Cogentis Consulting | Data, Analytics & AI"
 	description = "Data Science, Visualization, Machine Learning, Python, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Predictive Modeling](https://gokhan.io/categories/prediction) | [Data Visualization](https://gokhan.io/categories/visualization)"
 
@@ -31,7 +31,7 @@ protocol = "https://"
 	custom_css = []
 	customJS  = []
 
-	aboutAuthor = "Tech Manager | Data Scientist"
+	aboutAuthor = "Fractional Data Leadership"
 
 	iconFont = "font-awesome"
   
@@ -41,6 +41,6 @@ protocol = "https://"
 
 [social]
 
-  github-square = "https://github.com/ciflikli"
+  #github-square = "https://github.com/ciflikli"
   linkedin = "https://www.linkedin.com/in/gokhan-ciflikli/"
-  twitter-square = "https://www.twitter.com/gokhan_ciflikli"
+  #twitter-square = "https://www.twitter.com/gokhan_ciflikli"
