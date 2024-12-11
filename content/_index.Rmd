@@ -1,15 +1,17 @@
 ---
-title: "Gokhan Ciflikli"
+title: "Gokhan Ciflikli, PhD | Cogentis Consulting"
 output: html_document
 ---
 
 👋 I'm Gökhan.
 
-# Who Am I?
+# Who I Am
 
 A methodologist and a computational social scientist by training, I have 17 years of experience working in tech, open-source software development, and applied research.
 
-In 2024, I founded **Cogentis Consulting** to work independently at growing startups and academic institutions. I also hold a Senior Visiting Fellowship at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI) since 2023. Previously, I was Director of AI & ML at [Superside](https://www.superside.com/) (2023-2024), Head of Data & Analytics at [Attest](https://www.askattest.com/) (2019-2023), and Technical Lead at [Quanteda Initiative](https://quanteda.org/) (2017-2018).
+In 2024, I founded **Cogentis Consulting** to work independently at growing startups and academic institutions. My expertise stems from doing a PhD from the London School of Economics (2017) and from the tech roles I held as Director of AI & ML at [Superside](https://www.superside.com/) (2023-2024), Head of Data & Analytics at [Attest](https://www.askattest.com/) (2019-2023), and Technical Lead at [Quanteda Initiative](https://quanteda.org/) (2017-2018).
+
+I maintain an ongoing connection to cutting-edge academic research and community as a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI) since 2023.
 
 # What I Offer
 
