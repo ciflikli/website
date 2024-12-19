@@ -1,5 +1,5 @@
 ---
-title: "Gokhan Ciflikli, PhD | Cogentis Consulting"
+title: "Gokhan Ciflikli"
 output: html_document
 ---
 
@@ -7,38 +7,22 @@ output: html_document
 
 # Who I Am
 
-A methodologist and a computational social scientist by training, I have 17 years of experience working in tech, open-source software development, and applied research.
+A methodologist and a computational social scientist by training, I have 17 years of experience working in tech, open-source software development, and applied research. I hold a PhD from the London School of Economics where I still maintain ongoing connections to cutting-edge research and scientific community as a Visiting Senior Fellow at the [Data Science Institute](https://www.lse.ac.uk/DSI).
 
-In 2024, I founded **Cogentis Consulting** to work independently at growing startups and academic institutions. My expertise stems from doing a PhD from the London School of Economics (2017) and from the tech roles I held as Director of AI & ML at [Superside](https://www.superside.com/) (2023-2024), Head of Data & Analytics at [Attest](https://www.askattest.com/) (2019-2023), and Technical Lead at [Quanteda Initiative](https://quanteda.org/) (2017-2018).
+Previously, I was Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
 
-I maintain an ongoing connection to cutting-edge academic research and community as a Senior Visiting Fellow at the [LSE Data Science Institute](https://www.lse.ac.uk/DSI) since 2023.
+In 2024, I founded [Cogentis Consulting](https://www.cogentis.ai) to work independently at the intersection of industry and academia. I offer fractional data leadership, one-off consulting, workshops, and career coaching for PhDs looking to break into the industry.
 
-# What I Offer
+# What I Like Doing
 
-Unlock the power of senior data leadership without the overhead of a full-time commitment. From **single-day workshops** and **one-off consulting** to all the way to **fractional data leadership**, I build bridges between academia and industry by combining the best of both worlds.
+I am passionate about aligning technical work with the needs of the business to maximise the ROI on data initiatives. I enjoy mentoring data engineers, research scientists, and business analysts to accelerate their growth.
 
-### From Academia to Industry
+I publish a newsletter on technical team management aimed at middle managers called [TeamCraft](https://teamcraft.substack.com/). I also post about open-source [MLOps tools in the Python](https://gokhan.io/python) ecosystem. I used to publish case studies on data visualisation and predictive modelling in my [R blog](https://gokhan.io/post), however it lays dormant since 2018.
 
-I build and enhance your Data, Analytics & AI functions. Whether you are looking to build your first Data function or looking to level up an existing organisation, I provide strategic leadership and execution across all stages of your data transformation journey.
+I support and champion cognitive diversity. Since 2020, I have been assisting the Tech Talent Charter to run and analyse their annual [Diversity in Tech surveys](https://report.techtalentcharter.co.uk/diversity-in-tech).
 
-**Scientific Rigour and Robust Methodology**
+I am a computational social scientist by training and occasionally [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
-In the fast-paced world of business, it is extremely easy to fall into common pitfalls that undermine the validity and reliability of your findings. As an expert in statistical methodology, I help your business avoid the most prevalent mistakes that can skew results and drive poor decision-making.
+I like playing the bass guitar, and recently released a short EP that you can [listen to on Spotify!](https://open.spotify.com/album/5anGntZJaDDBog1XqiSDSj?si=8qzK7eaKQ6-yeBzV0pZjyg)
 
-**Applied Research for Business Impact**
-
-Bridging the gap between academic research and real-world business applications is one of my core strengths. I specialise in translating state-of-the-art academic research into actionable insights that directly address the challenges and opportunities within your business domain.
-
-------------------------------------------------------------------------
-
-### From Industry to Academia
-
-**Industry Outreach for Academic Research**
-
-Drawing on my extensive network within data and tech leadership communities in the UK, I act as a liaison between your research team and the frontier companies in your domain of interest: accurate production data and realistic operational constraints contribute to increased validity of your experiments.
-
-**Career Transition Coaching for PhDs and Postdocs**
-
-Transitioning from academia to industry is a daunting process. I provide comprehensive career coaching, mentorship, and job placement support to help PhDs and postdocs pivot into high-impact roles in the business world.
-
-> *It is the chief characteristic of the religion of science that it works. ---Asimov*
+>_It is the chief characteristic of the religion of science that it works. ---Asimov_

@@ -13,7 +13,7 @@ protocol = "https://"
 
 [params]
 	name = "Gökhan Çiflikli, PhD"
-	job = "Cogentis Consulting | Data, Analytics & AI"
+	job = "Data & AI Consultant | Fractional Data Leadership"
 	description = "Data Science, Visualization, Machine Learning, Python, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Predictive Modeling](https://gokhan.io/categories/prediction) | [Data Visualization](https://gokhan.io/categories/visualization)"
 
@@ -31,7 +31,7 @@ protocol = "https://"
 	custom_css = []
 	customJS  = []
 
-	aboutAuthor = "Fractional Data Leadership"
+	aboutAuthor = "Data & AI Consultant | Fractional Data Leadership"
 
 	iconFont = "font-awesome"
   
