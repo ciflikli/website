@@ -2,7 +2,7 @@
 baseurl = "https://www.gokhan.io/"
 canonifyurls = true
 languageCode = "en"
-title = "Gokhan Ciflikli"
+title = "Gokhan Ciflikli | Cogentis Consulting"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "G-47S8FBKW4W"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
@@ -41,6 +41,6 @@ protocol = "https://"
 
 [social]
 
-  github-square = "https://github.com/ciflikli"
+  #github-square = "https://github.com/ciflikli"
   linkedin = "https://www.linkedin.com/in/gokhan-ciflikli/"
-  twitter-square = "https://www.twitter.com/gokhan_ciflikli"
+  #twitter-square = "https://www.twitter.com/gokhan_ciflikli"
