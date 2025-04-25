@@ -9,9 +9,9 @@ output: html_document
 
 A methodologist and a computational social scientist by training, I have 17 years of experience working in tech, open-source software development, and applied research. I hold a PhD from the London School of Economics where I still maintain ongoing connections to cutting-edge research and scientific community as a Visiting Senior Fellow at the [Data Science Institute](https://www.lse.ac.uk/DSI).
 
-Previously, I was Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
+In 2024, I founded [Cogentis Consulting](https://www.cogentis.ai) to work independently at the intersection of industry and academia. I offer fractional data leadership, one-off consulting, workshops, and career coaching for tech managers who want to break into senior leadership and academics looking to break into industry roles. [Book a consultation here.](https://www.cogentis.ai/consultation)
 
-In 2024, I founded [Cogentis Consulting](https://www.cogentis.ai) to work independently at the intersection of industry and academia. I offer fractional data leadership, one-off consulting, workshops, and career coaching for PhDs looking to break into the industry.
+Previously, I was Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
 
 # What I Like Doing
 
