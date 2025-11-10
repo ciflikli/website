@@ -11,7 +11,7 @@ A methodologist and a computational social scientist by training, I have 17 year
 
 In 2024, I founded [Cogentis Consulting](https://www.cogentis.ai) to work independently at the intersection of industry and academia. I offer fractional data leadership, one-off consulting, workshops, and career coaching for tech managers who want to break into senior leadership and academics looking to break into industry roles. [Book a consultation here.](https://www.cogentis.ai/consultation)
 
-Previously, I was Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
+Currently, I am a fractional VP Data at [Mob](https://www.mob.co.uk/). Previously, I was a Senior AI Engineer at [hyperexponential](https://www.hyperexponential.com/), Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
 
 # What I Like Doing
 

@@ -1,7 +1,7 @@
 <div id="social">
 {{ if eq .Site.Params.iconFont "font-awesome" }}
 	
-	{{ range $key, $val := .Site.Social }}
+	{{ range $key, $val := .Site.Params.Social }}
     <a class="symbol" href="{{ $val }}">
         <i class="fab fa-{{ $key }} fa-sm"></i>
     </a>
