@@ -1,12 +1,9 @@
 <footer id="footer">
-    {{ if .Site.Params.Social }}
-        {{ partial "social.html" . }}
-    {{ end }}
     <p class="small">
     {{ with .Site.Params.copyright }}
         {{ . | markdownify }}
     {{ else }}
-       © Copyright 2017-2025 <i class="fas fa-coffee"></i> {{ .Site.Params.name }}
+       © Copyright 2017-{{ now.Format "2006" }} <i class="fas fa-coffee"></i> {{ .Site.Params.name }}
     {{ end }}
     </p>
 </footer>

@@ -5,9 +5,14 @@
 
 <section id="wrapper" class="home">
   
+    {{ if .Site.Params.Social }}
+    <div class="home-social">
+        {{ partial "social.html" . }}
+    </div>
+    {{ end }}
     {{ .Content }}
     
-    <!-- <img src="//ghchart.rshah.org/5694f1/ciflikli" alt="Gokhan's Github contributions"> -->
+    <img src="https://ghchart.rshah.org/5694f1/ciflikli" alt="Gokhan's Github contributions">
 
     {{ partial "footer.html" . }}
 </section>

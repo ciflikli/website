@@ -9,9 +9,7 @@ output: html_document
 
 A methodologist and a computational social scientist by training, I have 17 years of experience working in tech, open-source software development, and applied research. I hold a PhD from the London School of Economics where I still maintain ongoing connections to cutting-edge research and scientific community as a Visiting Senior Fellow at the [Data Science Institute](https://www.lse.ac.uk/DSI).
 
-In 2024, I founded [Cogentis Consulting](https://www.cogentis.ai) to work independently at the intersection of industry and academia. I offer fractional data leadership, one-off consulting, workshops, and career coaching for tech managers who want to break into senior leadership and academics looking to break into industry roles. [Book a consultation here.](https://www.cogentis.ai/consultation)
-
-Currently, I am a fractional VP Data at [Mob](https://www.mob.co.uk/). Previously, I was a Senior AI Engineer at [hyperexponential](https://www.hyperexponential.com/), Director of AI & ML at [Superside](https://www.superside.com/), Head of Data & Analytics at [Attest](https://www.askattest.com/), and Technical Lead at [Quanteda Initiative](https://www.quanteda.org/).
+Currently, I am a Principal AI Engineer at [Healf](https://www.healf.com/). Previously, I was VP Data at [Mob](https://www.mob.co.uk/), Director of AI & ML at [Superside](https://www.superside.com/), and Head of Data & Analytics at [Attest](https://www.askattest.com/).
 
 # What I Like Doing
 
@@ -21,7 +19,7 @@ I publish a newsletter on technical team management aimed at middle managers cal
 
 I support and champion cognitive diversity. Since 2020, I have been assisting the Tech Talent Charter to run and analyse their annual [Diversity in Tech surveys](https://report.techtalentcharter.co.uk/diversity-in-tech).
 
-I am a computational social scientist by training and occasionally [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
+I occasionally [publish research](https://scholar.google.com/citations?user=DSwbOtcAAAAJ&hl=en) on gender bias, academic indicators, behavioural interventions in surveys, and armed conflict dynamics.
 
 I like playing the bass guitar, and recently released a short EP that you can [listen to on Spotify!](https://open.spotify.com/album/5anGntZJaDDBog1XqiSDSj?si=8qzK7eaKQ6-yeBzV0pZjyg)
 

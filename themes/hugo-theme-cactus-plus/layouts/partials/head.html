@@ -8,17 +8,17 @@
 		{{ with .Site.Params.description }}<meta name="description" content="{{ . }}">{{ end }}
 		{{ hugo.Generator }}
 		<title>{{ if .IsHome }}{{ .Title }}{{ else }}{{ .Title }} &middot; {{ .Site.Title }}{{ end }}</title>
-		<link rel="shortcut icon" href="{{ .Site.BaseURL }}images/favicon.ico">
-		<link rel="stylesheet" href="{{ .Site.BaseURL }}css/style.css">
-		<link rel="stylesheet" href="{{ .Site.BaseURL }}css/highlight.css">
-		<link rel="stylesheet" href="{{ .Site.BaseURL }}css/academicons.min.css"/>
+		<link rel="shortcut icon" href="{{ "images/favicon.ico" | relURL }}">
+		<link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+		<link rel="stylesheet" href="{{ "css/highlight.css" | relURL }}">
+		<link rel="stylesheet" href="{{ "css/academicons.min.css" | relURL }}"/>
 		{{ range .Site.Params.customCSS }}
-		<link rel="stylesheet" href="{{ $.Site.BaseURL }}{{ . }}">
+		<link rel="stylesheet" href="{{ . | relURL }}">
 		{{ end }}
 		{{ if eq .Site.Params.iconFont "font-awesome" }}
 		<link href="https://use.fontawesome.com/releases/v5.0.2/css/all.css" rel="stylesheet">
 		{{ else }}
-		<link rel="stylesheet" href="{{ .Site.BaseURL }}css/monosocialiconsfont.css">
+		<link rel="stylesheet" href="{{ "css/monosocialiconsfont.css" | relURL }}">
 		{{ end }}
 
 		{{ if .Site.Params.enableRSS }}

@@ -10,7 +10,7 @@
 {{ else }}
 	
 	{{ $iconStyle := .Site.Params.socialIconStyle }}
-    {{ range $key, $val := .Site.Social }}
+    {{ range $key, $val := .Site.Params.Social }}
     <a class="symbol" href="{{ $val }}">
         {{ $iconStyle }}{{ if eq $key "twitter" }}twitterbird{{ else }}{{ $key }}{{ end }}
     </a>

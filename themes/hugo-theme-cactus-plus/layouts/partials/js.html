@@ -1,13 +1,12 @@
-<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script async src="//yihui.name/js/center-img.js"></script>
-<script src="{{ .Site.BaseURL }}js/jquery-2.2.4.min.js"></script>
-<script src="{{ .Site.BaseURL }}js/main.js"></script>
-<script src="{{ .Site.BaseURL }}js/highlight.pack.js"></script>
+<script async src="https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script async src="https://yihui.name/js/center-img.js"></script>
+<script src="{{ "js/main.js" | relURL }}"></script>
+<script src="{{ "js/highlight.pack.js" | relURL }}"></script>
 <script>hljs.configure({languages: []});
 hljs.initHighlightingOnLoad();</script>
 
 {{ range .Site.Params.customJS }}
-<script src="{{ $.Site.BaseURL }}{{ . }}"></script>
+<script src="{{ . | relURL }}"></script>
 {{ end }}
 
 {{ if .Site.Params.enableGoogleAnalytics }}

@@ -2,19 +2,20 @@
 baseurl = "https://www.gokhan.io/"
 canonifyurls = true
 languageCode = "en"
-title = "Gokhan Ciflikli | Cogentis Consulting"
+title = "Gokhan Ciflikli | Principal AI Engineer at Healf"
 theme = "hugo-theme-cactus-plus"
 googleAnalytics = "G-47S8FBKW4W"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
-paginate = 20
+[pagination]
+  pagerSize = 20
 
 [outputFormats.MyEnrichedFormat]
 protocol = "https://"
 
 [params]
 	name = "Gökhan Çiflikli, PhD"
-	job = "Data & AI Consultant | Fractional Data Leadership"
-	description = "Data Science, Visualization, Machine Learning, Python, R"
+	job = "Building Wellbeing Intelligence at Healf"
+	description = "Data Science, Machine Learning, AI, Python, R"
 	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Predictive Modeling](https://gokhan.io/categories/prediction) | [Data Visualization](https://gokhan.io/categories/visualization)"
 
 	github = "ciflikli"
@@ -31,7 +32,7 @@ protocol = "https://"
 	custom_css = []
 	customJS  = []
 
-	aboutAuthor = "Data & AI Consultant | Fractional Data Leadership"
+	aboutAuthor = "Building Wellbeing Intelligence at Healf"
 
 	iconFont = "font-awesome"
   
@@ -39,8 +40,7 @@ protocol = "https://"
 
   shareOnFacebook = true
 
-[social]
-
-  #github-square = "https://github.com/ciflikli"
+[params.social]
+  github-square = "https://github.com/ciflikli"
   linkedin = "https://www.linkedin.com/in/gokhan-ciflikli/"
   #twitter-square = "https://www.twitter.com/gokhan_ciflikli"
