@@ -48,6 +48,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_c
     url = "/projects/"
     weight = 2
   [[menu.main]]
-    name = "About"
+    name = "Resume"
     url = "/about/"
     weight = 3
