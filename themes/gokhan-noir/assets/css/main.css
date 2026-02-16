@@ -12,8 +12,8 @@
   --text-primary: #FFFFFF;
   --text-secondary: #B0B0B0;
   --text-tertiary: #707070;
-  --accent: #4ADE80;
-  --accent-hover: #22C55E;
+  --accent: #FFFFFF;
+  --accent-hover: #D4D4D4;
   --border: #262626;
   --code-bg: #111111;
 
@@ -55,8 +55,8 @@
   --text-primary: #111827;
   --text-secondary: #6B7280;
   --text-tertiary: #9CA3AF;
-  --accent: #16A34A;
-  --accent-hover: #15803D;
+  --accent: #111827;
+  --accent-hover: #4B5563;
   --border: #E5E7EB;
   --code-bg: #F3F4F6;
 }
@@ -124,14 +124,16 @@ p {
 }
 
 a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--transition-fast);
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--text-tertiary);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
+  text-decoration-color: var(--text-primary);
 }
 
 strong {
@@ -139,7 +141,7 @@ strong {
 }
 
 blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--text-tertiary);
   padding-left: var(--space-6);
   margin: var(--space-6) 0;
   color: var(--text-secondary);
@@ -182,7 +184,7 @@ code {
   background-color: var(--bg-tertiary);
   padding: 0.15em 0.4em;
   border-radius: var(--radius-sm);
-  color: var(--accent);
+  color: var(--text-primary);
 }
 
 pre {
@@ -236,7 +238,7 @@ pre:hover .copy-btn,
 }
 
 .copy-btn.copied {
-  color: var(--accent);
+  color: var(--text-primary);
 }
 
 /* --- Tables --- */
@@ -319,7 +321,7 @@ tr:hover td {
 }
 
 .nav-logo:hover {
-  color: var(--accent);
+  color: var(--text-secondary);
   text-decoration: none;
 }
 
@@ -520,7 +522,7 @@ tr:hover td {
 }
 
 .about-text a {
-  color: var(--accent);
+  color: var(--text-primary);
 }
 
 /* --- Tech Stack Grid --- */
@@ -547,7 +549,7 @@ tr:hover td {
 }
 
 .stack-item:hover {
-  border-color: var(--accent);
+  border-color: var(--text-secondary);
 }
 
 .stack-item-label {
@@ -555,7 +557,7 @@ tr:hover td {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent);
+  color: var(--text-primary);
   margin-bottom: var(--space-1);
 }
 
@@ -576,7 +578,7 @@ tr:hover td {
 
 .now-item {
   padding: var(--space-6);
-  border-left: 2px solid var(--accent);
+  border-left: 2px solid var(--text-tertiary);
 }
 
 .now-item-title {
@@ -612,7 +614,7 @@ tr:hover td {
 }
 
 .post-card:hover {
-  border-color: var(--accent);
+  border-color: var(--text-secondary);
   transform: translateY(-2px);
   text-decoration: none;
 }
@@ -631,9 +633,9 @@ tr:hover td {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--accent);
+  border: 1px solid var(--text-tertiary);
   border-radius: var(--radius-sm);
-  color: var(--accent);
+  color: var(--text-secondary);
   line-height: 1;
 }
 
@@ -670,13 +672,14 @@ tr:hover td {
   gap: var(--space-2);
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--text-secondary);
   margin-top: var(--space-8);
-  transition: gap var(--transition-fast);
+  transition: gap var(--transition-fast), color var(--transition-fast);
 }
 
 .view-all:hover {
   gap: var(--space-3);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -724,9 +727,9 @@ tr:hover td {
 }
 
 .filter-btn.active {
-  border-color: var(--accent);
-  color: var(--accent);
-  background-color: rgba(74, 222, 128, 0.08);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 /* --- Single Post --- */
@@ -736,7 +739,7 @@ tr:hover td {
   left: 0;
   width: 0%;
   height: 2px;
-  background-color: var(--accent);
+  background-color: var(--text-primary);
   z-index: 200;
   transition: width 50ms linear;
 }
@@ -783,7 +786,7 @@ tr:hover td {
 }
 
 .post-tag:hover {
-  color: var(--accent);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -796,7 +799,7 @@ tr:hover td {
 
 .post-body h2 {
   padding-left: var(--space-4);
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--text-tertiary);
 }
 
 .post-body img {
@@ -867,7 +870,7 @@ tr:hover td {
 }
 
 .project-card:hover {
-  border-color: var(--accent);
+  border-color: var(--text-secondary);
   transform: translateY(-2px);
 }
 
@@ -904,7 +907,7 @@ tr:hover td {
 .project-card-links a {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--text-secondary);
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -944,7 +947,7 @@ tr:hover td {
 }
 
 .experience-item:hover {
-  border-left-color: var(--accent);
+  border-left-color: var(--text-primary);
 }
 
 .experience-role {
@@ -953,7 +956,7 @@ tr:hover td {
 }
 
 .experience-company {
-  color: var(--accent);
+  color: var(--text-secondary);
 }
 
 .experience-period {
@@ -983,7 +986,7 @@ tr:hover td {
 }
 
 .elsewhere-links a:hover {
-  color: var(--accent);
+  color: var(--text-primary);
   text-decoration: none;
 }
 
@@ -1023,7 +1026,7 @@ tr:hover td {
 
 .page-404 h1 {
   font-size: 6rem;
-  color: var(--accent);
+  color: var(--text-primary);
   margin-bottom: var(--space-4);
 }
 

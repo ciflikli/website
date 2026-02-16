@@ -35,13 +35,13 @@
   <div>
     {{ with .PrevInSection }}
     <span class="post-nav-label">Previous</span>
-    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     {{ end }}
   </div>
   <div style="text-align: right;">
     {{ with .NextInSection }}
     <span class="post-nav-label">Next</span>
-    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
     {{ end }}
   </div>
 </nav>
