@@ -1,0 +1,21 @@
+<a href="{{ .Permalink }}" class="post-card">
+  {{ with .Params.categories }}
+  <div class="post-card-categories">
+    {{ range . }}
+    <span class="category-pill">{{ . }}</span>
+    {{ end }}
+  </div>
+  {{ end }}
+  <h3 class="post-card-title">{{ .Title }}</h3>
+  {{ with .Description }}
+  <p class="post-card-description">{{ . }}</p>
+  {{ else }}
+  {{ with .Summary }}
+  <p class="post-card-description">{{ . | plainify | truncate 120 }}</p>
+  {{ end }}
+  {{ end }}
+  <div class="post-card-meta">
+    <span>{{ .Date.Format "Jan 2, 2006" }}</span>
+    <span>{{ math.Round (div (countwords .Content) 200.0) }} min read</span>
+  </div>
+</a>

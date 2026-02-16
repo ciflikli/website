@@ -1,0 +1,7 @@
+{{- $js := resources.Get "js/main.js" | minify | fingerprint -}}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+
+{{/* Conditional MathJax for posts that need it */}}
+{{ if .Params.math }}
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{{ end }}

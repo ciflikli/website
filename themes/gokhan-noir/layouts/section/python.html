@@ -1,0 +1,18 @@
+{{ define "main" }}
+
+<div class="page-header">
+  <h1>Python</h1>
+  <p>MLOps tools and machine learning in the Python ecosystem.</p>
+</div>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="post-list">
+      {{ range .Pages.ByDate.Reverse }}
+        {{ partial "post-card.html" . }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+{{ end }}

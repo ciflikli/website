@@ -1,0 +1,6 @@
+<footer class="footer">
+  <div class="footer-inner">
+    &copy; 2017&ndash;{{ now.Year }} {{ .Site.Params.name }}. Built with <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+    {{ with .Site.Params.enableRSS }}<a href="{{ "index.xml" | absURL }}" aria-label="RSS Feed">RSS</a>{{ end }}
+  </div>
+</footer>
