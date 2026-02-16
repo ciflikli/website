@@ -8,7 +8,7 @@
   <p>
     {{ .Site.Params.subtitle404 | default "The page you're looking for doesn't exist." }}
   </p>
-  <a href="{{ .Site.BaseURL }}" style="display: inline-block; margin-top: var(--space-8); font-weight: 500;">
+  <a href="{{ "/" | relURL }}" style="display: inline-block; margin-top: var(--space-8); font-weight: 500;">
     &larr; Back to home
   </a>
 </div>

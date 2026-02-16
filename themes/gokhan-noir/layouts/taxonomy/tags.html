@@ -8,7 +8,7 @@
   <div class="container">
     <div class="filters" style="max-width: var(--max-prose); margin: 0 auto;">
       {{ range .Data.Terms.Alphabetical }}
-      <a href="{{ .Page.Permalink }}" class="filter-btn" style="text-decoration: none;">
+      <a href="{{ .Page.RelPermalink }}" class="filter-btn" style="text-decoration: none;">
         {{ .Page.Title }} <span style="color: var(--text-tertiary);">({{ .Count }})</span>
       </a>
       {{ end }}

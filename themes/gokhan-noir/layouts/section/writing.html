@@ -26,7 +26,7 @@
       {{ $posts = sort $posts ".Date" "desc" }}
 
       {{ range $posts }}
-      <a href="{{ .Permalink }}" class="post-card" data-categories="{{ delimit .Params.categories "," | lower }}">
+      <a href="{{ .RelPermalink }}" class="post-card" data-categories="{{ delimit .Params.categories "," | lower }}">
         {{ with .Params.categories }}
         <div class="post-card-categories">
           {{ range . }}
