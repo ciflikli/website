@@ -9,9 +9,9 @@
   --bg-primary: #0A0A0A;
   --bg-secondary: #141414;
   --bg-tertiary: #1E1E1E;
-  --text-primary: #F5F5F5;
-  --text-secondary: #A0A0A0;
-  --text-tertiary: #666666;
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --text-tertiary: #707070;
   --accent: #4ADE80;
   --accent-hover: #22C55E;
   --border: #262626;
@@ -76,6 +76,7 @@ html {
 body {
   font-family: var(--font-sans);
   font-size: 1.0625rem;
+  font-weight: 400;
   line-height: 1.7;
   color: var(--text-primary);
   background-color: var(--bg-primary);
@@ -85,35 +86,35 @@ body {
 
 /* --- Typography --- */
 h1, h2, h3, h4, h5, h6 {
-  line-height: 1.25;
-  font-weight: 700;
+  line-height: 1.2;
+  font-weight: 800;
   color: var(--text-primary);
 }
 
 h1 {
-  font-size: 2.5rem;
-  letter-spacing: -0.02em;
+  font-size: 2.75rem;
+  letter-spacing: -0.03em;
   margin-bottom: var(--space-6);
 }
 
 h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-top: var(--space-12);
   margin-bottom: var(--space-4);
 }
 
 h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.375rem;
+  font-weight: 700;
   margin-top: var(--space-8);
   margin-bottom: var(--space-3);
 }
 
 h4 {
-  font-size: 1.0625rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
   margin-top: var(--space-6);
   margin-bottom: var(--space-2);
 }
@@ -134,7 +135,7 @@ a:hover {
 }
 
 strong {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 blockquote {
@@ -308,8 +309,9 @@ tr:hover td {
 }
 
 .nav-logo {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.375rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.02em;
@@ -417,26 +419,28 @@ tr:hover td {
 }
 
 .hero-name {
-  font-size: 4rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  font-size: 4.5rem;
+  font-weight: 900;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
   margin-bottom: var(--space-4);
   color: var(--text-primary);
 }
 
 .hero-title {
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-size: 1.375rem;
+  font-weight: 600;
   color: var(--text-secondary);
+  letter-spacing: -0.01em;
   margin-bottom: var(--space-2);
 }
 
 .hero-tagline {
-  font-size: 1.0625rem;
-  color: var(--text-tertiary);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
   margin-bottom: var(--space-8);
-  max-width: 500px;
+  max-width: 540px;
 }
 
 .hero-social {
@@ -479,16 +483,16 @@ tr:hover td {
 
 @media (max-width: 768px) {
   .hero-name {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
   .hero-title {
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-name {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -498,10 +502,10 @@ tr:hover td {
 }
 
 .section-title {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.9375rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--text-tertiary);
   margin-bottom: var(--space-8);
 }
@@ -547,8 +551,8 @@ tr:hover td {
 }
 
 .stack-item-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--accent);
@@ -576,8 +580,8 @@ tr:hover td {
 }
 
 .now-item-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-1);
 }
@@ -634,9 +638,10 @@ tr:hover td {
 }
 
 .post-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.375rem;
+  font-weight: 700;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
   margin-bottom: var(--space-2);
   line-height: 1.35;
 }
@@ -943,7 +948,7 @@ tr:hover td {
 }
 
 .experience-role {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
