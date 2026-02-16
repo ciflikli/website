@@ -1,0 +1,49 @@
+{{ define "main" }}
+
+<div class="reading-progress"></div>
+
+<header class="post-header">
+  {{ with .Params.categories }}
+  <div class="post-card-categories">
+    {{ range . }}
+    <span class="category-pill">{{ . }}</span>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  <h1>{{ .Title }}</h1>
+
+  <div class="post-meta">
+    <span>{{ .Date.Format "Jan 2, 2006" }}</span>
+    <span>{{ math.Round (div (countwords .Content) 200.0) }} min read</span>
+    {{ with .Params.tags }}
+    <span class="post-tags">
+      {{ range . }}
+      <a href="{{ (urls.Parse (printf "/tags/%s/" (. | urlize))).Path }}" class="post-tag">#{{ . }}</a>
+      {{ end }}
+    </span>
+    {{ end }}
+  </div>
+</header>
+
+<article class="post-body prose">
+  {{ .Content }}
+</article>
+
+{{/* Post Navigation */}}
+<nav class="post-nav">
+  <div>
+    {{ with .PrevInSection }}
+    <span class="post-nav-label">Previous</span>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ end }}
+  </div>
+  <div style="text-align: right;">
+    {{ with .NextInSection }}
+    <span class="post-nav-label">Next</span>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ end }}
+  </div>
+</nav>
+
+{{ end }}

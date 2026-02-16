@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "en" }}" data-theme="dark">
+<head>
+  {{- partial "head.html" . -}}
+</head>
+<body>
+  {{- partial "nav.html" . -}}
+  <main>
+    {{- block "main" . }}{{ end -}}
+  </main>
+  {{- partial "footer.html" . -}}
+  {{- partial "scripts.html" . -}}
+</body>
+</html>

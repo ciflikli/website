@@ -1,0 +1,58 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
+<meta name="author" content="{{ .Site.Params.name }}">
+
+{{/* Open Graph */}}
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+{{ with .Site.Params.ogImage }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+
+{{/* Twitter Card */}}
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
+
+{{/* Canonical URL */}}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{/* RSS */}}
+{{ range .AlternativeOutputFormats -}}
+  {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+{{ end -}}
+
+{{/* Favicon */}}
+<link rel="icon" href="{{ "favicon.ico" | relURL }}">
+
+{{/* Fonts */}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+{{/* CSS */}}
+{{- $css := resources.Get "css/main.css" | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+
+{{/* Syntax Highlighting */}}
+{{- $syntax := resources.Get "css/syntax.css" | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $syntax.RelPermalink }}" integrity="{{ $syntax.Data.Integrity }}">
+
+{{/* Theme detection - prevent FOUC */}}
+<script>
+  (function() {
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+
+{{/* Google Analytics */}}
+{{ if .Site.Params.enableGoogleAnalytics }}
+{{ template "_internal/google_analytics.html" . }}
+{{ end }}

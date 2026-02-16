@@ -1,0 +1,100 @@
+{{ define "main" }}
+
+{{/* Hero Section */}}
+<section class="hero">
+  <h1 class="hero-name">Gökhan Çiflikli</h1>
+  <p class="hero-title">Principal AI Engineer</p>
+  <p class="hero-tagline">Building Wellbeing Intelligence at <a href="https://www.healf.com/" style="color: var(--accent);">Healf</a>.</p>
+  <p class="hero-tagline" style="margin-top: calc(-1 * var(--space-6)); color: var(--text-tertiary);">17 years in AI/ML. PhD. Research to production.</p>
+  <div class="hero-social">
+    {{ partial "social-icons.html" . }}
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  </div>
+</section>
+
+{{/* About Section */}}
+<section class="section">
+  <div class="container">
+    <p class="section-title">About</p>
+    <div class="about-text">
+      {{ .Content }}
+    </div>
+  </div>
+</section>
+
+{{/* What I Do */}}
+<section class="section">
+  <div class="container">
+    <p class="section-title">What I Do</p>
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-item-label">Build AI Products</div>
+        <div class="stack-item-detail">Design and ship agentic AI, recommendation engines, and LLM-powered features that move business metrics</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-label">Scale ML Systems</div>
+        <div class="stack-item-detail">Production ML platforms with monitoring, drift detection, and automated retraining. Models that keep delivering</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-label">Own the Infrastructure</div>
+        <div class="stack-item-detail">Cloud-native on AWS and GCP | containerised, IaC-driven, built to handle real traffic</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-item-label">Lead Engineering Teams</div>
+        <div class="stack-item-detail">Technical strategy, hiring, mentoring; translating business goals into engineering roadmaps</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{/* Currently */}}
+<section class="section">
+  <div class="container">
+    <p class="section-title">Currently</p>
+    <div class="now-grid">
+      <div class="now-item">
+        <div class="now-item-title">Healf</div>
+        <div class="now-item-detail">Building AI-powered wellbeing intelligence &mdash; personalised product recommendations, search, and content curation.</div>
+      </div>
+      <div class="now-item">
+        <div class="now-item-title">TeamCraft</div>
+        <div class="now-item-detail">Writing a newsletter on technical team management for engineering middle managers.</div>
+      </div>
+      <div class="now-item">
+        <div class="now-item-title">LSE Data Science Institute</div>
+        <div class="now-item-detail">Visiting Senior Fellow. Bridging academic research with industry practice.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{/* Latest Writing */}}
+<section class="section">
+  <div class="container">
+    <p class="section-title">Latest Writing</p>
+    <div class="post-list">
+      {{/* Gather posts from both /post/ and /python/ sections, sort by date */}}
+      {{ $posts := slice }}
+      {{ with .Site.GetPage "/post" }}
+        {{ $posts = .Pages }}
+      {{ end }}
+      {{ with .Site.GetPage "/python" }}
+        {{ $posts = $posts | append .Pages }}
+      {{ end }}
+      {{ $posts = sort $posts ".Date" "desc" }}
+      {{ range first 3 $posts }}
+        {{ partial "post-card.html" . }}
+      {{ end }}
+    </div>
+    <div style="max-width: var(--max-prose); margin: 0 auto;">
+      <a href="{{ "writing/" | relURL }}" class="view-all">
+        View all posts
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+{{ end }}

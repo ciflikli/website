@@ -1,46 +1,53 @@
 # Site settings
 baseurl = "https://www.gokhan.io/"
-canonifyurls = true
+canonifyurls = false
 languageCode = "en"
 title = "Gokhan Ciflikli | Principal AI Engineer at Healf"
-theme = "hugo-theme-cactus-plus"
+theme = "gokhan-noir"
 googleAnalytics = "G-47S8FBKW4W"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
+
 [pagination]
   pagerSize = 20
 
-[outputFormats.MyEnrichedFormat]
-protocol = "https://"
-
 [params]
-	name = "Gökhan Çiflikli, PhD"
-	job = "Building Wellbeing Intelligence at Healf"
-	description = "Data Science, Machine Learning, AI, Python, R"
-	bio = "[R](https://gokhan.io/categories/r) | [Python](https://gokhan.io/categories/python) | [Predictive Modeling](https://gokhan.io/categories/prediction) | [Data Visualization](https://gokhan.io/categories/visualization)"
+  name = "Gökhan Çiflikli, PhD"
+  job = "Principal AI Engineer at Healf"
+  tagline = "Building Wellbeing Intelligence"
+  description = "Data Science, Machine Learning, AI, Python, R"
+  github = "ciflikli"
+  enableRSS = true
+  enableGoogleAnalytics = true
 
-	github = "ciflikli"
-	enableRSS = true
-	
-	title404 = "This is not the web page you are looking for."
-	subtitle404 = "Perhaps your father wanted you to browse this page when you were old enough, but your uncle wouldn't allow it. He feared you might follow old Obi-Wan on some damn fool idealistic crusade like your father did..."
-
-	disqusShortname = "gokhancif"
-	enableDisqus = false
-
-	enableGoogleAnalytics = true
-
-	custom_css = []
-	customJS  = []
-
-	aboutAuthor = "Building Wellbeing Intelligence at Healf"
-
-	iconFont = "font-awesome"
-  
-  shareOnTwitter = true
-
-  shareOnFacebook = true
+  title404 = "This is not the web page you are looking for."
+  subtitle404 = "Perhaps your father wanted you to browse this page when you were old enough, but your uncle wouldn't allow it. He feared you might follow old Obi-Wan on some damn fool idealistic crusade like your father did..."
 
 [params.social]
-  github-square = "https://github.com/ciflikli"
   linkedin = "https://www.linkedin.com/in/gokhan-ciflikli/"
-  #twitter-square = "https://www.twitter.com/gokhan_ciflikli"
+  substack = "https://teamcraft.substack.com/"
+  spotify = "https://open.spotify.com/album/5anGntZJaDDBog1XqiSDSj"
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    noClasses = false
+    lineNos = false
+    style = "catppuccin-mocha"
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[menu]
+  [[menu.main]]
+    name = "Writing"
+    url = "/writing/"
+    weight = 1
+  [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 3

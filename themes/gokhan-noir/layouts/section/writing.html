@@ -1,0 +1,77 @@
+{{ define "main" }}
+
+<div class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{ with .Description }}<p>{{ . }}</p>{{ end }}
+</div>
+
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    {{/* Category filter buttons */}}
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="r">R</button>
+      <button class="filter-btn" data-filter="python">Python</button>
+    </div>
+
+    <div class="post-list" id="post-list">
+      {{/* Gather posts from both /post/ and /python/ sections */}}
+      {{ $posts := slice }}
+      {{ with .Site.GetPage "/post" }}
+        {{ $posts = .Pages }}
+      {{ end }}
+      {{ with .Site.GetPage "/python" }}
+        {{ $posts = $posts | append .Pages }}
+      {{ end }}
+      {{ $posts = sort $posts ".Date" "desc" }}
+
+      {{ range $posts }}
+      <a href="{{ .Permalink }}" class="post-card" data-categories="{{ delimit .Params.categories "," | lower }}">
+        {{ with .Params.categories }}
+        <div class="post-card-categories">
+          {{ range . }}
+          <span class="category-pill">{{ . }}</span>
+          {{ end }}
+        </div>
+        {{ end }}
+        <h3 class="post-card-title">{{ .Title }}</h3>
+        {{ with .Description }}
+        <p class="post-card-description">{{ . }}</p>
+        {{ else }}
+        {{ with .Summary }}
+        <p class="post-card-description">{{ . | plainify | truncate 120 }}</p>
+        {{ end }}
+        {{ end }}
+        <div class="post-card-meta">
+          <span>{{ .Date.Format "Jan 2, 2006" }}</span>
+          <span>{{ math.Round (div (countwords .Content) 200.0) }} min read</span>
+        </div>
+      </a>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  var btns = document.querySelectorAll('.filter-btn');
+  var cards = document.querySelectorAll('#post-list .post-card');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var filter = btn.getAttribute('data-filter');
+      cards.forEach(function(card) {
+        var cats = card.getAttribute('data-categories') || '';
+        if (filter === 'all' || cats.indexOf(filter) !== -1) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+
+{{ end }}
