@@ -1,1 +1,8 @@
+# Old domain redirect
 https://www.gokhanciflikli.com/* https://www.gokhan.io/:splat 301!
+
+# Removed sections
+/publications/  / 301
+/publications    / 301
+/talks/          / 301
+/talks           / 301
