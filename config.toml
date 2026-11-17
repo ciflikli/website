@@ -2,7 +2,7 @@
 baseurl = "https://www.gokhan.io/"
 canonifyurls = false
 languageCode = "en"
-title = "Gokhan Ciflikli | Principal AI Engineer at Healf"
+title = "Gokhan Ciflikli | Head of Applied AI at Ben"
 theme = "gokhan-noir"
 googleAnalytics = "G-47S8FBKW4W"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_cache$"]
@@ -12,9 +12,9 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_c
 
 [params]
   name = "Gökhan Çiflikli, PhD"
-  job = "Principal AI Engineer at Healf"
-  tagline = "Building Wellbeing Intelligence"
-  description = "Data Science, Machine Learning, AI, Python, R"
+  job = "Head of Applied AI at Ben"
+  tagline = "Applied AI for global benefits"
+  description = "Head of Applied AI at Ben, the AI-native platform for global benefits."
   github = "ciflikli"
   enableRSS = true
   enableGoogleAnalytics = true
@@ -44,10 +44,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$", "_c
     url = "/writing/"
     weight = 1
   [[menu.main]]
-    name = "Projects"
-    url = "/projects/"
-    weight = 2
-  [[menu.main]]
     name = "Resume"
     url = "/about/"
-    weight = 3
+    weight = 2
